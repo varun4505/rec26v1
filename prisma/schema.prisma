@@ -1,0 +1,42 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "mongodb"
+    url      = env("DATABASE_URL")
+}
+
+model Application {
+    id        String   @id @default(auto()) @map("_id") @db.ObjectId
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    // Basic Info
+    name      String
+    regNo     String
+    email     String
+    phone     String
+
+    // Domain Submissions
+    domainSubmissions DomainSubmission[]
+
+    @@unique([regNo])
+    @@unique([email])
+}
+
+model DomainSubmission {
+    id            String   @id @default(auto()) @map("_id") @db.ObjectId
+    applicationId String   @db.ObjectId
+    domain        String
+    answers       Json // ordered Q&A list stored as JSON
+
+    application   Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+
+    @@unique([applicationId, domain])
+    @@index([applicationId])
+    @@index([domain])
+}
