@@ -32,11 +32,13 @@ model DomainSubmission {
     id            String   @id @default(auto()) @map("_id") @db.ObjectId
     applicationId String   @db.ObjectId
     domain        String
+    subdomain     String?
     answers       Json // ordered Q&A list stored as JSON
 
     application   Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
 
-    @@unique([applicationId, domain])
+    @@unique([applicationId, domain, subdomain])
     @@index([applicationId])
     @@index([domain])
+    @@index([subdomain])
 }

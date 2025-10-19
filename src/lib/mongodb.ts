@@ -6,7 +6,7 @@ if (!uri) {
 }
 
 declare global {
-  // eslint-disable-next-line no-var
+  // global cached Mongo client promise (development only)
   var _mongoClientPromise: Promise<MongoClient> | undefined
 }
 

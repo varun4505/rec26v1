@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from 'next-auth'
-import { authOptions } from '@/app/api/auth/[...nextauth]/route'
+import { authOptions } from '@/lib/authOptions'
 import prisma from '@/lib/prisma'
 import { validateAnswersList, type AnswersList } from '@/lib/domainAnswers'
+import type { Prisma } from '@prisma/client'
 
 interface BasicInfo {
   name: string;
@@ -12,6 +13,7 @@ interface BasicInfo {
 
 interface DomainData {
   domain: 'technical' | 'management' | 'design'
+  subdomain?: string
   data: {
     // Ordered list of Q&A items. Each item: { id?: string, question?: string, answer: string|number|boolean|string[] }
     answers: AnswersList | unknown
@@ -79,8 +81,8 @@ export async function POST(req: Request) {
       );
     }
 
-    // Validate registration number format
-    const regNoRegex = /^2[2-5][A-Z]{3}\d{4}$/; //TODO: Verify!!
+  // Validate registration number format
+  const regNoRegex = /^2[2-5][A-Z]{3}\d{4}$/;
     if (!regNoRegex.test(basicInfo.registrationNumber)) {
       return NextResponse.json(
         { success: false, error: "Invalid registration number format" },
@@ -105,18 +107,12 @@ export async function POST(req: Request) {
       )
     }
 
-    // Prevent duplicate submission
+    // Find existing application (if any). We allow adding domain/subdomain submissions
     const existing = await prisma.application.findUnique({ where: { email: session.user.email } })
-    if (existing) {
-      return NextResponse.json(
-        { success: false, error: 'Application already submitted for this account' },
-        { status: 409 }
-      )
-    }
 
     // Validate domain answers and prepare create payload
     const seenDomains = new Set<string>()
-    const domainCreates: { domain: string; answers: AnswersList }[] = []
+    const domainCreates: { domain: string; subdomain?: string; answers: AnswersList }[] = []
     for (const domainItem of domains) {
       if (!domainItem?.domain || !domainItem?.data) {
         return NextResponse.json(
@@ -124,17 +120,18 @@ export async function POST(req: Request) {
           { status: 400 }
         )
       }
-      if (seenDomains.has(domainItem.domain)) {
+      const key = `${domainItem.domain}::${String(domainItem.subdomain ?? '')}`
+      if (seenDomains.has(key)) {
         return NextResponse.json(
-          { success: false, error: `Duplicate domain provided: ${domainItem.domain}` },
+          { success: false, error: `Duplicate domain/subdomain provided: ${domainItem.domain}${domainItem.subdomain ? '/' + domainItem.subdomain : ''}` },
           { status: 400 }
         )
       }
-      seenDomains.add(domainItem.domain)
+      seenDomains.add(key)
 
       try {
         const validated = validateAnswersList(domainItem.data.answers)
-        domainCreates.push({ domain: domainItem.domain, answers: validated })
+        domainCreates.push({ domain: domainItem.domain, subdomain: domainItem.subdomain, answers: validated })
       } catch (err) {
         return NextResponse.json(
           { success: false, error: `Invalid answers for domain ${domainItem.domain}: ${String(err)}` },
@@ -142,8 +139,29 @@ export async function POST(req: Request) {
         )
       }
     }
+    // If application exists, add domain/subdomain submissions (if not duplicates).
+    if (existing) {
+      // For each create item, ensure a submission for the same application+domain+subdomain doesn't already exist
+      for (const item of domainCreates) {
+        // find any existing submissions for this applicationId+domain, then check subdomain equality in JS
+        type DSRow = { id: string; applicationId: string; domain: string; subdomain?: string; answers: unknown }
+        const candidates = await prisma.domainSubmission.findMany({ where: { applicationId: existing.id, domain: item.domain } })
+        const existsForSubdomain = (candidates as unknown as DSRow[]).some((c) => c.subdomain === item.subdomain)
+        if (existsForSubdomain) {
+          return NextResponse.json({ success: false, error: `Submission already exists for domain ${item.domain}${item.subdomain ? '/' + item.subdomain : ''}` }, { status: 409 })
+        }
+      }
 
-    // Create the application
+      // Create submissions
+      for (const item of domainCreates) {
+        await prisma.domainSubmission.create({ data: ({ applicationId: existing.id, domain: item.domain, subdomain: item.subdomain ?? undefined, answers: item.answers as unknown as Prisma.InputJsonValue } as Prisma.DomainSubmissionUncheckedCreateInput) })
+      }
+
+      const fresh = await prisma.application.findUnique({ where: { id: existing.id }, include: { domainSubmissions: true } })
+      return NextResponse.json({ success: true, data: fresh })
+    }
+
+    // No existing application: create a new application with nested domainSubmissions
     const application = await prisma.application.create({
       data: {
         name: basicInfo.name,
@@ -156,11 +174,11 @@ export async function POST(req: Request) {
     })
 
     return NextResponse.json({ success: true, data: application });
-  } catch (error: any) {
+  } catch (err) {
     // Map known Prisma unique constraint error to 409
-    const message = typeof error?.message === 'string' ? error.message : 'Failed to submit application'
+    const message = err instanceof Error ? err.message : 'Failed to submit application'
     const isConflict = message.includes('Unique') || message.includes('unique') || message.includes('duplicate')
-    console.error('Submission error:', error)
+    console.error('Submission error:', err)
     return NextResponse.json(
       { success: false, error: message },
       { status: isConflict ? 409 : 500 }

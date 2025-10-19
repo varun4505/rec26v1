@@ -1,4 +1,4 @@
-import type { PrismaClient } from '@prisma/client'
+import type { PrismaClient, Prisma } from '@prisma/client'
 
 export type AnswerPrimitive = string | number | boolean | string[]
 
@@ -45,7 +45,7 @@ export async function createDomainSubmissionFromList(
   answersList: unknown
 ) {
   const validated = validateAnswersList(answersList)
-  return prisma.domainSubmission.create({ data: { applicationId, domain, answers: validated as any } })
+  return prisma.domainSubmission.create({ data: { applicationId, domain, answers: validated as unknown as Prisma.InputJsonValue } })
 }
 
 export async function replaceDomainSubmissionAnswersWithList(
@@ -54,7 +54,7 @@ export async function replaceDomainSubmissionAnswersWithList(
   answersList: unknown
 ) {
   const validated = validateAnswersList(answersList)
-  return prisma.domainSubmission.update({ where: { id: submissionId }, data: { answers: validated as any } })
+  return prisma.domainSubmission.update({ where: { id: submissionId }, data: { answers: validated as unknown as Prisma.InputJsonValue } })
 }
 
 export async function appendToDomainSubmissionAnswersList(
@@ -65,8 +65,8 @@ export async function appendToDomainSubmissionAnswersList(
   const validated = validateAnswersList(items)
   const existing = await prisma.domainSubmission.findUnique({ where: { id: submissionId } })
   if (!existing) throw new Error('DomainSubmission not found')
-  const current = Array.isArray(existing.answers) ? (existing.answers as any[]) : []
+  const current = Array.isArray(existing.answers) ? (existing.answers as unknown as QAItem[]) : []
   const merged = [...current, ...validated]
-  return prisma.domainSubmission.update({ where: { id: submissionId }, data: { answers: merged as any } })
+  return prisma.domainSubmission.update({ where: { id: submissionId }, data: { answers: merged as unknown as Prisma.InputJsonValue } })
 }
 
