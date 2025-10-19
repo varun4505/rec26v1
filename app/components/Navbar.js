@@ -6,6 +6,15 @@ import { motion, AnimatePresence } from "framer-motion";
 import { gsap } from "gsap";
 import Image from "next/image";
 import Link from "next/link";
+// 1. Import the Instrument Sans font from 'next/font/google'
+import { Instrument_Sans } from "next/font/google";
+
+// 2. Configure the font loader
+const instrumentSans = Instrument_Sans({
+  subsets: ["latin"],
+  weight: ["400", "500"], // Include the required 400 and 500 for font-medium
+  variable: "--font-instrument-sans", // Use a CSS variable for global access/cleanup
+});
 
 const MainNavbar = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -195,12 +204,29 @@ const MainNavbar = () => {
     boxShadow: `0px 0px 50.9px 19px rgba(0, 0, 0, 0.1)`,
   };
 
+  // --- New Font Styles ---
+  const FONT_CLASS_NAMES = `${instrumentSans.className}`;
+  const NAV_LINK_STYLE = {
+    fontSize: '18px',
+    lineHeight: '100%',
+    letterSpacing: '0.01em', // 1%
+    fontWeight: 400, // Regular
+  };
+  // The Sign In button uses font-medium, which is 500 weight, so we'll use that for consistency
+  const BUTTON_FONT_STYLE = {
+    fontSize: '18px',
+    lineHeight: '100%',
+    letterSpacing: '0.01em', // 1%
+    // The button already uses font-medium (500), so no need to explicitly set fontWeight to 400
+  };
+
   return (
     <> 
       {/* Main Navbar */}
       <nav 
         ref={navRef} 
-        className="z-[100] fixed top-4 left-1/2 transform -translate-x-1/2 w-[95%] lg:w-2/3 max-w-4xl rounded-full px-4 sm:px-6 opacity-0"
+        // 3. Apply the font class name to the main nav container
+        className={`z-[100] fixed top-4 left-1/2 transform -translate-x-1/2 w-[95%] lg:w-2/3 max-w-4xl rounded-full px-4 sm:px-6 opacity-0 ${FONT_CLASS_NAMES}`}
       >
         {/* Container for the Glassmorphism and Shadow */}
         <div 
@@ -211,7 +237,7 @@ const MainNavbar = () => {
           <div className="absolute inset-0 backdrop-blur-xl rounded-full" /> 
           
           {/* Content Wrapper: Logo Left, Links Centered, Button Right */}
-          <div className="relative w-full flex items-center justify-between"> 
+          <div className="relative w-full flex items-center justify-between pl-1 pr-1 sm:pl-3 sm:pr-3"> 
             
             {/* 1. Logo Section (Left) */}
             <div className="flex items-center z-20">
@@ -236,7 +262,9 @@ const MainNavbar = () => {
                     <a
                       href={link.href}
                       onClick={(e) => handleNavClick(e, link.href)}
-                      className={`transition-colors font-medium text-lg tracking-wide cursor-pointer text-gray-800 hover:text-orange-500`}
+                      // 4. Apply the new font styles
+                      style={NAV_LINK_STYLE}
+                      className={`transition-colors font-normal text-gray-800 hover:text-orange-500 cursor-pointer`}
                     >
                       {link.text}
                     </a>
@@ -260,8 +288,8 @@ const MainNavbar = () => {
                     <motion.button
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
-                    style={SIGN_IN_BUTTON_STYLE}
-                    className="px-12 py-2 text-black font-medium rounded-full text-lg whitespace-nowrap transition-all duration-300"
+                    style={{ ...SIGN_IN_BUTTON_STYLE, ...BUTTON_FONT_STYLE }}
+                    className="px-12 py-2 text-black font-medium rounded-full whitespace-nowrap transition-all duration-300"
                     >
                     Sign In
                     </motion.button>
@@ -316,7 +344,7 @@ const MainNavbar = () => {
               animate={{ y: "0vh" }}
               exit={{ y: "-100vh" }}
               transition={{ duration: 0.5, ease: "easeInOut" }}
-              className="fixed top-0 left-0 w-full h-full text-white z-[600] overflow-hidden"
+              className={`fixed top-0 left-0 w-full h-full text-white z-[600] overflow-hidden ${FONT_CLASS_NAMES}`}
             >
               <div className="absolute inset-0 backdrop-blur-md bg-black/80" />
               <div className="absolute inset-0 bg-gradient-to-b from-purple-900/50 via-black/80 to-purple-900/50" />
