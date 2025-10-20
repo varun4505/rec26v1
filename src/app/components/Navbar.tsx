@@ -260,13 +260,12 @@ const MainNavbar: React.FC = () => {
             <div className="flex items-center z-20">
               <Link href="#home" onClick={(e) => handleNavClick(e, '#home')}>
                 <Image
-                  // --- CORRECTED LOGO PATH ---
-                  src="/whiteLogoViit.svg" 
+                  // --- Using black logo instead of white ---
+                  src="/blackLogoViit.svg" 
                   alt="VinnovateIT Logo"
                   width={isMobile ? 80 : 120} // Adjusted size
                   height={isMobile ? 30 : 40} // Added a fixed height for proper Next/Image rendering
                   priority
-                  // No filter/invert needed, assuming the SVG file is dark as seen in your image
                 />
               </Link>
             </div>
@@ -364,7 +363,7 @@ const MainNavbar: React.FC = () => {
               className={`fixed top-0 left-0 w-full h-full text-white z-[600] overflow-hidden ${FONT_CLASS_NAMES}`}
             >
               <div className="absolute inset-0 backdrop-blur-md bg-black/80" />
-              <div className="absolute inset-0 bg-gradient-to-b from-purple-900/50 via-black/80 to-purple-900/50" />
+              <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/80 to-black/60" />
               
               <div className="relative h-full flex flex-col">
                 <div className="flex justify-between items-center p-4 sm:p-6 pt-8 sm:pt-12">
@@ -375,7 +374,7 @@ const MainNavbar: React.FC = () => {
                     className="flex items-center"
                   >
                     <Image
-                      src="/whiteLogoViit.svg"
+                      src="/blackLogoViit.svg"
                       alt="VIIT Logo"
                       width={80}
                       height={80}
@@ -386,7 +385,7 @@ const MainNavbar: React.FC = () => {
                   
                   <motion.button 
                     onClick={toggleDrawer} 
-                    className="p-2 sm:p-3 hover:bg-purple-900/30 rounded-full transition-colors backdrop-blur-sm bg-white/10 border border-white/20"
+                    className="p-2 sm:p-3 hover:bg-gray-800/30 rounded-full transition-colors backdrop-blur-sm bg-white/10 border border-white/20"
                     initial={{ opacity: 0, rotate: -90 }}
                     animate={{ opacity: 1, rotate: 0 }}
                     transition={{ duration: 0.3, delay: 0.2 }}
@@ -423,10 +422,10 @@ const MainNavbar: React.FC = () => {
                           <a
                             href={link.href}
                             onClick={(e) => handleNavClick(e, link.href)}
-                            className={`sidebar-link block font-medium text-xl sm:text-2xl md:text-3xl lg:text-4xl py-3 sm:py-4 px-4 sm:px-6 md:px-8 rounded-xl transition-all tracking-wider hover:bg-purple-900/20 hover:scale-105 cursor-pointer font-orbitron ${
+                            className={`sidebar-link block font-medium text-xl sm:text-2xl md:text-3xl lg:text-4xl py-3 sm:py-4 px-4 sm:px-6 md:px-8 rounded-xl transition-all tracking-wider hover:bg-gray-800/20 hover:scale-105 cursor-pointer font-orbitron ${
                               isActiveLink 
-                                ? 'text-purple-400 bg-purple-900/30 scale-105' 
-                                : 'hover:text-purple-400'
+                                ? 'text-gray-400 bg-gray-800/30 scale-105' 
+                                : 'hover:text-gray-400'
                             }`}
                           >
                             {link.text}
@@ -454,7 +453,7 @@ const MainNavbar: React.FC = () => {
                 </div>
 
                 <motion.div 
-                  className="px-4 sm:px-6 py-8 sm:py-10 md:py-12 border-t border-purple-500/20"
+                  className="px-4 sm:px-6 py-8 sm:py-10 md:py-12 border-t border-gray-500/20"
                   initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.6, delay: 0.8 }}
