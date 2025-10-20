@@ -40,7 +40,7 @@ const MainNavbar: React.FC = () => {
   const [activeSection, setActiveSection] = useState<string>(''); 
   const navRef = useRef<HTMLElement | null>(null);
   const sidebarRef = useRef<HTMLDivElement | null>(null);
-  const socialIconsRef = useRef<HTMLDivElement | null>(null);
+  // Removed unused ref: socialIconsRef
 
   // --- Utility Hooks ---
 
@@ -354,16 +354,16 @@ const MainNavbar: React.FC = () => {
               onClick={toggleDrawer}
             />
             
-            <motion.div
+                <motion.div
               ref={sidebarRef}
               initial={{ y: "-100vh" }}
               animate={{ y: "0vh" }}
               exit={{ y: "-100vh" }}
               transition={{ duration: 0.5, ease: "easeInOut" }}
-              className={`fixed top-0 left-0 w-full h-full text-white z-[600] overflow-hidden ${FONT_CLASS_NAMES}`}
+              className={`fixed top-0 left-0 w-full h-full text-gray-800 z-[600] overflow-hidden ${FONT_CLASS_NAMES}`}
             >
-              <div className="absolute inset-0 backdrop-blur-md bg-black/80" />
-              <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/80 to-black/60" />
+              <div className="absolute inset-0 backdrop-blur-md bg-white/90" />
+              <div className="absolute inset-0 bg-gradient-to-b from-white/90 via-white/95 to-white/90" />
               
               <div className="relative h-full flex flex-col">
                 <div className="flex justify-between items-center p-4 sm:p-6 pt-8 sm:pt-12">
@@ -375,7 +375,7 @@ const MainNavbar: React.FC = () => {
                   >
                     <Image
                       src="/blackLogoViit.svg"
-                      alt="VIIT Logo"
+                      alt="VinnovateIT Logo"
                       width={80}
                       height={80}
                       priority
@@ -395,11 +395,11 @@ const MainNavbar: React.FC = () => {
                       height="20" 
                       viewBox="0 0 24 24" 
                       fill="none" 
-                      stroke="currentColor" 
+                      stroke="black"
                       strokeWidth="2" 
                       strokeLinecap="round" 
                       strokeLinejoin="round"
-                      className="text-white sm:w-6 sm:h-6"
+                      className="sm:w-6 sm:h-6"
                     >
                       <line x1="18" y1="6" x2="6" y2="18"></line>
                       <line x1="6" y1="6" x2="18" y2="18"></line>
@@ -422,10 +422,10 @@ const MainNavbar: React.FC = () => {
                           <a
                             href={link.href}
                             onClick={(e) => handleNavClick(e, link.href)}
-                            className={`sidebar-link block font-medium text-xl sm:text-2xl md:text-3xl lg:text-4xl py-3 sm:py-4 px-4 sm:px-6 md:px-8 rounded-xl transition-all tracking-wider hover:bg-gray-800/20 hover:scale-105 cursor-pointer font-orbitron ${
+                            className={`sidebar-link block font-medium text-xl sm:text-2xl md:text-3xl lg:text-4xl py-3 sm:py-4 px-4 sm:px-6 md:px-8 rounded-xl transition-all tracking-wider hover:bg-gray-800/20 hover:scale-105 cursor-pointer ${
                               isActiveLink 
-                                ? 'text-gray-400 bg-gray-800/30 scale-105' 
-                                : 'hover:text-gray-400'
+                                ? 'text-gray-800 bg-gray-200/30 scale-105' 
+                                : 'text-gray-800 hover:text-gray-600'
                             }`}
                           >
                             {link.text}
@@ -443,7 +443,7 @@ const MainNavbar: React.FC = () => {
                                 whileHover={{ scale: 1.05 }}
                                 whileTap={{ scale: 0.95 }}
                                 style={SIGN_IN_BUTTON_STYLE}
-                                className="w-full mt-4 px-8 py-4 text-white font-semibold rounded-full text-2xl transition-all duration-300"
+                                className="w-full mt-4 px-8 py-4 text-black font-semibold rounded-full text-2xl transition-all duration-300"
                             >
                                 Sign In
                             </motion.button>
@@ -458,7 +458,7 @@ const MainNavbar: React.FC = () => {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.6, delay: 0.8 }}
                 >
-                  <p className="text-sm sm:text-base md:text-lg text-gray-300 text-center mb-4 sm:mb-6 md:mb-8 font-orbitron">Connect with us</p>
+                  <p className="text-sm sm:text-base md:text-lg text-gray-800 text-center mb-4 sm:mb-6 md:mb-8">Connect with us</p>
                   <div className="flex space-x-6 sm:space-x-8 md:space-x-10 justify-center">
                     {socialLinks.map((social, index) => (
                       <motion.div
@@ -471,7 +471,7 @@ const MainNavbar: React.FC = () => {
                           href={social.href}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className={`text-white ${social.hoverColor} transition-all transform hover:scale-125 p-3 sm:p-4 rounded-full hover:bg-purple-900/30 block`}
+                          className={`text-gray-800 ${social.hoverColor} transition-all transform hover:scale-125 p-3 sm:p-4 rounded-full hover:bg-gray-200/30 block`}
                         >
                           <div className="text-lg sm:text-xl">
                             {social.icon}
