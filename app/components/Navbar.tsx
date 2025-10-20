@@ -1,34 +1,51 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, MouseEvent } from "react";
 import { Github, Instagram, Mail, Linkedin } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { gsap } from "gsap";
 import Image from "next/image";
 import Link from "next/link";
-// 1. Import the Instrument Sans font from 'next/font/google'
+// Import the Instrument Sans font from 'next/font/google'
 import { Instrument_Sans } from "next/font/google";
 
-// 2. Configure the font loader
+// Configure the font loader
 const instrumentSans = Instrument_Sans({
   subsets: ["latin"],
   weight: ["400", "500"], // Include the required 400 and 500 for font-medium
   variable: "--font-instrument-sans", // Use a CSS variable for global access/cleanup
 });
 
-const MainNavbar = () => {
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
+// Define types for our data structures
+interface SocialLink {
+  icon: React.ReactNode;
+  href: string;
+  hoverColor: string;
+}
+
+interface NavigationLink {
+  href: string;
+  text: string;
+  sectionId: string;
+}
+
+interface StyleObject {
+  [key: string]: string;
+}
+
+const MainNavbar: React.FC = () => {
+  const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
+  const [isMobile, setIsMobile] = useState<boolean>(false);
   // Initial section set to 'home' or equivalent if the user starts at the top
-  const [activeSection, setActiveSection] = useState(''); 
-  const navRef = useRef(null);
-  const sidebarRef = useRef(null);
-  const socialIconsRef = useRef(null);
+  const [activeSection, setActiveSection] = useState<string>(''); 
+  const navRef = useRef<HTMLElement | null>(null);
+  const sidebarRef = useRef<HTMLDivElement | null>(null);
+  const socialIconsRef = useRef<HTMLDivElement | null>(null);
 
   // --- Utility Hooks ---
 
   useEffect(() => {
-    const checkMobile = () => {
+    const checkMobile = (): void => {
       setIsMobile(window.innerWidth < 1024);
     };
 
@@ -89,7 +106,7 @@ const MainNavbar = () => {
     };
   }, [isDrawerOpen]);
 
-  const initAnimations = () => {
+  const initAnimations = (): void => {
     if (navRef.current) {
       gsap.fromTo(
         navRef.current,
@@ -99,7 +116,7 @@ const MainNavbar = () => {
     }
   };
 
-  const toggleDrawer = () => {
+  const toggleDrawer = (): void => {
     setIsDrawerOpen((prev) => !prev);
     if (!isDrawerOpen && sidebarRef.current) {
       gsap.fromTo(
@@ -131,7 +148,7 @@ const MainNavbar = () => {
     }
   };
 
-  const handleNavClick = (e, href) => {
+  const handleNavClick = (e: MouseEvent<HTMLAnchorElement>, href: string): void => {
     e.preventDefault();
     const targetSection = document.querySelector(href);
     if (targetSection) {
@@ -147,7 +164,7 @@ const MainNavbar = () => {
   
   // --- Data ---
 
-  const socialLinks = [
+  const socialLinks: SocialLink[] = [
     {
       icon: <Github size={20} />,
       href: "https://github.com/VinnovateIT/",
@@ -170,14 +187,14 @@ const MainNavbar = () => {
     },
   ];
 
-  const navigationLinks = [
+  const navigationLinks: NavigationLink[] = [
     { href: "#home", text: "Home", sectionId: "home" },
     { href: "#about", text: "About", sectionId: "about" },
     { href: "#domains", text: "Domains", sectionId: "domains" },
   ];
 
   // Helper to check if the current link should be active (including "Home" at the start)
-  const isActive = (sectionId) => {
+  const isActive = (sectionId: string): boolean => {
     // Check if the actual section ID matches the active one
     const isCurrentSection = activeSection === sectionId; 
     // Check if we are at the very top and the link is 'home' (using #home as a safe ID)
@@ -188,7 +205,7 @@ const MainNavbar = () => {
   // --- Styles derived from your images ---
 
   // Orange button style (from image_f0bea4.png)
-  const SIGN_IN_BUTTON_STYLE = {
+  const SIGN_IN_BUTTON_STYLE: StyleObject = {
     backgroundColor: 'rgba(248, 104, 0, 0.66)', // #F86800 at 66%
     boxShadow: `
       3px 0px 71.5px 26px rgba(248, 104, 0, 0.3), 
@@ -197,7 +214,7 @@ const MainNavbar = () => {
   };
 
   // Main Navbar Glass Style (from image_f0bbd9.png)
-  const NAVBAR_GLASS_STYLE = {
+  const NAVBAR_GLASS_STYLE: StyleObject = {
     // Background color: #000000 at 11% opacity
     backgroundColor: 'rgba(0, 0, 0, 0.11)', 
     // Overall Dark Shadow: #000000 at 10%, X=0, Y=0, Blur=50.9, Spread=19
@@ -206,14 +223,14 @@ const MainNavbar = () => {
 
   // --- New Font Styles ---
   const FONT_CLASS_NAMES = `${instrumentSans.className}`;
-  const NAV_LINK_STYLE = {
+  const NAV_LINK_STYLE: StyleObject = {
     fontSize: '18px',
     lineHeight: '100%',
     letterSpacing: '0.01em', // 1%
-    fontWeight: 400, // Regular
+    fontWeight: '400', // Regular - need to use string for TypeScript
   };
   // The Sign In button uses font-medium, which is 500 weight, so we'll use that for consistency
-  const BUTTON_FONT_STYLE = {
+  const BUTTON_FONT_STYLE: StyleObject = {
     fontSize: '18px',
     lineHeight: '100%',
     letterSpacing: '0.01em', // 1%
@@ -225,7 +242,7 @@ const MainNavbar = () => {
       {/* Main Navbar */}
       <nav 
         ref={navRef} 
-        // 3. Apply the font class name to the main nav container
+        // Apply the font class name to the main nav container
         className={`z-[100] fixed top-4 left-1/2 transform -translate-x-1/2 w-[95%] lg:w-2/3 max-w-4xl rounded-full px-4 sm:px-6 opacity-0 ${FONT_CLASS_NAMES}`}
       >
         {/* Container for the Glassmorphism and Shadow */}
@@ -262,7 +279,7 @@ const MainNavbar = () => {
                     <a
                       href={link.href}
                       onClick={(e) => handleNavClick(e, link.href)}
-                      // 4. Apply the new font styles
+                      // Apply the new font styles
                       style={NAV_LINK_STYLE}
                       className={`transition-colors font-normal text-gray-800 hover:text-orange-500 cursor-pointer`}
                     >
