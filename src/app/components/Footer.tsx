@@ -2,6 +2,7 @@
 import React from 'react'
 import { Instrument_Sans, Khand } from 'next/font/google'
 import Link from 'next/link'
+import Image from 'next/image'
 import { Instagram, Twitter, Facebook } from 'lucide-react'
 
 const instrumentSans = Instrument_Sans({
@@ -21,7 +22,15 @@ const Footer = () => {
     <footer className={`w-full py-8 px-8 md:px-16 bg-gradient-to-r from-[#FFF2EC] to-[#FFEEFC] ${instrumentSans.className}`}>
       <div className="container mx-auto flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
         <div className="flex flex-col">
-          <h4 className={`text-2xl font-bold text-[#1E1E1E] mb-4 ${khandFont.className}`}>VinnovateIT</h4>
+          <div className="mb-4">
+            <Image 
+              src="/blackLogoViit.svg" 
+              alt="VinnovateIT Logo" 
+              width={120}
+              height={40}
+              className="h-10 w-auto"
+            />
+          </div>
           <div className="flex gap-6">
             <Link href="https://www.instagram.com/vinnovateit/" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
               <Instagram size={28} strokeWidth={1.5} className="text-[#1E1E1E] hover:text-[#E1306C] transition-colors" />
