@@ -33,21 +33,21 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
           display: flex;
           justify-content: space-between;
           align-items: flex-start;
-          gap: 1rem;
-          margin-bottom: clamp(1rem, 3vw, 2rem);
+          gap: 0.9rem;
+          margin-bottom: clamp(0.9rem, 2.7vw, 1.8rem);
           flex-shrink: 0;
           flex-wrap: wrap;
           animation: fadeIn 1s ease-out 0.2s both;
         }
         .greeting {
-          font-size: clamp(2rem, 5vw, 3.5rem);
-          margin: 0 0 0.2rem 0;
+          font-size: clamp(1.8rem, 4.5vw, 3.15rem);
+          margin: 0 0 0.18rem 0;
           font-weight: 600;
           color: #000;
         }
         .email {
           color: #9e9e9e;
-          font-size: clamp(0.9rem, 2vw, 1.4rem);
+          font-size: clamp(0.81rem, 1.8vw, 1.26rem);
           margin: 0;
           transition: color 0.3s ease;
         }
@@ -57,10 +57,10 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
         .user-info {
           color: #727272;
           text-align: right;
-          font-size: clamp(0.9rem, 2vw, 1.4rem);
+          font-size: clamp(0.81rem, 1.8vw, 1.26rem);
           display: flex;
           flex-direction: column;
-          gap: 0.3rem;
+          gap: 0.27rem;
         }
         @keyframes fadeIn {
           from {

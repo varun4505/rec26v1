@@ -1,48 +1,52 @@
-export interface DomainItem {
-  label: string;
-  status: string;
+export interface SubdomainItem {
+  subdomain: string;
+  domain: string;
+  round: string;
+  status: "Form Submitted" | "Rejected" | "Shortlisted" | "Interview Scheduled";
+  rejectionMessage?: string;
+  rejectionDetails?: string;
+  showNextButton?: boolean;
+  interviewDate?: string;
+  interviewTime?: string;
+  interviewLocation?: string;
 }
 
-export interface Domain {
-  title: string;
-  items: DomainItem[];
-}
-
-export const domains: Domain[] = [
+export const applications: SubdomainItem[] = [
+  // Empty array for testing empty state
+  // Or uncomment below for data:
+  /*
   {
-    title: "Tech",
-    items: [
-      { label: "Web Development", status: "Form Submitted" },
-      { label: "App Development", status: "Form in progress" },
-      { label: "Machine Learning", status: "Form Submitted" },
-      { label: "Artificial Intelligence", status: "Form in progress" },
-      { label: "Cybersecurity", status: "Form Submitted" },
-      { label: "Cloud Computing", status: "Form in progress" },
-      { label: "Data Science", status: "Form Submitted" },
-    ],
+    subdomain: "Web Development",
+    domain: "Tech Domain",
+    round: "Round 1",
+    status: "Shortlisted",
+    showNextButton: true,
   },
   {
-    title: "Design",
-    items: [
-      { label: "UI/UX Design", status: "Form in progress" },
-      { label: "Graphic Design", status: "Form Submitted" },
-      { label: "Product Design", status: "Form in progress" },
-      { label: "Motion Graphics", status: "Form Submitted" },
-      { label: "Illustration", status: "Form in progress" },
-      { label: "3D Modeling", status: "Form Submitted" },
-      { label: "Brand Identity", status: "Form in progress" },
-      { label: "Typography", status: "Form Submitted" },
-    ],
+    subdomain: "Video Editing",
+    domain: "Design Domain",
+    round: "Round 1",
+    status: "Rejected",
+    rejectionMessage: "Hey, thanks for giving the recruitment your best shot.",
+    rejectionDetails: "You didn't make it to the next round this time, but your effort didn't go unnoticed.\nKeep learning, keep building, and we'd love to see you apply again soon.",
+    showNextButton: false,
   },
   {
-    title: "Management",
-    items: [
-      { label: "Project Management", status: "Form Submitted" },
-      { label: "Event Management", status: "Form in progress" },
-      { label: "Marketing", status: "Form Submitted" },
-      { label: "Public Relations", status: "Form in progress" },
-      { label: "Operations", status: "Form Submitted" },
-      { label: "Finance", status: "Form in progress" },
-    ],
+    subdomain: "Marketing and PR",
+    domain: "Management Domain",
+    round: "Round 1",
+    status: "Form Submitted",
+    showNextButton: true,
   },
+  {
+    subdomain: "UI/UX Design",
+    domain: "Design Domain",
+    round: "Round 2",
+    status: "Interview Scheduled",
+    interviewDate: "25 October 2025",
+    interviewTime: "3:00 PM",
+    interviewLocation: "Room 301, Academic Block",
+    showNextButton: true,
+  },
+  */
 ];

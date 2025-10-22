@@ -12,50 +12,54 @@ export const DecorativeCircles: React.FC = () => {
       <style jsx>{`
         .circle-top-right {
           position: absolute;
-          top: -200px;
-          right: -200px;
-          width: 400px;
-          height: 400px;
-          background: rgba(14, 50, 74, 0.30);
-          box-shadow: 400px 400px 400px;
+          top: -150px;
+          right: -150px;
+          width: 500px;
+          height: 500px;
+          background: rgba(14, 50, 74, 0.25);
+          box-shadow: 0 0 200px 100px rgba(14, 50, 74, 0.2);
           border-radius: 9999px;
-          filter: blur(200px);
+          filter: blur(120px);
           pointer-events: none;
           z-index: 0;
+          opacity: 0.25;
           animation: pulse 6s ease-in-out infinite;
         }
         .circle-bottom-right {
           position: absolute;
-          bottom: -200px;
+          bottom: -150px;
           right: clamp(1rem, 3vw, 2rem);
-          width: 400px;
-          height: 400px;
-          background: rgba(246, 0, 21, 0.30);
-          box-shadow: 400px 400px 400px;
+          width: 500px;
+          height: 500px;
+          background: rgba(246, 0, 21, 0.25);
+          box-shadow: 0 0 200px 100px rgba(246, 0, 21, 0.2);
           border-radius: 9999px;
-          filter: blur(200px);
+          filter: blur(120px);
           pointer-events: none;
           z-index: 0;
+          opacity: 0.25;
           animation: pulse 7s ease-in-out infinite;
         }
         .circle-left-middle {
           position: absolute;
           top: 50%;
-          left: -200px;
+          left: -150px;
           transform: translateY(-50%);
-          width: 400px;
-          height: 400px;
-          background: rgba(248, 104, 0, 0.30);
-          box-shadow: 400px 400px 400px;
+          width: 500px;
+          height: 500px;
+          background: rgba(248, 104, 0, 0.25);
+          box-shadow: 0 0 200px 100px rgba(248, 104, 0, 0.2);
           border-radius: 9999px;
-          filter: blur(200px);
+          filter: blur(120px);
           pointer-events: none;
           z-index: 0;
+          opacity: 0.25;
           animation: pulse 8s ease-in-out infinite;
         }
         @keyframes pulse {
-          0%, 100% {
-            opacity: 0.3;
+          0%,
+          100% {
+            opacity: 0.25;
           }
           50% {
             opacity: 0.5;
