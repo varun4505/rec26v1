@@ -373,8 +373,8 @@ export const ApplicationCard: React.FC<ApplicationCardProps> = ({
             inset 1px 1px 3px rgba(255, 255, 255, 0.5),
             inset -1px -1px 3px rgba(0, 0, 0, 0.05);
           transition: all 0.3s ease;
-          font-weight: 700;
-          letter-spacing: 1.5px;
+          font-weight: 500;
+          letter-spacing: 2px;
           width: 100%;
           overflow: hidden;
           display: flex;
