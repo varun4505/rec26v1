@@ -14,7 +14,6 @@ export interface SubdomainItem {
 export const applications: SubdomainItem[] = [
   // Empty array for testing empty state
   // Or uncomment below for data:
-  /*
   {
     subdomain: "Web Development",
     domain: "Tech Domain",
@@ -48,5 +47,4 @@ export const applications: SubdomainItem[] = [
     interviewLocation: "Room 301, Academic Block",
     showNextButton: true,
   },
-  */
 ];

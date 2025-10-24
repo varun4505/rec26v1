@@ -1,3 +1,5 @@
+// src/app/profile/page.tsx
+
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
@@ -115,6 +117,7 @@ export default function ProfilePage() {
           </div>
         </div>
       </div>
+
       <style jsx>{`
         .page-wrapper {
           background: #000;
@@ -124,6 +127,7 @@ export default function ProfilePage() {
           box-sizing: border-box;
           display: flex;
           flex-direction: column;
+          overflow: hidden;
         }
 
         @media (max-width: 900px) {
@@ -143,11 +147,7 @@ export default function ProfilePage() {
           animation: fadeIn 0.6s ease-out;
         }
         .logo {
-          width: clamp(
-            81px,
-            16.2vw,
-            113px
-          ); /* Reduced by 10% from 90px-126px */
+          width: clamp(81px, 16.2vw, 113px);
           height: auto;
           transition: transform 0.3s ease, opacity 0.3s ease;
           -webkit-user-drag: none;
@@ -164,18 +164,14 @@ export default function ProfilePage() {
           animation: slideInRight 0.6s ease-out;
         }
         .avatar-monogram {
-          width: clamp(
-            28px,
-            4.8vw,
-            34px
-          ); /* Reduced by additional 20% total from original */
+          width: clamp(28px, 4.8vw, 34px);
           height: clamp(28px, 4.8vw, 34px);
           border-radius: 50%;
           background: linear-gradient(135deg, #ff8c42 0%, #f86800 100%);
           display: flex;
           align-items: center;
           justify-content: center;
-          font-size: clamp(0.8rem, 2.2vw, 1rem); /* Reduced by 20% total */
+          font-size: clamp(0.8rem, 2.2vw, 1rem);
           font-weight: 600;
           color: #fff;
           box-shadow: 0 4px 12px rgba(248, 104, 0, 0.4);
@@ -187,22 +183,14 @@ export default function ProfilePage() {
           box-shadow: 0 6px 16px rgba(248, 104, 0, 0.5);
         }
         .timestamp {
-          font-size: clamp(
-            0.81rem,
-            1.62vw,
-            1.22rem
-          ); /* Reduced by 10% from 0.9rem-1.35rem */
+          font-size: clamp(0.81rem, 1.62vw, 1.22rem);
           color: #fff;
           font-weight: 500;
         }
         .main-card {
           background: #fff;
           border-radius: clamp(18px, 3.6vw, 36px);
-          padding: clamp(
-            1.22rem,
-            3.24vw,
-            2.43rem
-          ); /* Reduced by 10% from 1.35rem-2.7rem */
+          padding: clamp(1.22rem, 3.24vw, 2.43rem);
           box-sizing: border-box;
           display: flex;
           flex-direction: column;
@@ -220,6 +208,7 @@ export default function ProfilePage() {
           flex-direction: column;
           flex: 1;
           min-height: 0;
+          overflow: hidden;
         }
         .applied-heading {
           font-size: clamp(1.08rem, 2.7vw, 1.62rem);
@@ -235,19 +224,22 @@ export default function ProfilePage() {
           min-height: 0;
           display: flex;
           flex-direction: column;
+          overflow: hidden;
         }
         .applications-grid {
           display: flex;
           gap: clamp(1.08rem, 1.8vw, 1.8rem);
           flex: 1;
+          min-height: 0;
+          max-height: 100%;
           overflow-x: auto;
-          overflow-y: visible;
+          overflow-y: hidden;
           scrollbar-width: none;
           -ms-overflow-style: none;
           scroll-behavior: smooth;
           -webkit-overflow-scrolling: touch;
           align-items: stretch;
-          padding: 0 1.35rem;
+          padding: 0 1.35rem 0.5rem 1.35rem;
           margin: 0 -1.35rem;
         }
         .applications-grid.with-fade {

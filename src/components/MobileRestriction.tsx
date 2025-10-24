@@ -223,13 +223,12 @@ export const MobileRestriction: React.FC = () => {
           .icon-container :global(.phone-icon) {
             font-size: 60px;
             color: #f86800;
-            opacity: 0.6;
             animation: shake 2s ease-in-out infinite;
           }
 
           .icon-container :global(.arrow-icon) {
             font-size: 40px;
-            color: #ff8c42;
+            color: #f86800;
           }
 
           .icon-container :global(.desktop-icon) {
