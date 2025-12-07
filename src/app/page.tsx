@@ -93,7 +93,7 @@ export default function HomePage() {
           <span className="hero-subtitle">recruiting now</span>
         </h1>
 
-        <Link href="/profile" className="cta-button">
+        <Link href="/login" className="cta-button">
           <span>Lets go</span>
           <IoArrowForward className="button-icon" />
         </Link>

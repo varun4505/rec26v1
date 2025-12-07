@@ -309,8 +309,7 @@ const MainNavbar: React.FC = () => {
             <div className="flex items-center z-20">
               {/* Sign In Button - Desktop (Right) */}
               <Link
-                href="#signup"
-                onClick={(e) => handleNavClick(e, "#signup")}
+                href="/login"
                 className="hidden lg:block"
               >
                 <motion.button
@@ -463,8 +462,7 @@ const MainNavbar: React.FC = () => {
                       }}
                     >
                       <Link
-                        href="#signup"
-                        onClick={(e) => handleNavClick(e, "#signup")}
+                        href="/login"
                       >
                         <motion.button
                           whileHover={{ scale: 1.05 }}

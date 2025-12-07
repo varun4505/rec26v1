@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import { Khand } from "next/font/google";
 import "./globals.css";
-import MainNavbar from './components/Navbar';
 import Footer from './components/Footer';
 
 const arrayFont = localFont({
@@ -39,7 +38,6 @@ export default function RootLayout({
       <body
         className={`${arrayFont.variable} ${khandFont.variable} antialiased font-khand flex flex-col min-h-screen`}
       >
-        <MainNavbar />
         <div className="flex-grow">
           {children}
         </div>
