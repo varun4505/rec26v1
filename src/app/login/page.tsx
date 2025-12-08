@@ -2,7 +2,8 @@
 
 import React, { useState, useEffect } from 'react'; 
 import Image from 'next/image';
-import { signIn } from 'next-auth/react';
+import { signIn, useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 import styles from './Login.module.css';
 
 const CLUB_LOGO_PATH = '/whiteLogoViit.svg';
@@ -10,6 +11,15 @@ const GOOGLE_LOGO_PATH = '/google-logo.svg';
 
 export default function LoginPage() {
   const [currentTime, setCurrentTime] = useState('');
+  const { data: session, status } = useSession();
+  const router = useRouter();
+
+  useEffect(() => {
+    // Redirect to dashboard if already logged in
+    if (status === 'authenticated') {
+      router.push('/dashboard');
+    }
+  }, [status, router]);
 
   useEffect(() => {
     const updateTime = () => {
@@ -28,6 +38,22 @@ export default function LoginPage() {
   const handleGoogleLogin = () => {
     signIn('google', { callbackUrl: '/dashboard' });
   };
+
+  // Show loading state while checking authentication
+  if (status === 'loading') {
+    return (
+      <div className={styles.pageContainer}>
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+          <p>Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Don't render login form if already authenticated
+  if (status === 'authenticated') {
+    return null;
+  }
 
   return (
     <div className={styles.pageContainer}>
