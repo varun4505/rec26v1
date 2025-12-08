@@ -30,9 +30,9 @@ const projects = [
 	},
 ];
 
-export default function Landing_projects() {
+export default function LandingProjects() {
 	return (
-		<section className="w-full border-2 border-black bg-[#FFFFFF]">
+		<section className="w-full bg-[#FFFFFF]">
 			<h2 className="w-full text-4xl text-black font-bold text-center py-12 font-array">
 				PROJECTS
 			</h2>
@@ -40,7 +40,7 @@ export default function Landing_projects() {
 			<div className="w-full">
 				{projects.map((project) => (
 					<>
-                        {/* projects */}
+						{/* projects */}
 						<ProjectShowcase
 							key={project.id}
 							imageSource={project.imageSource}
@@ -49,7 +49,7 @@ export default function Landing_projects() {
 							projectNumber={project.projectNumber}
 							link={project.link}
 						/>
-                        {/* spacing between the projects */}
+						{/* spacing between the projects */}
 						<div className="w-full h-[30vh]"></div>
 					</>
 				))}
