@@ -1,20 +1,17 @@
 "use client";
 
-// 1. Import useState and useEffect
 import React, { useState, useEffect } from 'react'; 
 import Image from 'next/image';
+import { signIn } from 'next-auth/react';
 import styles from './Login.module.css';
 
 const CLUB_LOGO_PATH = '/whiteLogoViit.svg';
 const GOOGLE_LOGO_PATH = '/google-logo.svg';
 
 export default function LoginPage() {
-  // 2. Add state for the time
   const [currentTime, setCurrentTime] = useState('');
 
-  // 3. Add effect to update the time
   useEffect(() => {
-    // Function to format time as HH:MM
     const updateTime = () => {
       const now = new Date();
       const hours = String(now.getHours()).padStart(2, '0');
@@ -22,15 +19,14 @@ export default function LoginPage() {
       setCurrentTime(`${hours}:${minutes}`);
     };
 
-    updateTime(); // Set time immediately
-    const intervalId = setInterval(updateTime, 1000); // Update every second
+    updateTime();
+    const intervalId = setInterval(updateTime, 1000);
 
-    // Cleanup interval on component unmount
     return () => clearInterval(intervalId);
-  }, []); // Empty dependency array means this runs once on mount
+  }, []);
 
   const handleGoogleLogin = () => {
-    console.log('Attempting to log in with Google...');
+    signIn('google', { callbackUrl: '/dashboard' });
   };
 
   return (

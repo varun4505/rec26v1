@@ -1,12 +1,16 @@
 // src/app/dashboard/components/UserGreeting.tsx
+'use client';
+
 import React from 'react';
+import { useSession } from 'next-auth/react';
 import styles from '../Dashboard.module.css';
 
-// Placeholder data - replace with actual user data later
-const userName = "Aditya"; 
-const userEmail = "aditya.madan2024a@vitstudent.ac.in";
-
 export default function UserGreeting() {
+  const { data: session } = useSession();
+  
+  const userName = session?.user?.name || "User";
+  const userEmail = session?.user?.email || "";
+
   return (
     <div className={styles.userGreetingContainer}>
       <h1 className={styles.greetingTitle}>Hey {userName}</h1>

@@ -1,24 +1,25 @@
 // src/app/dashboard/components/UserDropdown.tsx
+'use client';
+
 import React from 'react';
 import Link from 'next/link';
+import { signOut } from 'next-auth/react';
 import styles from '../Dashboard.module.css';
 
 export default function UserDropdown() {
   
   const handleLogout = () => {
-    // Add your logout logic here (e.g., call NextAuth signOut)
-    
-    console.log("User logging out...");
+    signOut({ callbackUrl: '/' });
   };
 
   return (
     <div className={styles.userDropdownMenu}>
+      <Link href="/profile" passHref>
+        <span className={styles.dropdownLink}>View Profile</span>
+      </Link>
       <button onClick={handleLogout} className={styles.dropdownLink}>
         Logout
       </button>
-      <Link href="/dashboard/profile" passHref>
-        <span className={styles.dropdownLink}>Update Details</span>
-      </Link>
     </div>
   );
 }

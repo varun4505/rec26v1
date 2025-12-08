@@ -5,6 +5,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Khand } from "next/font/google";
 import Image from "next/image";
+import { useSession } from "next-auth/react";
 import { ProfileHeader } from "@/components/profile/ProfileHeader";
 import { ApplicationCard } from "@/components/profile/DomainCard";
 import { DecorativeCircles } from "@/components/profile/DecorativeCircles";
@@ -20,10 +21,13 @@ const khand = Khand({
 });
 
 export default function ProfilePage() {
+  const { data: session } = useSession();
   const [currentTime, setCurrentTime] = useState<string>("");
   const [showFade, setShowFade] = useState(false);
   const gridRef = useRef<HTMLDivElement>(null);
-  const userName = "Aditya";
+  const userName = session?.user?.name || "User";
+  const userEmail = session?.user?.email || "";
+  const userImage = session?.user?.image;
   const userInitial = userName.charAt(0).toUpperCase();
   const hasApplications = applications.length > 0;
 
@@ -78,7 +82,19 @@ export default function ProfilePage() {
           />
 
           <div className="right-section">
-            <div className="avatar-monogram">{userInitial}</div>
+            <div className="avatar-monogram" style={{ overflow: 'hidden' }}>
+              {userImage ? (
+                <Image
+                  src={userImage}
+                  alt={userName}
+                  width={34}
+                  height={34}
+                  style={{ borderRadius: '50%', objectFit: 'cover' }}
+                />
+              ) : (
+                userInitial
+              )}
+            </div>
             <span className="timestamp">{currentTime}</span>
           </div>
         </div>
@@ -89,7 +105,7 @@ export default function ProfilePage() {
           <div className="card-content">
             <ProfileHeader
               name={userName}
-              email="aditya.madan2024a@vitstudent.ac.in"
+              email={userEmail}
               registrationNumber="24BCE2370"
               phoneNumber="+91 9810270953"
             />

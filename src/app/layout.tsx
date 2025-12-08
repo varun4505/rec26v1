@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import { Khand } from "next/font/google";
 import "./globals.css";
 import Footer from './components/Footer';
+import { SessionProvider } from './components/SessionProvider';
 
 const arrayFont = localFont({
   src: [
@@ -38,10 +39,12 @@ export default function RootLayout({
       <body
         className={`${arrayFont.variable} ${khandFont.variable} antialiased font-khand flex flex-col min-h-screen`}
       >
-        <div className="flex-grow">
-          {children}
-        </div>
-        <Footer />
+        <SessionProvider>
+          <div className="flex-grow">
+            {children}
+          </div>
+          <Footer />
+        </SessionProvider>
       </body>
     </html>
   );

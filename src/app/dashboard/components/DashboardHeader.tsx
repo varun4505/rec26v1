@@ -1,22 +1,25 @@
 // src/app/dashboard/components/DashboardHeader.tsx
-"use client"; // Need this for useState and useEffect
+"use client";
 
 import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
-import Link from 'next/link'; // Import Link for navigation
+import Link from 'next/link';
+import { useSession } from 'next-auth/react';
 import UserDropdown from './UserDropdown';
 
 import styles from '../Dashboard.module.css';
 
-
-const CLUB_LOGO_PATH = '/whiteLogoViit.svg'; // Assuming you have this logo
+const CLUB_LOGO_PATH = '/whiteLogoViit.svg';
 
 export default function DashboardHeader() {
+  const { data: session } = useSession();
   const [currentTime, setCurrentTime] = useState('');
-  const [isMenuOpen, setIsMenuOpen] = useState(false); // State for the menu
-  const menuRef = useRef<HTMLDivElement>(null); // Ref for "click outside"
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
 
-  const userInitial = 'A'; // Placeholder - Get this from user data later
+  const userName = session?.user?.name || 'User';
+  const userImage = session?.user?.image;
+  const userInitial = userName.charAt(0).toUpperCase();
 
   useEffect(() => {
     // Function to format time as HH:MM
@@ -63,9 +66,20 @@ export default function DashboardHeader() {
         <div className={styles.userMenuWrapper} ref={menuRef}>
           <div 
             className={styles.userInitialCircle}
-            onClick={() => setIsMenuOpen(!isMenuOpen)} // Toggle menu on click
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            style={{ overflow: 'hidden' }}
           >
-            {userInitial}
+            {userImage ? (
+              <Image
+                src={userImage}
+                alt={userName}
+                width={34}
+                height={34}
+                style={{ borderRadius: '50%', objectFit: 'cover' }}
+              />
+            ) : (
+              userInitial
+            )}
           </div>
           
           {/* --- Conditionally render the dropdown --- */}
