@@ -276,7 +276,7 @@ export const Hero: React.FC = () => {
           display: inline-flex;
           transform: rotate(4.839deg);
           padding: 0.70675rem 0 0.7465rem 0;
-          justify-content: flex-end;
+          justify-content: center;
           align-items: center;
           border-top: 1px solid rgba(255, 255, 255, 0.15);
           border-bottom: 1px solid rgba(255, 255, 255, 0.15);

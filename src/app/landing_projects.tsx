@@ -1,3 +1,4 @@
+import React from "react";
 import ProjectShowcase from "./components/project_showcase";
 
 const projects = [
@@ -39,10 +40,9 @@ export default function LandingProjects() {
 
 			<div className="w-full">
 				{projects.map((project) => (
-					<>
+					<React.Fragment key={project.id}>
 						{/* projects */}
 						<ProjectShowcase
-							key={project.id}
 							imageSource={project.imageSource}
 							heading={project.heading}
 							about={project.about}
@@ -51,7 +51,7 @@ export default function LandingProjects() {
 						/>
 						{/* spacing between the projects */}
 						<div className="w-full h-[30vh]"></div>
-					</>
+					</React.Fragment>
 				))}
 			</div>
 		</section>
