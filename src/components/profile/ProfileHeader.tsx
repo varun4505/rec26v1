@@ -6,7 +6,7 @@ interface ProfileHeaderProps {
   name: string;
   email: string;
   registrationNumber: string;
-  phoneNumber: string;
+  phoneNumber?: string;
 }
 
 export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
@@ -22,10 +22,11 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
           <h1 className="greeting">Hey {name}!</h1>
           <p className="email">{email}</p>
         </div>
-        <div className="user-info">
-          <div>{registrationNumber}</div>
-          <div>{phoneNumber}</div>
-        </div>
+        {registrationNumber && (
+          <div className="user-info">
+            <div>{registrationNumber}</div>
+          </div>
+        )}
       </div>
 
       <style jsx>{`

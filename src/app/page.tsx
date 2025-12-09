@@ -6,6 +6,7 @@ import { IoArrowForward } from "react-icons/io5";
 import MainNavbar from "./components/Navbar";
 // Replace with next/image when assets are available
 import Image from "next/image";
+import LandingProjects from "./landing_projects";
 
 export default function HomePage() {
   const [isLoaded, setIsLoaded] = useState(false);
@@ -194,6 +195,9 @@ export default function HomePage() {
           ))}
         </div>
 
+      </section>
+      <section>
+        <LandingProjects />
       </section>
 
       <style jsx>{`

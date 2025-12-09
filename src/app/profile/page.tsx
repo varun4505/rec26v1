@@ -31,6 +31,15 @@ export default function ProfilePage() {
   const userInitial = userName.charAt(0).toUpperCase();
   const hasApplications = applications.length > 0;
 
+  // Extract registration number from email (format: registration.name@vitstudent.ac.in)
+  const extractRegistrationNumber = (email: string): string => {
+    if (!email) return "";
+    const match = email.match(/^([0-9]{2}[A-Z]{3}[0-9]{4})/);
+    return match ? match[1] : "";
+  };
+
+  const registrationNumber = extractRegistrationNumber(userEmail);
+
   useEffect(() => {
     const updateTime = () => {
       const now = new Date();
@@ -82,6 +91,9 @@ export default function ProfilePage() {
           />
 
           <div className="right-section">
+            <a href="/dashboard" className="dashboard-button">
+              Back to Dashboard
+            </a>
             <div className="avatar-monogram" style={{ overflow: 'hidden' }}>
               {userImage ? (
                 <Image
@@ -106,8 +118,7 @@ export default function ProfilePage() {
             <ProfileHeader
               name={userName}
               email={userEmail}
-              registrationNumber="24BCE2370"
-              phoneNumber="+91 9810270953"
+              registrationNumber={registrationNumber}
             />
 
             <h2 className="applied-heading">Your Applications</h2>
@@ -178,6 +189,24 @@ export default function ProfilePage() {
           align-items: center;
           gap: clamp(0.72rem, 1.8vw, 1.08rem);
           animation: slideInRight 0.6s ease-out;
+        }
+        .dashboard-button {
+          background-color: #FFFFFF;
+          color: #000000;
+          border: none;
+          padding: 8px 20px;
+          border-radius: 13px;
+          font-family: var(--font-khand);
+          font-size: 15px;
+          font-weight: 400;
+          cursor: pointer;
+          transition: background-color 0.2s ease, color 0.2s ease;
+          text-decoration: none;
+          white-space: nowrap;
+          display: inline-block;
+        }
+        .dashboard-button:hover {
+          background-color: #f0f0f0;
         }
         .avatar-monogram {
           width: clamp(28px, 4.8vw, 34px);
