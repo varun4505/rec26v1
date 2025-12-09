@@ -12,7 +12,6 @@ import { DecorativeCircles } from "@/components/profile/DecorativeCircles";
 import { MobileRestriction } from "@/components/MobileRestriction";
 import { EmptyState } from "@/components/profile/EmptyState";
 import { applications } from "@/data/domains";
-import "@/styles/globals.css";
 
 const khand = Khand({
   subsets: ["latin"],

@@ -14,7 +14,7 @@ export const EmptyState: React.FC = () => {
         </div>
         <h3>No Applications Yet</h3>
         <p>Choose your subdomains and start your journey with us!</p>
-        <button className="add-btn-empty">
+        <button className="glass-button" style={{ padding: '0.675rem 1.8rem', fontSize: '0.855rem', display: 'flex', alignItems: 'center', gap: '0.45rem', flexShrink: 0, fontWeight: 600 }}>
           <svg
             width="16"
             height="16"
@@ -82,45 +82,6 @@ export const EmptyState: React.FC = () => {
           margin: 0 0 1.62rem 0;
           max-width: 315px;
           line-height: 1.5;
-        }
-
-        .add-btn-empty {
-          background: linear-gradient(
-            135deg,
-            rgba(255, 255, 255, 0.7) 0%,
-            rgba(255, 255, 255, 0.5) 100%
-          );
-          backdrop-filter: blur(15px);
-          -webkit-backdrop-filter: blur(15px);
-          border: 1px solid rgba(255, 255, 255, 0.3);
-          color: #000;
-          border-radius: 59px;
-          padding: 0.675rem 1.8rem;
-          font-size: 0.855rem;
-          cursor: pointer;
-          box-shadow: 2px 0px 8px 1px rgba(248, 104, 0, 0.15),
-            inset 1px 1px 3px rgba(255, 255, 255, 0.5),
-            inset -1px -1px 3px rgba(0, 0, 0, 0.05);
-          transition: all 0.3s ease;
-          font-weight: 600;
-          display: flex;
-          align-items: center;
-          gap: 0.45rem;
-          flex-shrink: 0;
-          text-transform: uppercase;
-          letter-spacing: 1.35px;
-        }
-
-        .add-btn-empty:hover {
-          background: linear-gradient(
-            135deg,
-            rgba(255, 255, 255, 0.85) 0%,
-            rgba(255, 255, 255, 0.65) 100%
-          );
-          transform: translateY(-2px);
-          box-shadow: 2px 0px 10px 2px rgba(248, 104, 0, 0.2),
-            inset 1px 1px 5px rgba(255, 255, 255, 0.6),
-            inset -1px -1px 5px rgba(0, 0, 0, 0.08);
         }
 
         @keyframes float {
