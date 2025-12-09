@@ -2,7 +2,6 @@
 
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import Link from "next/link";
 import { IoArrowForward } from "react-icons/io5";
 
 export const Hero: React.FC = () => {
