@@ -33,12 +33,13 @@ const projects = [
 
 export default function LandingProjects() {
 	return (
-		<section className="w-full bg-[#FFFFFF]">
-			<h2 className="w-full text-4xl text-black font-bold text-center py-12 font-array">
-				PROJECTS
-			</h2>
+		<>
+			<section className="w-full bg-[#FFFFFF]">
+				<h2 className="about-title font-array">
+					PROJECTS
+				</h2>
 
-			<div className="w-full">
+				<div className="w-full">
 				{projects.map((project) => (
 					<React.Fragment key={project.id}>
 						{/* projects */}
@@ -55,5 +56,20 @@ export default function LandingProjects() {
 				))}
 			</div>
 		</section>
+
+		<style jsx>{`
+			.font-array {
+				font-family: var(--font-array), monospace;
+			}
+
+			.about-title {
+				font-size: clamp(2.5rem, 5vw, 4rem);
+				margin-bottom: 2rem;
+				color: #000;
+				text-align: center;
+				padding: 3rem 0;
+			}
+		`}</style>
+		</>
 	);
 }

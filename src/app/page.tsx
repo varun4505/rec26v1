@@ -1,10 +1,11 @@
 "use client";
 
 import React from "react";
-import MainNavbar from "./components/Navbar";
-import { Hero } from "./components/Hero";
-import { BackgroundElements } from "./components/BackgroundElements";
-import { AboutSection } from "./components/AboutSection";
+import MainNavbar from "./landing/Navbar";
+import { Hero } from "./landing/Hero";
+import { BackgroundElements } from "./landing/BackgroundElements";
+import { AboutSection } from "./landing/AboutSection";
+import DomainsSection from "./landing/DomainsSection";
 import LandingProjects from "./landing_projects";
 
 export default function HomePage() {
@@ -21,6 +22,9 @@ export default function HomePage() {
       
       {/* About Section */}
       <AboutSection />
+
+      {/* Domains Section */}
+      <DomainsSection />
 
       <section>
         <LandingProjects />
