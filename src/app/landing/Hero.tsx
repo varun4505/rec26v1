@@ -60,7 +60,7 @@ export const Hero: React.FC = () => {
         </h1>
 
         <a href="/profile" className="cta-button">
-          LET'S GO
+          LET&apos;S GO
           <IoArrowForward className="button-icon" />
         </a>
       </section>
