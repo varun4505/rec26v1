@@ -7,8 +7,7 @@ import FormsShell from "../../../../components/FormsShell";
 import {
 	SubjectiveQuestion,
 } from "../../../../components/question_types";
-import { getQuizConfig } from "@/data/quizConfig";
-import { validateDomainSubmission, type DomainType, type RoundType } from "@/data/domainConfig";
+import { validateDomainSubmission, getRoundInfo, type DomainType, type RoundType } from "@/data/domainConfig";
 
 // Helper function to format subdomain names
 function formatSubdomainName(subdomain: string | null): string {
@@ -285,6 +284,16 @@ export default function QuizPage() {
 	const { domain, subdomain, round } = params;
 	const subdomainStr = (subdomain as string) === 'none' ? null : (subdomain as string);
 
+	// All useState hooks must be at the top, before any conditional returns
+	const [answers, setAnswers] = useState<Record<string, string>>({});
+	const [isSubmitting, setIsSubmitting] = useState(false);
+	const [error, setError] = useState<string | null>(null);
+	const [questions, setQuestions] = useState<any[]>([]);
+	const [questionsLoading, setQuestionsLoading] = useState(true);
+	const [tasks, setTasks] = useState<any[]>([]);
+	const [tasksLoading, setTasksLoading] = useState(true);
+	const [taskSubmissionUrl, setTaskSubmissionUrl] = useState<string>('');
+
 	// Check round access on mount
 	useEffect(() => {
 		if (sessionStatus === "loading") return;
@@ -297,12 +306,92 @@ export default function QuizPage() {
 		checkRoundAccess();
 	}, [session, sessionStatus, domain, subdomain, round]);
 
+	// Fetch questions or tasks from database
+	useEffect(() => {
+		const fetchContent = async () => {
+			try {
+				// Convert domain slug to full domain ID
+				const domainSlugMap: Record<string, string> = {
+					'tech': 'technical',
+					'management': 'management',
+					'design': 'design',
+				};
+				const fullDomainId = domainSlugMap[domain as string] || (domain as string);
+				
+				// Ensure round has "round" prefix
+				const roundParam = (round as string).startsWith('round') 
+					? (round as string) 
+					: `round${round}`;
+				
+				// Check if this round is a task round
+				const roundInfo = getRoundInfo(fullDomainId as DomainType, roundParam as RoundType);
+				const isTaskRound = roundInfo?.type === 'task';
+				
+				const queryParams = new URLSearchParams({
+					domain: fullDomainId,
+					subdomain: (subdomain as string) || 'none',
+					round: roundParam,
+				});
+
+				if (isTaskRound) {
+					// Fetch tasks
+					setTasksLoading(true);
+					setQuestionsLoading(false); // Not loading questions
+					const response = await fetch(`/api/tasks?${queryParams}`);
+					const result = await response.json();
+
+					if (result.success) {
+						setTasks(result.tasks);
+					} else {
+						setError(result.error || "Failed to load tasks");
+					}
+					setTasksLoading(false);
+				} else {
+					// Fetch questions
+					setQuestionsLoading(true);
+					setTasksLoading(false); // Not loading tasks
+					const response = await fetch(`/api/questions?${queryParams}`);
+					const result = await response.json();
+
+					if (result.success) {
+						setQuestions(result.questions);
+					} else {
+						setError(result.error || "Failed to load questions");
+					}
+					setQuestionsLoading(false);
+				}
+			} catch (err) {
+				console.error("Error fetching content:", err);
+				setError("Failed to load content");
+				setQuestionsLoading(false);
+				setTasksLoading(false);
+			}
+		};
+
+		if (accessCheck.canAccess && !accessCheck.loading) {
+			fetchContent();
+		}
+	}, [domain, subdomain, round, accessCheck.canAccess, accessCheck.loading]);
+
 	const checkRoundAccess = async () => {
 		try {
+			// Convert domain slug to full domain ID
+			const domainSlugMap: Record<string, string> = {
+				'tech': 'technical',
+				'management': 'management',
+				'design': 'design',
+			};
+			const fullDomainId = domainSlugMap[domain as string] || (domain as string);
+			
+			// Ensure round has "round" prefix, but don't double it
+			const roundParam = (round as string).startsWith('round') 
+				? (round as string) 
+				: `round${round}`;
+			
 			const queryParams = new URLSearchParams({
-				domain: domain as string,
+				domain: fullDomainId,
 				subdomain: (subdomain as string) || 'none',
-				round: `round${round}`,
+				round: roundParam,
 			});
 
 			const response = await fetch(`/api/round-access?${queryParams}`);
@@ -332,11 +421,8 @@ export default function QuizPage() {
 		}
 	};
 
-	// Get quiz configuration
-	const config = getQuizConfig(domain as string, subdomainStr, round as string);
-
-	// Show loading while checking session or access
-	if (sessionStatus === "loading" || accessCheck.loading) {
+	// Show loading while checking session or access or loading questions/tasks
+	if (sessionStatus === "loading" || accessCheck.loading || questionsLoading || tasksLoading) {
 		return (
 			<FormsShell>
 				<div className="flex items-center justify-center h-full">
@@ -378,31 +464,62 @@ export default function QuizPage() {
 		);
 	}
 
-	if (!config) {
-		return (
-			<FormsShell>
-				<div className="flex items-center justify-center h-full">
-					<div className="text-center">
-						<h1 className="text-2xl font-bold mb-4">Quiz Not Found</h1>
-						<p className="text-gray-600">
-							No quiz configured for {domain}/{subdomain}/round-{round}
-						</p>
-						<button
-							onClick={() => router.push("/dashboard")}
-							className="mt-4 rounded-full bg-gradient-to-r from-[#FFB37A] to-[#FF8F6B] px-6 py-2 text-white font-semibold"
-						>
-							Back to Dashboard
-						</button>
-					</div>
-				</div>
-			</FormsShell>
-		);
-	}
+	// Determine if this is a task round
+	const domainSlugMap: Record<string, string> = {
+		'tech': 'technical',
+		'management': 'management',
+		'design': 'design',
+	};
+	const fullDomainId = domainSlugMap[domain as string] || (domain as string);
+	const roundParam = (round as string).startsWith('round') 
+		? (round as string) 
+		: `round${round}`;
+	const roundInfo = getRoundInfo(fullDomainId as DomainType, roundParam as RoundType);
+	const isTaskRound = roundInfo?.type === 'task';
 
-	const [answers, setAnswers] = useState<Record<string, string>>({});
-	const [submissionUrl, setSubmissionUrl] = useState("");
-	const [isSubmitting, setIsSubmitting] = useState(false);
-	const [error, setError] = useState<string | null>(null);
+	// Show message if no content found
+	if (!questionsLoading && !tasksLoading) {
+		if (isTaskRound && tasks.length === 0) {
+			return (
+				<FormsShell>
+					<div className="flex items-center justify-center h-full">
+						<div className="text-center">
+							<h1 className="text-2xl font-bold mb-4">No Tasks Available</h1>
+							<p className="text-gray-600">
+								No tasks have been added for this round yet.
+							</p>
+							<button
+								onClick={() => router.push("/dashboard")}
+								className="mt-4 rounded-full bg-gradient-to-r from-[#FFB37A] to-[#FF8F6B] px-6 py-2 text-white font-semibold"
+							>
+								Back to Dashboard
+							</button>
+						</div>
+					</div>
+				</FormsShell>
+			);
+		}
+		if (!isTaskRound && questions.length === 0) {
+			return (
+				<FormsShell>
+					<div className="flex items-center justify-center h-full">
+						<div className="text-center">
+							<h1 className="text-2xl font-bold mb-4">No Questions Available</h1>
+							<p className="text-gray-600">
+								No questions have been added for this round yet.
+							</p>
+							<button
+								onClick={() => router.push("/dashboard")}
+								className="mt-4 rounded-full bg-gradient-to-r from-[#FFB37A] to-[#FF8F6B] px-6 py-2 text-white font-semibold"
+							>
+								Back to Dashboard
+							</button>
+						</div>
+					</div>
+				</FormsShell>
+			);
+		}
+	}
 
 	const handleAnswerChange = (questionId: string, value: string) => {
 		setAnswers(prev => ({ ...prev, [questionId]: value }));
@@ -411,51 +528,98 @@ export default function QuizPage() {
 	const handleSubmit = async () => {
 		setError(null);
 		
-		// Validate that all questions are answered
-		if (config.type === 'questionnaire' && config.questions) {
-			const unanswered = config.questions.filter(q => !answers[q.id]);
-			if (unanswered.length > 0) {
-				setError(`Please answer all questions before submitting.`);
+		// Debug: Log session data
+		console.log('Session data:', session);
+		console.log('Email:', session?.user?.email);
+		console.log('Name:', session?.user?.name);
+		
+		// Validate based on round type
+		if (isTaskRound) {
+			// For task rounds, validate submission URL
+			if (!taskSubmissionUrl.trim()) {
+				setError('Please provide a submission URL for the task.');
 				return;
 			}
-		}
-
-		// Validate task submission
-		if (config.type === 'task' && !submissionUrl.trim()) {
-			setError('Please provide a submission URL for your task.');
-			return;
+			// Basic URL validation - add protocol if missing
+			let urlToValidate = taskSubmissionUrl.trim();
+			if (!urlToValidate.startsWith('http://') && !urlToValidate.startsWith('https://')) {
+				urlToValidate = 'https://' + urlToValidate;
+			}
+			try {
+				new URL(urlToValidate);
+				// Update the state with the corrected URL
+				setTaskSubmissionUrl(urlToValidate);
+			} catch {
+				setError('Please enter a valid URL (e.g., github.com/username/repo or https://github.com/username/repo)');
+				return;
+			}
+		} else {
+			// For question rounds, validate that all questions are answered
+			if (questions.length > 0) {
+				const unanswered = questions.filter(q => !answers[q.id]);
+				if (unanswered.length > 0) {
+					setError(`Please answer all questions before submitting.`);
+					return;
+				}
+			}
 		}
 
 		setIsSubmitting(true);
 
-		try {
+			try {
 			// Prepare submission data
-			const answersList = config.type === 'questionnaire' && config.questions
-				? config.questions.map(q => ({
-						id: q.id,
-						question: q.prompt,
-						answer: answers[q.id] || ''
-				  }))
-				: [];
+			const answersList = isTaskRound ? [] : questions.map(q => ({
+				id: q.id,
+				question: q.text,
+				answer: answers[q.id] || ''
+			}));
 
+			// Convert domain slug to full domain ID
+			const domainSlugMap: Record<string, string> = {
+				'tech': 'technical',
+				'management': 'management',
+				'design': 'design',
+			};
+			const fullDomainId = domainSlugMap[domain as string] || (domain as string);
+			
+			// Ensure round has "round" prefix, but don't double it
+			const roundParam = (round as string).startsWith('round') 
+				? (round as string) 
+				: `round${round}`;
+			
+			// Extract registration number from user's name (format: "Varun B 23MID0026")
+			const fullName = session?.user?.name || '';
+			const regNoMatch = fullName.match(/([0-9]{2}[A-Z]{3}[0-9]{4})/);
+			const registrationNumber = regNoMatch ? regNoMatch[1] : '';
+			
+			// Extract name by removing registration number from full name
+			const userName = fullName.replace(registrationNumber, '').trim();
+			
+			console.log('Extracted data:', {
+				fullName,
+				registrationNumber,
+				userName,
+			});
+			
 			const submissionData = {
 				basicInfo: {
-					name: session?.user?.name || '',
-					registrationNumber: session?.user?.email?.split('@')[0]?.toUpperCase() || '',
+					name: userName,
+					registrationNumber: registrationNumber,
 					mobileNumber: '0000000000',
 				},
 				domains: [{
-					domain: domain,
+					domain: fullDomainId,
 					subdomain: subdomainStr || undefined,
-					round: `round${round}`,
-					data: {
+					round: roundParam,
+					data: isTaskRound ? {
+						submissionUrl: taskSubmissionUrl
+					} : {
 						answers: answersList
-					},
-					submissionUrl: submissionUrl || undefined
+					}
 				}]
 			};
-
-			const response = await fetch('/api/submit', {
+			
+			console.log('Submission data:', JSON.stringify(submissionData, null, 2));			const response = await fetch('/api/submit', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
@@ -464,10 +628,12 @@ export default function QuizPage() {
 			});
 
 			const result = await response.json();
+			console.log('API Response:', result);
 
 			if (result.success) {
 				router.push('/dashboard');
 			} else {
+				console.error('Submission failed:', result.error);
 				setError(result.error || 'Submission failed. Please try again.');
 			}
 		} catch (err) {
@@ -501,69 +667,85 @@ export default function QuizPage() {
 						</div>
 					</header>
 
-					<div className="flex flex-col gap-6 rounded-[28px] bg-[#F7B58D]/40 p-6">
-						{/* Render questionnaire questions */}
-						{config.type === 'questionnaire' && config.questions && (
-							<>
-								{config.questions.map((question) => (
-									<SubjectiveQuestion
-										key={question.id}
-										id={question.id}
-										prompt={question.prompt}
-										placeholder={question.placeholder}
-										helperText={question.helperText}
-										value={answers[question.id] || ''}
-										onChange={(value) => handleAnswerChange(question.id, value)}
-									/>
-								))}
-							</>
-						)}
-
-						{/* Render task submissions */}
-						{config.type === 'task' && config.tasks && (
-							<>
-								<div className="space-y-6">
-									<h3 className="text-xl font-semibold">Choose a Task to Submit</h3>
-									{config.tasks.map((task) => (
-										<div key={task.id} className="bg-white/50 rounded-2xl p-6 space-y-4">
-											<h4 className="text-lg font-semibold">{task.title}</h4>
-											<p className="text-black/70">{task.description}</p>
-											<div className="space-y-2">
-												<p className="font-medium">Instructions:</p>
-												<ul className="list-disc list-inside space-y-1 text-black/70">
-													{task.instructions.map((instruction, idx) => (
-														<li key={idx}>{instruction}</li>
-													))}
-												</ul>
-											</div>
-											{task.helperText && (
-												<p className="text-sm text-black/60 italic">{task.helperText}</p>
-											)}
+				<div className="flex flex-col gap-6 rounded-[28px] bg-[#F7B58D]/40 p-6">
+					{/* Render tasks for task rounds */}
+					{isTaskRound && tasks.length > 0 && (
+						<>
+							{tasks.map((task: any) => (
+								<div key={task.id} className="flex flex-col gap-4 p-6 bg-white rounded-2xl shadow-md">
+									<div>
+										<h3 className="text-2xl font-bold text-gray-900 mb-2">{task.title}</h3>
+										<p className="text-gray-700 whitespace-pre-wrap">{task.description}</p>
+									</div>
+									{task.link && (
+										<div className="flex items-center gap-2">
+											<span className="font-semibold text-gray-700">Task Link:</span>
+											<a 
+												href={task.link} 
+												target="_blank" 
+												rel="noopener noreferrer"
+												className="text-[#FF8F6B] hover:underline break-all"
+											>
+												{task.link}
+											</a>
 										</div>
-									))}
+									)}
+									{task.deadline && (
+										<div className="flex items-center gap-2 text-gray-600">
+											<span className="font-semibold">Deadline:</span>
+											<span>{new Date(task.deadline).toLocaleString()}</span>
+										</div>
+									)}
 								</div>
+							))}
+							
+							{/* Task submission URL input */}
+							<div className="flex flex-col gap-3 p-6 bg-white rounded-2xl shadow-md">
+								<label className="text-lg font-semibold text-gray-900">
+									Submit Your Work
+								</label>
+								<p className="text-sm text-gray-600 mb-2">
+									Provide a link to your submission (e.g., GitHub repository, Google Drive, portfolio link)
+								</p>
+								<input
+									type="url"
+									value={taskSubmissionUrl}
+									onChange={(e) => setTaskSubmissionUrl(e.target.value)}
+									placeholder="https://github.com/username/repository"
+									className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-[#FF8F6B] focus:outline-none text-gray-900"
+								/>
+							</div>
+						</>
+					)}
 
-								<div className="space-y-2">
-									<label className="block text-lg font-medium">
-										Submission URL {config.tasks[0]?.submissionType === 'document' ? '(Google Drive/Dropbox)' : ''}
-									</label>
-									<input
-										type="url"
-										value={submissionUrl}
-										onChange={(e) => setSubmissionUrl(e.target.value)}
-										placeholder="https://..."
-										className="w-full px-4 py-3 rounded-xl border border-black/20 bg-white/50 focus:outline-none focus:ring-2 focus:ring-[#FF8F6B]"
-									/>
-									<p className="text-sm text-black/60">
-										{config.tasks[0]?.submissionType === 'link' && 'Provide a link to your repository, deployed app, or project'}
-										{config.tasks[0]?.submissionType === 'document' && 'Provide a link to your document or portfolio (make sure it\'s publicly accessible)'}
-										{config.tasks[0]?.submissionType === 'both' && 'Provide a link to your project, repository, or portfolio'}
-									</p>
-								</div>
-							</>
-						)}
+					{/* Render questions from database */}
+					{!isTaskRound && questions.length > 0 && (
+						<>
+							{questions.map((question) => (
+								<SubjectiveQuestion
+									key={question.id}
+									id={question.id}
+									prompt={question.text}
+									placeholder="Enter your answer here..."
+									helperText=""
+									value={answers[question.id] || ''}
+									onChange={(value) => handleAnswerChange(question.id, value)}
+								/>
+							))}
+						</>
+					)}
 
-						{error && (
+					{/* Show message when no content available */}
+					{!isTaskRound && questions.length === 0 && (
+						<div className="text-center py-8">
+							<p className="text-xl text-black/60">No questions available for this round yet.</p>
+						</div>
+					)}
+					{isTaskRound && tasks.length === 0 && (
+						<div className="text-center py-8">
+							<p className="text-xl text-black/60">No tasks available for this round yet.</p>
+						</div>
+					)}						{error && (
 							<div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-xl">
 								{error}
 							</div>

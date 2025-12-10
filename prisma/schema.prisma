@@ -79,3 +79,42 @@ model DomainSubmission {
     @@index([round])
     @@index([isPassed])
 }
+
+model Question {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  domain    String
+  subdomain String?  // for technical and design
+  round     String   // round1, round2
+  text      String
+  type      String   @default("subjective") // subjective, mcq, task-submission
+  options   Json?    // for MCQ questions
+  meta      Json?
+  active    Boolean  @default(true)
+
+  @@index([domain])
+  @@index([subdomain])
+  @@index([round])
+}
+
+model Task {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  domain      String
+  subdomain   String?  // for technical and design
+  round       String   // round1, round2
+  title       String
+  description String
+  link        String?
+  deadline    DateTime?
+  active      Boolean @default(true)
+
+  @@index([domain])
+  @@index([subdomain])
+  @@index([round])
+}
+

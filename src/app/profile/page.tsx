@@ -59,14 +59,15 @@ export default function ProfilePage() {
   const userInitial = userName.charAt(0).toUpperCase();
   const hasApplications = applications.length > 0;
 
-  // Extract registration number from email (format: registration.name@vitstudent.ac.in)
-  const extractRegistrationNumber = (email: string): string => {
-    if (!email) return "";
-    const match = email.match(/^([0-9]{2}[A-Z]{3}[0-9]{4})/);
+  // Extract registration number from user's name (format: "Varun B 23MID0026")
+  const extractRegistrationNumber = (userName: string): string => {
+    if (!userName) return "";
+    // Extract registration number pattern from the user name (e.g., 23MID0026)
+    const match = userName.match(/([0-9]{2}[A-Z]{3}[0-9]{4})/);
     return match ? match[1] : "";
   };
 
-  const registrationNumber = extractRegistrationNumber(userEmail);
+  const registrationNumber = extractRegistrationNumber(session?.user?.name || "");
 
   useEffect(() => {
     const updateTime = () => {

@@ -17,9 +17,9 @@ interface DomainData {
   round: 'round1' | 'round2'
   data: {
     // Ordered list of Q&A items. Each item: { id?: string, question?: string, answer: string|number|boolean|string[] }
-    answers: AnswersList | unknown
+    answers?: AnswersList | unknown
+    submissionUrl?: string // For task submissions
   }
-  submissionUrl?: string // For task submissions
 }
 
 interface SubmissionRequest {
@@ -118,7 +118,7 @@ export async function POST(req: Request) {
     for (const domainItem of domains) {
       if (!domainItem?.domain || !domainItem?.data || !domainItem?.round) {
         return NextResponse.json(
-          { success: false, error: 'Each domain must include a domain key, round, and data.answers' },
+          { success: false, error: 'Each domain must include a domain key, round, and data' },
           { status: 400 }
         )
       }
@@ -132,17 +132,30 @@ export async function POST(req: Request) {
       seenDomains.add(key)
 
       try {
-        const validated = validateAnswersList(domainItem.data.answers)
+        // For task submissions, use submissionUrl; for question rounds, use answers
+        const submissionUrl = domainItem.data.submissionUrl
+        let validated: AnswersList = []
+        
+        if (submissionUrl) {
+          // Task submission - create a single answer entry with the URL
+          validated = [{ answer: submissionUrl }]
+        } else if (domainItem.data.answers) {
+          // Question submission
+          validated = validateAnswersList(domainItem.data.answers)
+        } else {
+          throw new Error('Either answers or submissionUrl is required')
+        }
+        
         domainCreates.push({ 
           domain: domainItem.domain, 
           subdomain: domainItem.subdomain, 
           round: domainItem.round,
           answers: validated,
-          submissionUrl: domainItem.submissionUrl
+          submissionUrl: submissionUrl
         })
       } catch (err) {
         return NextResponse.json(
-          { success: false, error: `Invalid answers for domain ${domainItem.domain}: ${String(err)}` },
+          { success: false, error: `Invalid data for domain ${domainItem.domain}: ${String(err)}` },
           { status: 400 }
         )
       }

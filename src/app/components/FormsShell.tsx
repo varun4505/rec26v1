@@ -1,6 +1,8 @@
 "use client";
 
 import { useRef, useState } from "react";
+import { useRouter } from "next/navigation";
+import { signOut } from "next-auth/react";
 import Image from "next/image";
 import Clock from "./clock";
 
@@ -9,18 +11,22 @@ interface FormsShellProps {
 }
 
 export default function FormsShell({ children }: FormsShellProps) {
+	const router = useRouter();
 	const [isProfileOpen, setIsProfileOpen] = useState(false);
 	const menuRef = useRef<HTMLDivElement>(null);
 
 	return (
 		<main className="flex-col min-h-screen bg-black h-screen w-screen max-h-screen max-w-screen p-[2%]">
 			{/* Header */}
-			<header className="flex items-center justify-between mb-8 w-full h-[10%] px-7">
-				<div className="flex items-center gap-2">
-					<Image src="VIIT 2.svg" alt="VinnovatIT" height={150} width={150} />
-				</div>
-				<div className="flex items-center gap-4">
-					<button className="px-4 py-2 bg-white rounded-2xl text-black font-khand text-lg">
+		<header className="flex items-center justify-between mb-8 w-full h-[10%] px-7">
+			<div className="flex items-center gap-2">
+				<Image src="/VIIT 2.svg" alt="VinnovatIT" height={150} width={150} />
+			</div>
+			<div className="flex items-center gap-4">
+					<button 
+						onClick={() => router.push("/dashboard")}
+						className="px-4 py-2 bg-white rounded-2xl text-black font-khand text-lg hover:bg-gray-100 transition-colors"
+					>
 						Go To Home
 					</button>
 					<div className="relative" ref={menuRef}>
@@ -38,10 +44,22 @@ export default function FormsShell({ children }: FormsShellProps) {
 
 						{isProfileOpen && (
 							<div className="absolute left-0 mt-2 w-40 py-1 bg-[#FFFFFF99] rounded-lg shadow-xl z-50 text-black font-khand text-lg">
-								<button className="w-full text-left px-3 py-1.5 hover:bg-gray-100">
+								<button 
+									onClick={() => {
+										setIsProfileOpen(false);
+										router.push("/profile");
+									}}
+									className="w-full text-left px-3 py-1.5 hover:bg-gray-100"
+								>
 									Update Details
 								</button>
-								<button className="w-full text-left px-3 py-1.5 hover:bg-gray-100">
+								<button 
+									onClick={() => {
+										setIsProfileOpen(false);
+										signOut({ callbackUrl: "/login" });
+									}}
+									className="w-full text-left px-3 py-1.5 hover:bg-gray-100"
+								>
 									Logout
 								</button>
 							</div>
