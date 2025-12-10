@@ -7,6 +7,8 @@ interface SubjectiveQuestionProps {
 	prompt: string;
 	placeholder?: string;
 	helperText?: string;
+	onChange?: (value: string) => void;
+	value?: string;
 }
 
 export function SubjectiveQuestion({
@@ -14,6 +16,8 @@ export function SubjectiveQuestion({
 	prompt,
 	placeholder,
 	helperText,
+	onChange,
+	value,
 }: SubjectiveQuestionProps) {
 	return (
 		<section className="flex flex-col gap-3 rounded-[28px] bg-[#F7B58D]/40 p-6">
@@ -23,6 +27,8 @@ export function SubjectiveQuestion({
 			<textarea
 				id={id}
 				name={id}
+				value={value}
+				onChange={(e) => onChange?.(e.target.value)}
 				placeholder={placeholder ?? "Type your response here..."}
 				className="min-h-[120px] w-full rounded-2xl bg-[#F8680029] px-4 py-3 text-base outline-none focus:border-amber-500"
 			/>

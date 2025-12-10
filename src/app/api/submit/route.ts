@@ -14,10 +14,12 @@ interface BasicInfo {
 interface DomainData {
   domain: 'technical' | 'management' | 'design'
   subdomain?: string
+  round: 'round1' | 'round2'
   data: {
     // Ordered list of Q&A items. Each item: { id?: string, question?: string, answer: string|number|boolean|string[] }
     answers: AnswersList | unknown
   }
+  submissionUrl?: string // For task submissions
 }
 
 interface SubmissionRequest {
@@ -112,18 +114,18 @@ export async function POST(req: Request) {
 
     // Validate domain answers and prepare create payload
     const seenDomains = new Set<string>()
-    const domainCreates: { domain: string; subdomain?: string; answers: AnswersList }[] = []
+    const domainCreates: { domain: string; subdomain?: string; round: string; answers: AnswersList; submissionUrl?: string }[] = []
     for (const domainItem of domains) {
-      if (!domainItem?.domain || !domainItem?.data) {
+      if (!domainItem?.domain || !domainItem?.data || !domainItem?.round) {
         return NextResponse.json(
-          { success: false, error: 'Each domain must include a domain key and data.answers' },
+          { success: false, error: 'Each domain must include a domain key, round, and data.answers' },
           { status: 400 }
         )
       }
-      const key = `${domainItem.domain}::${String(domainItem.subdomain ?? '')}`
+      const key = `${domainItem.domain}::${String(domainItem.subdomain ?? '')}::${domainItem.round}`
       if (seenDomains.has(key)) {
         return NextResponse.json(
-          { success: false, error: `Duplicate domain/subdomain provided: ${domainItem.domain}${domainItem.subdomain ? '/' + domainItem.subdomain : ''}` },
+          { success: false, error: `Duplicate domain/subdomain/round provided: ${domainItem.domain}${domainItem.subdomain ? '/' + domainItem.subdomain : ''}/${domainItem.round}` },
           { status: 400 }
         )
       }
@@ -131,7 +133,13 @@ export async function POST(req: Request) {
 
       try {
         const validated = validateAnswersList(domainItem.data.answers)
-        domainCreates.push({ domain: domainItem.domain, subdomain: domainItem.subdomain, answers: validated })
+        domainCreates.push({ 
+          domain: domainItem.domain, 
+          subdomain: domainItem.subdomain, 
+          round: domainItem.round,
+          answers: validated,
+          submissionUrl: domainItem.submissionUrl
+        })
       } catch (err) {
         return NextResponse.json(
           { success: false, error: `Invalid answers for domain ${domainItem.domain}: ${String(err)}` },
@@ -139,22 +147,42 @@ export async function POST(req: Request) {
         )
       }
     }
-    // If application exists, add domain/subdomain submissions (if not duplicates).
+    // If application exists, add domain/subdomain/round submissions (if not duplicates).
     if (existing) {
-      // For each create item, ensure a submission for the same application+domain+subdomain doesn't already exist
+      // For each create item, ensure a submission for the same application+domain+subdomain+round doesn't already exist
       for (const item of domainCreates) {
-        // find any existing submissions for this applicationId+domain, then check subdomain equality in JS
-        type DSRow = { id: string; applicationId: string; domain: string; subdomain?: string; answers: unknown }
-        const candidates = await prisma.domainSubmission.findMany({ where: { applicationId: existing.id, domain: item.domain } })
-        const existsForSubdomain = (candidates as unknown as DSRow[]).some((c) => c.subdomain === item.subdomain)
-        if (existsForSubdomain) {
-          return NextResponse.json({ success: false, error: `Submission already exists for domain ${item.domain}${item.subdomain ? '/' + item.subdomain : ''}` }, { status: 409 })
+        // find any existing submissions for this applicationId+domain+round, then check subdomain equality in JS
+        type DSRow = { id: string; applicationId: string; domain: string; subdomain?: string; round: string; answers: unknown }
+        const candidates = await prisma.domainSubmission.findMany({ 
+          where: { 
+            applicationId: existing.id, 
+            domain: item.domain,
+            round: item.round
+          } 
+        })
+        const existsForSubdomainAndRound = (candidates as unknown as DSRow[]).some(
+          (c) => c.subdomain === item.subdomain && c.round === item.round
+        )
+        if (existsForSubdomainAndRound) {
+          return NextResponse.json({ 
+            success: false, 
+            error: `Submission already exists for domain ${item.domain}${item.subdomain ? '/' + item.subdomain : ''}/${item.round}` 
+          }, { status: 409 })
         }
       }
 
       // Create submissions
       for (const item of domainCreates) {
-        await prisma.domainSubmission.create({ data: ({ applicationId: existing.id, domain: item.domain, subdomain: item.subdomain ?? undefined, answers: item.answers as unknown as Prisma.InputJsonValue } as Prisma.DomainSubmissionUncheckedCreateInput) })
+        await prisma.domainSubmission.create({ 
+          data: ({ 
+            applicationId: existing.id, 
+            domain: item.domain, 
+            subdomain: item.subdomain ?? undefined, 
+            round: item.round,
+            answers: item.answers as unknown as Prisma.InputJsonValue,
+            submissionUrl: item.submissionUrl ?? undefined
+          } as Prisma.DomainSubmissionUncheckedCreateInput) 
+        })
       }
 
       const fresh = await prisma.application.findUnique({ where: { id: existing.id }, include: { domainSubmissions: true } })

@@ -1,19 +1,23 @@
 // src/app/dashboard/components/TechDomainContent.tsx
 import React from 'react';
 import styles from '../Dashboard.module.css';
+import SubdomainSelector from './SubdomainSelector';
 
 export default function TechDomainContent() {
-  const descriptionText = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
+  const descriptionText = "Join our technical team and work on cutting-edge projects. Choose from Web Development, App Development, AI/ML, Competitive Coding, or Cyber Security. Complete Round 1 questionnaire and Round 2 task submission to showcase your skills.";
 
   return (
-    <div className={styles.domainContentContainer}>
-      <div className={styles.domainContentLeft}>
-        <h2 className={styles.techTitle}>TECH</h2>
-        <p className={styles.techSubtitle}>Building smarter ways to create.</p>
+    <>
+      <div className={styles.domainContentContainer}>
+        <div className={styles.domainContentLeft}>
+          <h2 className={styles.techTitle}>TECH</h2>
+          <p className={styles.techSubtitle}>Building smarter ways to create.</p>
+        </div>
+        <div className={styles.domainContentRight}>
+          <p className={styles.domainDescription}>{descriptionText}</p>
+        </div>
       </div>
-      <div className={styles.domainContentRight}>
-        <p className={styles.domainDescription}>{descriptionText}</p>
-      </div>
-    </div>
+      <SubdomainSelector domain="technical" />
+    </>
   );
 }

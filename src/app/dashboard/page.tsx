@@ -42,10 +42,6 @@ export default function DashboardPage() {
                 {activeTab === 'Design' && <DesignDomainContent />}
                 {activeTab === 'Management' && <ManagementDomainContent />}
             </div>
-
-        {/* Other domain content components */}
-
-        <SubdomainSelector />
         
         </div>
       </main>

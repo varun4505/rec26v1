@@ -21,6 +21,9 @@ model Application {
     email     String
     phone     String
 
+    // Domain/Subdomain Selections (max 3 total)
+    selections DomainSelection[]
+
     // Domain Submissions
     domainSubmissions DomainSubmission[]
 
@@ -28,17 +31,50 @@ model Application {
     @@unique([email])
 }
 
-model DomainSubmission {
+model DomainSelection {
     id            String   @id @default(auto()) @map("_id") @db.ObjectId
     applicationId String   @db.ObjectId
-    domain        String
-    subdomain     String?
-    answers       Json // ordered Q&A list stored as JSON
-
+    domain        String   // technical, management, design
+    subdomain     String?  // null for management
+    selectedAt    DateTime @default(now())
+    
     application   Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
 
     @@unique([applicationId, domain, subdomain])
     @@index([applicationId])
+}
+
+model RecruitmentConfig {
+    id                String   @id @default(auto()) @map("_id") @db.ObjectId
+    selectionDeadline DateTime // Deadline to select/change domains
+    round1Deadline    DateTime // Deadline for round 1 submissions
+    round2Deadline    DateTime // Deadline for round 2 submissions
+    isActive          Boolean  @default(true)
+    maxSelections     Int      @default(3) // Maximum domain/subdomain selections allowed
+    updatedAt         DateTime @updatedAt
+}
+
+model DomainSubmission {
+    id            String   @id @default(auto()) @map("_id") @db.ObjectId
+    applicationId String   @db.ObjectId
+    domain        String   // technical, management, design
+    subdomain     String?  // only for technical and design
+    round         String   // round1, round2
+    answers       Json     // ordered Q&A list stored as JSON
+    submissionUrl String?  // for task submissions (round2 for tech, round1 for design)
+    
+    // Round pass status - set by admin
+    isPassed      Boolean  @default(false) // whether admin approved this submission
+    feedback      String?  // optional feedback from admin
+    evaluatedAt   DateTime? // when admin evaluated
+    evaluatedBy   String?  // admin who evaluated
+
+    application   Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+
+    @@unique([applicationId, domain, subdomain, round])
+    @@index([applicationId])
     @@index([domain])
     @@index([subdomain])
+    @@index([round])
+    @@index([isPassed])
 }
