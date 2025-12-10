@@ -3,28 +3,64 @@
 "use client";
 
 import React from "react";
-import type { SubdomainItem } from "@/data/domains";
+import { useRouter } from "next/navigation";
+
+interface UserApplication {
+  domain: string;
+  subdomain: string | null;
+  round1Status: string;
+  round1Feedback: string | null;
+  round2Status: string | null;
+  round2Feedback: string | null;
+  canAccessRound2: boolean;
+}
 
 interface ApplicationCardProps {
-  application: SubdomainItem;
+  application: UserApplication;
   index: number;
 }
+
+const formatDomainName = (domain: string): string => {
+  return domain.charAt(0).toUpperCase() + domain.slice(1);
+};
+
+const formatSubdomainName = (subdomain: string | null): string => {
+  if (!subdomain) return "";
+  return subdomain
+    .split("-")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+};
 
 export const ApplicationCard: React.FC<ApplicationCardProps> = ({
   application,
   index,
 }) => {
-  const isRejected = application.status === "Rejected";
-  const isShortlisted = application.status === "Shortlisted";
-  const isInterviewScheduled = application.status === "Interview Scheduled";
+  const router = useRouter();
+  const domainName = formatDomainName(application.domain);
+  const subdomainName = application.subdomain
+    ? formatSubdomainName(application.subdomain)
+    : domainName;
+
+  const handleRoundClick = (round: string) => {
+    const roundPath = round === "Round 1" ? "round1" : "round2";
+    const url = `/quiz/${application.domain}/${
+      application.subdomain || "general"
+    }/${roundPath}`;
+    router.push(url);
+  };
+
+  const isRejected = application.round1Status === "Not Passed";
+  const round1FormSubmitted = application.round1Status === "Under Review" || application.round1Status === "Passed";
+  const round2FormSubmitted = application.round2Status === "Under Review" || application.round2Status === "Passed";
 
   return (
     <>
       <div className="application-card">
         {/* Header - Fixed */}
         <div className="card-header">
-          <h3 className="subdomain-title">{application.subdomain}</h3>
-          <p className="domain-subtitle">{application.domain}</p>
+          <h3 className="subdomain-title">{subdomainName}</h3>
+          <p className="domain-subtitle">{domainName}</p>
         </div>
 
         {/* Body - Scrollable with top and bottom fade */}
@@ -41,129 +77,144 @@ export const ApplicationCard: React.FC<ApplicationCardProps> = ({
                 Keep learning, keep building — we'd love to see you apply again
                 soon.
               </div>
-            </div>
-          ) : isInterviewScheduled ? (
-            <div className="interview-container">
-              <div className="interview-label">Interview Scheduled</div>
-              <div className="interview-details">
-                <div className="detail-row">
-                  <svg
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <rect
-                      x="3"
-                      y="4"
-                      width="18"
-                      height="18"
-                      rx="2"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      fill="none"
-                    />
-                    <line
-                      x1="3"
-                      y1="10"
-                      x2="21"
-                      y2="10"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                    />
-                    <line
-                      x1="8"
-                      y1="2"
-                      x2="8"
-                      y2="6"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                    />
-                    <line
-                      x1="16"
-                      y1="2"
-                      x2="16"
-                      y2="6"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                    />
-                  </svg>
-                  <span>{application.interviewDate}</span>
+              {application.round1Feedback && (
+                <div className="feedback-inline">
+                  <strong>Feedback:</strong> {application.round1Feedback}
                 </div>
-                <div className="detail-row">
-                  <svg
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <circle
-                      cx="12"
-                      cy="12"
-                      r="9"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      fill="none"
-                    />
-                    <path
-                      d="M12 6v6l4 2"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                    />
-                  </svg>
-                  <span>{application.interviewTime}</span>
-                </div>
-              </div>
-            </div>
-          ) : isShortlisted ? (
-            <div className="status-item-no-button">
-              <div className="status-info">
-                <div className="round-label">{application.round}</div>
-                <div className="status-label">{application.status}</div>
-              </div>
+              )}
             </div>
           ) : (
-            <div className="status-item">
-              <div className="status-info">
-                <div className="round-label">{application.round}</div>
-                <div className="status-label">{application.status}</div>
+            <>
+              {/* Round 1 Status */}
+              <div className="status-item">
+                <div className="status-info">
+                  <div className="round-label">Round 1</div>
+                  <div className="status-label">{application.round1Status === "Pending" ? "Form Submitted" : application.round1Status}</div>
+                </div>
+                {application.round1Status === "Pending" && (
+                  <button
+                    className="glass-icon-button"
+                    style={{
+                      width: "clamp(30px, 5vw, 36px)",
+                      height: "clamp(30px, 5vw, 36px)",
+                    }}
+                    aria-label="Edit Round 1"
+                    onClick={() => handleRoundClick("Round 1")}
+                  >
+                    <svg
+                      width="20"
+                      height="20"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                      style={{
+                        width: "clamp(14px, 2.5vw, 17px)",
+                        height: "clamp(14px, 2.5vw, 17px)",
+                      }}
+                    >
+                      <path
+                        d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"
+                        fill="currentColor"
+                      />
+                    </svg>
+                  </button>
+                )}
               </div>
-              <button className="glass-icon-button" style={{ width: 'clamp(30px, 5vw, 36px)', height: 'clamp(30px, 5vw, 36px)' }} aria-label="Edit response">
-                <svg
-                  width="20"
-                  height="20"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                  style={{ width: 'clamp(14px, 2.5vw, 17px)', height: 'clamp(14px, 2.5vw, 17px)' }}
-                >
-                  <path
-                    d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"
-                    fill="currentColor"
-                  />
-                </svg>
-              </button>
-            </div>
+
+              {/* Round 1 Feedback */}
+              {application.round1Feedback && !isRejected && (
+                <div className="feedback-box">
+                  <div className="feedback-label">Feedback:</div>
+                  <div className="feedback-text">{application.round1Feedback}</div>
+                </div>
+              )}
+
+              {/* Round 2 Status (if applicable) */}
+              {application.round2Status && (
+                <>
+                  <div className="status-item" style={{ marginTop: "12px" }}>
+                    <div className="status-info">
+                      <div className="round-label">Round 2</div>
+                      <div className="status-label">{application.round2Status === "Pending" ? "Form Submitted" : application.round2Status}</div>
+                    </div>
+                    {application.round2Status === "Pending" && (
+                      <button
+                        className="glass-icon-button"
+                        style={{
+                          width: "clamp(30px, 5vw, 36px)",
+                          height: "clamp(30px, 5vw, 36px)",
+                        }}
+                        aria-label="Edit Round 2"
+                        onClick={() => handleRoundClick("Round 2")}
+                      >
+                        <svg
+                          width="20"
+                          height="20"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                          style={{
+                            width: "clamp(14px, 2.5vw, 17px)",
+                            height: "clamp(14px, 2.5vw, 17px)",
+                          }}
+                        >
+                          <path
+                            d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"
+                            fill="currentColor"
+                          />
+                        </svg>
+                      </button>
+                    )}
+                  </div>
+
+                  {/* Round 2 Feedback */}
+                  {application.round2Feedback && (
+                    <div className="feedback-box">
+                      <div className="feedback-label">Feedback:</div>
+                      <div className="feedback-text">
+                        {application.round2Feedback}
+                      </div>
+                    </div>
+                  )}
+                </>
+              )}
+            </>
           )}
         </div>
 
         {/* Footer - Fixed */}
-        {(isRejected || application.showNextButton !== false) && (
+        {!isRejected && (
           <div className="card-footer-fixed">
-            {isRejected ? (
-              <button className="glass-button" style={{ width: '100%', padding: 'clamp(0.55rem, 1.3vw, 0.75rem) clamp(1.8rem, 3.5vw, 2.5rem)', fontSize: 'clamp(0.75rem, 1.6vw, 0.88rem)' }}>HIDE APPLICATION</button>
-            ) : isShortlisted ? (
-              <button className="glass-button" style={{ width: '100%', padding: 'clamp(0.55rem, 1.3vw, 0.75rem) clamp(1.8rem, 3.5vw, 2.5rem)', fontSize: 'clamp(0.75rem, 1.6vw, 0.88rem)' }}>SCHEDULE INTERVIEW</button>
-            ) : isInterviewScheduled ? (
-              <button className="glass-button" style={{ width: '100%', padding: 'clamp(0.55rem, 1.3vw, 0.75rem) clamp(1.8rem, 3.5vw, 2.5rem)', fontSize: 'clamp(0.75rem, 1.6vw, 0.88rem)' }}>VIEW DETAILS</button>
-            ) : (
-              <button className="glass-button" style={{ width: '100%', padding: 'clamp(0.55rem, 1.3vw, 0.75rem) clamp(1.8rem, 3.5vw, 2.5rem)', fontSize: 'clamp(0.75rem, 1.6vw, 0.88rem)' }}>NEXT</button>
-            )}
+            <button 
+              className="glass-button" 
+              style={{ 
+                width: '100%', 
+                padding: 'clamp(0.55rem, 1.3vw, 0.75rem) clamp(1.8rem, 3.5vw, 2.5rem)', 
+                fontSize: 'clamp(0.75rem, 1.6vw, 0.88rem)' 
+              }}
+              onClick={() => handleRoundClick(application.round2Status ? "Round 2" : "Round 1")}
+            >
+              {application.round2Status === "Pending" || application.round2Status === "Not Started" 
+                ? "MOVE TO NEXT STEP" 
+                : application.round1Status === "Pending" 
+                ? "MOVE TO NEXT STEP" 
+                : "VIEW STATUS"}
+            </button>
+          </div>
+        )}
+
+        {isRejected && (
+          <div className="card-footer-fixed">
+            <button 
+              className="glass-button" 
+              style={{ 
+                width: '100%', 
+                padding: 'clamp(0.55rem, 1.3vw, 0.75rem) clamp(1.8rem, 3.5vw, 2.5rem)', 
+                fontSize: 'clamp(0.75rem, 1.6vw, 0.88rem)' 
+              }}
+            >
+              HIDE APPLICATION
+            </button>
           </div>
         )}
       </div>
@@ -174,8 +225,8 @@ export const ApplicationCard: React.FC<ApplicationCardProps> = ({
           border-radius: clamp(14px, 2.5vw, 20px);
           padding: clamp(1rem, 2.2vw, 1.5rem);
           flex: 0 0 auto;
-          min-width: 280px;
-          max-width: 340px;
+          min-width: 420px;
+          max-width: 500px;
           height: 100%;
           max-height: 100%;
           display: flex;
@@ -194,17 +245,18 @@ export const ApplicationCard: React.FC<ApplicationCardProps> = ({
           flex-shrink: 0;
         }
         .subdomain-title {
-          font-size: clamp(1.3rem, 3vw, 1.7rem);
+          font-size: clamp(1.5rem, 3.2vw, 1.9rem);
           margin: 0 0 0.3rem 0;
           font-weight: 600;
           color: #000;
           line-height: 1.2;
         }
         .domain-subtitle {
-          font-size: clamp(0.8rem, 1.8vw, 1rem);
+          font-size: clamp(0.9rem, 2vw, 1.1rem);
           margin: 0;
-          color: #666;
+          color: #000;
           font-weight: 400;
+          opacity: 0.7;
         }
 
         /* Body - Scrollable with fade on BOTH top and bottom */
@@ -308,17 +360,98 @@ export const ApplicationCard: React.FC<ApplicationCardProps> = ({
           min-width: 0;
         }
         .round-label {
-          font-size: clamp(0.9rem, 1.8vw, 1.1rem);
+          font-size: clamp(1rem, 2vw, 1.2rem);
           font-weight: 600;
           display: block;
           margin-bottom: 0.2rem;
           color: #000;
         }
         .status-label {
-          font-size: clamp(0.75rem, 1.6vw, 0.9rem);
-          color: #333;
+          font-size: clamp(0.85rem, 1.8vw, 1rem);
           display: block;
+          font-weight: 600;
+          color: #000;
+          opacity: 0.8;
+        }
+
+        /* Feedback Box */
+        .feedback-box {
+          background: rgba(255, 255, 255, 0.5);
+          border-radius: clamp(10px, 1.8vw, 14px);
+          padding: clamp(0.7rem, 1.5vw, 1rem);
+          margin-top: 8px;
+        }
+        .feedback-label {
+          font-size: clamp(0.75rem, 1.6vw, 0.85rem);
+          font-weight: 600;
+          color: #000;
+          margin-bottom: 0.3rem;
+        }
+        .feedback-text {
+          font-size: clamp(0.7rem, 1.5vw, 0.8rem);
+          color: #333;
+          line-height: 1.5;
           font-weight: 400;
+        }
+
+        /* Rejected Card Content */
+        .rejected-full-content {
+          display: flex;
+          flex-direction: column;
+          gap: clamp(0.8rem, 1.8vw, 1.2rem);
+          background: rgba(248, 104, 0, 0.3);
+          border-radius: clamp(12px, 2vw, 16px);
+          padding: clamp(1rem, 2vw, 1.5rem);
+        }
+        .rejection-message-bold {
+          font-size: clamp(0.85rem, 1.8vw, 1rem);
+          font-weight: 700;
+          color: #000;
+          line-height: 1.5;
+        }
+        .rejection-details-text {
+          font-size: clamp(0.75rem, 1.6vw, 0.88rem);
+          color: #333;
+          line-height: 1.6;
+          font-weight: 400;
+        }
+        .feedback-inline {
+          font-size: clamp(0.75rem, 1.6vw, 0.88rem);
+          color: #333;
+          line-height: 1.5;
+          margin-top: 0.5rem;
+        }
+
+        /* Glass Button */
+        .glass-icon-button {
+          background: rgba(255, 255, 255, 0.5);
+          border: none;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          transition: background 0.2s ease;
+          flex-shrink: 0;
+          color: #f86800;
+        }
+        .glass-icon-button:hover {
+          background: rgba(255, 255, 255, 0.7);
+        }
+
+        .glass-button {
+          background: rgba(255, 255, 255, 0.6);
+          border: none;
+          border-radius: clamp(10px, 1.8vw, 13px);
+          font-weight: 600;
+          color: #000;
+          cursor: pointer;
+          transition: all 0.2s ease;
+          backdrop-filter: blur(5px);
+        }
+        .glass-button:hover {
+          background: rgba(255, 255, 255, 0.8);
+          transform: translateY(-2px);
         }
 
         /* Footer - Fixed at bottom */
@@ -330,6 +463,7 @@ export const ApplicationCard: React.FC<ApplicationCardProps> = ({
           border-top: 1px solid rgba(255, 255, 255, 0.2);
           margin-top: auto;
         }
+
         @keyframes fadeInUp {
           from {
             opacity: 0;

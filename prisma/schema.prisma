@@ -62,6 +62,7 @@ model DomainSubmission {
     round         String   // round1, round2
     answers       Json     // ordered Q&A list stored as JSON
     submissionUrl String?  // for task submissions (round2 for tech, round1 for design)
+    submittedAt   DateTime @default(now()) // when user submitted
     
     // Round pass status - set by admin
     isPassed      Boolean  @default(false) // whether admin approved this submission

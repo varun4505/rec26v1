@@ -11,7 +11,6 @@ import { ApplicationCard } from "@/components/profile/DomainCard";
 import { DecorativeCircles } from "@/components/profile/DecorativeCircles";
 import { MobileRestriction } from "@/components/MobileRestriction";
 import { EmptyState } from "@/components/profile/EmptyState";
-import { applications } from "@/data/domains";
 
 const khand = Khand({
   subsets: ["latin"],
@@ -19,10 +18,40 @@ const khand = Khand({
   display: "swap",
 });
 
+interface Selection {
+  id: string;
+  domain: string;
+  subdomain: string | null;
+  selectedAt: string;
+}
+
+interface Submission {
+  id: string;
+  domain: string;
+  subdomain: string | null;
+  round: string;
+  submissionUrl: string | null;
+  isPassed: boolean | null;
+  feedback: string | null;
+  submittedAt: string;
+}
+
+interface UserApplication {
+  domain: string;
+  subdomain: string | null;
+  round1Status: string;
+  round1Feedback: string | null;
+  round2Status: string | null;
+  round2Feedback: string | null;
+  canAccessRound2: boolean;
+}
+
 export default function ProfilePage() {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const [currentTime, setCurrentTime] = useState<string>("");
   const [showFade, setShowFade] = useState(false);
+  const [applications, setApplications] = useState<UserApplication[]>([]);
+  const [loading, setLoading] = useState(true);
   const gridRef = useRef<HTMLDivElement>(null);
   const userName = session?.user?.name || "User";
   const userEmail = session?.user?.email || "";
@@ -55,6 +84,40 @@ export default function ProfilePage() {
 
     return () => clearInterval(interval);
   }, []);
+
+  useEffect(() => {
+    if (status === "authenticated") {
+      fetchApplications();
+    } else if (status === "loading") {
+      // Still loading session
+      setLoading(true);
+    } else {
+      // Not authenticated
+      setLoading(false);
+    }
+  }, [status]);
+
+  const fetchApplications = async () => {
+    try {
+      const response = await fetch('/api/profile');
+      console.log('API response status:', response.status);
+      
+      const data = await response.json();
+      console.log('Profile API response:', data);
+      
+      if (data.success) {
+        setApplications(data.applications || []);
+        console.log('Applications set:', data.applications);
+      } else {
+        console.error('API returned success: false', data);
+        console.error('Error from API:', data.error);
+      }
+    } catch (error) {
+      console.error('Error fetching applications:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     const checkScroll = () => {
@@ -122,7 +185,18 @@ export default function ProfilePage() {
 
             <h2 className="applied-heading">Your Applications</h2>
 
-            {hasApplications ? (
+            {loading ? (
+              <div style={{ 
+                display: 'flex', 
+                justifyContent: 'center', 
+                alignItems: 'center', 
+                flex: 1,
+                fontSize: 'clamp(0.9rem, 2vw, 1.1rem)',
+                color: '#666'
+              }}>
+                Loading your applications...
+              </div>
+            ) : hasApplications ? (
               <div className="applications-container">
                 <div
                   className={`applications-grid ${showFade ? "with-fade" : ""}`}

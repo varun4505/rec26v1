@@ -85,7 +85,7 @@
 .dashboardCard {
   width: 100%;
   max-width: 1227px; 
-  height: 650px;
+  min-height: 720px;
   background-color: #FFFFFF;
   border-radius: var(--border-radius-large);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);

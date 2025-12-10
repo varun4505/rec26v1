@@ -81,7 +81,7 @@ export async function GET(req: Request) {
         submission: {
           isPassed: existingSubmission.isPassed,
           feedback: existingSubmission.feedback,
-          submittedAt: existingSubmission.createdAt,
+          submittedAt: existingSubmission.submittedAt,
         },
       });
     }
