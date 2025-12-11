@@ -54,7 +54,7 @@ const MainNavbar: React.FC = () => {
   useEffect(() => {
     // Target relevant sections for active link highlighting
     const sections = document.querySelectorAll(
-      "#home, #aboutus, #domains, #events, #projects, #board"
+      "#home, #about, #domains, #projects"
     );
 
     const observer = new IntersectionObserver(
@@ -154,9 +154,13 @@ const MainNavbar: React.FC = () => {
     e.preventDefault();
     const targetSection = document.querySelector(href);
     if (targetSection) {
-      targetSection.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
+      const navbarHeight = 100; // Approximate navbar height + padding
+      const elementPosition = targetSection.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.pageYOffset - navbarHeight;
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: "smooth"
       });
     }
     if (isDrawerOpen) {
@@ -193,6 +197,7 @@ const MainNavbar: React.FC = () => {
     { href: "#home", text: "Home", sectionId: "home" },
     { href: "#about", text: "About", sectionId: "about" },
     { href: "#domains", text: "Domains", sectionId: "domains" },
+    { href: "#projects", text: "Projects", sectionId: "projects" },
   ];
 
   // Helper to check if the current link should be active (including "Home" at the start)
@@ -289,7 +294,7 @@ const MainNavbar: React.FC = () => {
                       {link.text}
                     </a>
                     {/* Underline indicator */}
-                    {isActive(link.sectionId.replace("#", "")) && (
+                    {isActive(link.sectionId) && (
                       <motion.div
                         layoutId="nav-underline"
                         className="absolute bottom-[-4px] left-0 w-full h-[3px] bg-gray-500 rounded"
@@ -442,11 +447,10 @@ const MainNavbar: React.FC = () => {
                           <a
                             href={link.href}
                             onClick={(e) => handleNavClick(e, link.href)}
-                            className={`sidebar-link block font-medium text-xl sm:text-2xl md:text-3xl lg:text-4xl py-3 sm:py-4 px-4 sm:px-6 md:px-8 rounded-xl transition-all tracking-wider hover:bg-gray-800/20 hover:scale-105 cursor-pointer ${
-                              isActiveLink
-                                ? "text-gray-800 bg-gray-200/30 scale-105"
-                                : "text-gray-800 hover:text-gray-600"
-                            }`}
+                            className={`sidebar-link block font-medium text-xl sm:text-2xl md:text-3xl lg:text-4xl py-3 sm:py-4 px-4 sm:px-6 md:px-8 rounded-xl transition-all tracking-wider hover:bg-gray-800/20 hover:scale-105 cursor-pointer ${isActiveLink
+                              ? "text-gray-800 bg-gray-200/30 scale-105"
+                              : "text-gray-800 hover:text-gray-600"
+                              }`}
                           >
                             {link.text}
                           </a>

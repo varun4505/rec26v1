@@ -58,7 +58,7 @@ export const Hero: React.FC = () => {
           <span className="hero-subtitle">recruiting now</span>
         </h1>
 
-        <a href="/profile" className="cta-button">
+        <a href="/dashboard" className="cta-button">
           LET&apos;S GO
           <IoArrowForward className="button-icon" />
         </a>
