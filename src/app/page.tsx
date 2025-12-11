@@ -26,7 +26,7 @@ export default function HomePage() {
 			{/* Domains Section */}
 			<DomainsSection />
 
-			<section id="projects">
+			<section id="testimonial">
 				<LandingProjects />
 			</section>
 

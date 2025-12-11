@@ -89,7 +89,7 @@ export const ApplicationCard: React.FC<ApplicationCardProps> = ({
               <div className="status-item">
                 <div className="status-info">
                   <div className="round-label">Round 1</div>
-                  <div className="status-label">{application.round1Status === "Pending" ? "Form Submitted" : application.round1Status}</div>
+                  <div className="status-label">{application.round1Status}</div>
                 </div>
                 {application.round1Status === "Pending" && (
                   <button
@@ -135,7 +135,7 @@ export const ApplicationCard: React.FC<ApplicationCardProps> = ({
                   <div className="status-item" style={{ marginTop: "12px" }}>
                     <div className="status-info">
                       <div className="round-label">Round 2</div>
-                      <div className="status-label">{application.round2Status === "Pending" ? "Form Submitted" : application.round2Status}</div>
+                      <div className="status-label">{application.round2Status}</div>
                     </div>
                     {application.round2Status === "Pending" && (
                       <button
@@ -198,6 +198,8 @@ export const ApplicationCard: React.FC<ApplicationCardProps> = ({
                 ? "MOVE TO NEXT STEP" 
                 : application.round1Status === "Pending" 
                 ? "MOVE TO NEXT STEP" 
+                : application.round1Status === "Submitted" || application.round1Status === "Under Review" || application.round1Status === "Passed"
+                ? "EDIT FORM"
                 : "VIEW STATUS"}
             </button>
           </div>
@@ -222,11 +224,11 @@ export const ApplicationCard: React.FC<ApplicationCardProps> = ({
       <style jsx>{`
         .application-card {
           background: #f868004d;
-          border-radius: clamp(14px, 2.5vw, 20px);
-          padding: clamp(1rem, 2.2vw, 1.5rem);
+          border-radius: clamp(14px, 2.5vw, 18px);
+          padding: clamp(0.9rem, 1.8vw, 1.2rem);
           flex: 0 0 auto;
-          min-width: 420px;
-          max-width: 500px;
+          min-width: 340px;
+          max-width: 400px;
           height: 100%;
           max-height: 100%;
           display: flex;
@@ -245,14 +247,14 @@ export const ApplicationCard: React.FC<ApplicationCardProps> = ({
           flex-shrink: 0;
         }
         .subdomain-title {
-          font-size: clamp(1.5rem, 3.2vw, 1.9rem);
-          margin: 0 0 0.3rem 0;
+          font-size: clamp(1.3rem, 2.8vw, 1.6rem);
+          margin: 0 0 0.2rem 0;
           font-weight: 600;
           color: #000;
           line-height: 1.2;
         }
         .domain-subtitle {
-          font-size: clamp(0.9rem, 2vw, 1.1rem);
+          font-size: clamp(0.8rem, 1.7vw, 0.95rem);
           margin: 0;
           color: #000;
           font-weight: 400;
@@ -265,23 +267,23 @@ export const ApplicationCard: React.FC<ApplicationCardProps> = ({
           overflow-y: auto;
           overflow-x: visible;
           min-height: 0;
-          margin-bottom: clamp(0.8rem, 1.8vw, 1.2rem);
-          padding: 20px 0.5rem 20px 0;
+          margin-bottom: clamp(0.6rem, 1.5vw, 0.9rem);
+          padding: 16px 0.4rem 16px 0;
           scrollbar-width: none;
           -ms-overflow-style: none;
           position: relative;
           mask-image: linear-gradient(
             to bottom,
             transparent 0%,
-            black 20px,
-            black calc(100% - 20px),
+            black 16px,
+            black calc(100% - 16px),
             transparent 100%
           );
           -webkit-mask-image: linear-gradient(
             to bottom,
             transparent 0%,
-            black 20px,
-            black calc(100% - 20px),
+            black 16px,
+            black calc(100% - 16px),
             transparent 100%
           );
         }
@@ -360,10 +362,10 @@ export const ApplicationCard: React.FC<ApplicationCardProps> = ({
           min-width: 0;
         }
         .round-label {
-          font-size: clamp(1rem, 2vw, 1.2rem);
+          font-size: clamp(0.9rem, 1.8vw, 1.05rem);
           font-weight: 600;
           display: block;
-          margin-bottom: 0.2rem;
+          margin-bottom: 0.15rem;
           color: #000;
         }
         .status-label {
@@ -459,7 +461,7 @@ export const ApplicationCard: React.FC<ApplicationCardProps> = ({
           flex-shrink: 0;
           display: flex;
           justify-content: center;
-          padding-top: clamp(0.8rem, 1.5vw, 1.2rem);
+          padding-top: clamp(0.6rem, 1.2vw, 0.9rem);
           border-top: 1px solid rgba(255, 255, 255, 0.2);
           margin-top: auto;
         }

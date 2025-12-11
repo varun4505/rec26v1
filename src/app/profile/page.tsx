@@ -382,6 +382,46 @@ export default function ProfilePage() {
         .applications-grid::-webkit-scrollbar {
           display: none;
         }
+
+        /* Responsive Styles for Smaller Laptops */
+        @media (max-width: 1400px) {
+          .main-card {
+            padding: clamp(1rem, 2.5vw, 2rem);
+          }
+
+          .applications-grid {
+            gap: clamp(0.9rem, 1.5vw, 1.5rem);
+            padding: 0 1rem 0.5rem 1rem;
+            margin: 0 -1rem;
+          }
+        }
+
+        @media (max-width: 1200px) {
+          .page-wrapper {
+            padding: clamp(0.8rem, 2vw, 1.2rem);
+          }
+
+          .main-card {
+            padding: clamp(0.9rem, 2vw, 1.5rem);
+          }
+
+          .logo {
+            width: clamp(70px, 14vw, 100px);
+          }
+
+          .dashboard-button {
+            padding: 7px 16px;
+            font-size: 14px;
+          }
+
+          .applied-heading {
+            font-size: clamp(0.95rem, 2.2vw, 1.3rem);
+          }
+
+          .applications-grid {
+            gap: clamp(0.8rem, 1.2vw, 1.2rem);
+          }
+        }
       `}</style>
     </div>
   );

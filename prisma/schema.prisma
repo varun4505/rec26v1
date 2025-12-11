@@ -118,3 +118,18 @@ model Task {
   @@index([round])
 }
 
+model Deadline {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  domain    String
+  subdomain String?  // null means applies to all subdomains
+  round     String   // round1, round2
+  deadline  DateTime
+
+  @@unique([domain, subdomain, round])
+  @@index([domain])
+  @@index([round])
+}
+

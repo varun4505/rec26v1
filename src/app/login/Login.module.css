@@ -6,7 +6,7 @@
 
 .pageContainer {
   min-height: 100vh;
-  background-color: var(--color-dark-bg);
+  background-color: #0a0a0a;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -27,8 +27,7 @@
 
 .logo {
     /* Style for the Image component className */
-    /* This inverts your black logo to white for the dark background */
-    filter: invert(100%); 
+    /* Logo is already white, no filter needed */
 }
 
 .time {
@@ -37,7 +36,7 @@
   font-size: 32px;                /* 32px */
   line-height: 100%;              /* 100% */
   letter-spacing: 0.01em;         /* 1% */
-  color: var(--color-text-light); /* White text */
+  color: #ffffff;                 /* White text */
 }
 
 /* ----------------------------------------------------- */
@@ -49,18 +48,17 @@
   max-width: 1440px; /* Adjusted to match your header max-width */
   min-height: 650px;
   margin-top: 28px;
-  border-radius: var(--border-radius-large); /* 40px */
+  border-radius: 40px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
   padding: 40px 56px;
   margin-left: auto;
   margin-right: auto;
   
   /* Set text color for content inside the card */
-  color: var(--color-text-dark);
+  color: #212121;
   
-  /* Background from your Figma image (white with orange glow) */
-  background-color: var(--color-card-bg); /* Fallback */
-  background-image: radial-gradient(circle at 50% 100%, #fff0e6 0%, #ffffff 60%);
+  /* Background - light gray similar to the image */
+  background-color: #e8e8e8;
 }
 
 .welcomeTitle {
@@ -78,9 +76,9 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background-color: var(--color-primary-orange);
+  background-color: #f5a97a;
   padding: 20px 32px;
-  border-radius: var(--border-radius-medium); /* 12px */
+  border-radius: 12px;
   margin-bottom: 40px;
 }
 
@@ -90,7 +88,7 @@
   font-size: 24px;                /* <-- Changed from 18px */
   line-height: 100%;              /* <-- Added */
   letter-spacing: 0.01em;         /* <-- Added (1%) */
-  color: var(--color-text-dark); /* White text */
+  color: #212121;                 /* Dark text */
 }
 
 .googleButton {
@@ -142,8 +140,8 @@
 
 /* This is the correct Instructions Box style from your Figma */
 .instructionsBox {
-  background-color: #fff0e6; /* Light peach color from image */
-  border-radius: var(--border-radius-medium);
+  background-color: #f5d5c3; /* Light peach color from image */
+  border-radius: 12px;
   min-height: 300px;
   padding: 24px;
 }

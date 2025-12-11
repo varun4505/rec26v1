@@ -8,6 +8,7 @@ import {
 	SubjectiveQuestion,
 } from "../../../../components/question_types";
 import { validateDomainSubmission, getRoundInfo, type DomainType, type RoundType } from "@/data/domainConfig";
+import AlertModal from "@/components/AlertModal";
 
 // Helper function to format subdomain names
 function formatSubdomainName(subdomain: string | null): string {
@@ -293,6 +294,117 @@ export default function QuizPage() {
 	const [tasks, setTasks] = useState<any[]>([]);
 	const [tasksLoading, setTasksLoading] = useState(true);
 	const [taskSubmissionUrl, setTaskSubmissionUrl] = useState<string>('');
+	const [lastSaved, setLastSaved] = useState<Date | null>(null);
+	const [alertModal, setAlertModal] = useState<{isOpen: boolean; title: string; message: string}>({
+		isOpen: false,
+		title: "",
+		message: ""
+	});
+
+	// Generate unique cache key for this quiz attempt
+	const cacheKey = `quiz_${domain}_${subdomain}_${round}_${session?.user?.email}`;
+
+	// Load existing submission or cached answers on mount
+	useEffect(() => {
+		const loadExistingData = async () => {
+			try {
+				// First, try to fetch existing submission from database
+				const domainSlugMap: Record<string, string> = {
+					'tech': 'technical',
+					'management': 'management',
+					'design': 'design',
+				};
+				const fullDomainId = domainSlugMap[domain as string] || (domain as string);
+				const roundParam = (round as string).startsWith('round') 
+					? (round as string) 
+					: `round${round}`;
+
+				const queryParams = new URLSearchParams({
+					domain: fullDomainId,
+					subdomain: (subdomain as string) || 'none',
+					round: roundParam,
+				});
+
+				const response = await fetch(`/api/submission?${queryParams}`);
+				const result = await response.json();
+
+				console.log('Fetched submission result:', result);
+
+				if (result.success && result.submission) {
+					console.log('Submission answers raw:', result.submission.answers);
+					
+					// For task submissions, just set the URL
+					if (result.submission.submissionUrl) {
+						setTaskSubmissionUrl(result.submission.submissionUrl);
+						console.log('Loaded task submission URL:', result.submission.submissionUrl);
+						return;
+					}
+					
+					// For question submissions, we need to fetch questions first to match answers
+					// Store the raw answers temporarily and map them after questions are loaded
+					if (result.submission.answers && Array.isArray(result.submission.answers)) {
+						// Store raw answers in a temporary variable
+						(window as any).__pendingAnswers = result.submission.answers;
+						console.log('Stored pending answers, will map after questions load');
+					}
+					return; // Don't load from cache if we have database data
+				}
+
+				// If no database submission, fall back to localStorage cache
+				if (typeof window !== 'undefined') {
+					const cached = localStorage.getItem(cacheKey);
+					if (cached) {
+						try {
+							const parsed = JSON.parse(cached);
+							setAnswers(parsed.answers || {});
+							setTaskSubmissionUrl(parsed.taskSubmissionUrl || '');
+							setLastSaved(parsed.savedAt ? new Date(parsed.savedAt) : null);
+							console.log('Loaded from cache:', parsed.answers);
+						} catch (err) {
+							console.error('Error loading cached answers:', err);
+						}
+					}
+				}
+			} catch (err) {
+				console.error('Error loading existing data:', err);
+				// Fall back to localStorage on error
+				if (typeof window !== 'undefined') {
+					const cached = localStorage.getItem(cacheKey);
+					if (cached) {
+						try {
+							const parsed = JSON.parse(cached);
+							setAnswers(parsed.answers || {});
+							setTaskSubmissionUrl(parsed.taskSubmissionUrl || '');
+							setLastSaved(parsed.savedAt ? new Date(parsed.savedAt) : null);
+						} catch (err) {
+							console.error('Error loading cached answers:', err);
+						}
+					}
+				}
+			}
+		};
+
+		if (session?.user?.email) {
+			loadExistingData();
+		}
+	}, [cacheKey, domain, subdomain, round, session, subdomainStr]);
+
+	// Auto-save answers to localStorage with debouncing
+	useEffect(() => {
+		if (typeof window !== 'undefined' && (Object.keys(answers).length > 0 || taskSubmissionUrl)) {
+			const timer = setTimeout(() => {
+				const dataToSave = {
+					answers,
+					taskSubmissionUrl,
+					savedAt: new Date().toISOString(),
+				};
+				localStorage.setItem(cacheKey, JSON.stringify(dataToSave));
+				setLastSaved(new Date());
+			}, 500); // Debounce for 500ms
+
+			return () => clearTimeout(timer);
+		}
+	}, [answers, taskSubmissionUrl, cacheKey]);
 
 	// Check round access on mount
 	useEffect(() => {
@@ -355,6 +467,21 @@ export default function QuizPage() {
 
 					if (result.success) {
 						setQuestions(result.questions);
+						
+						// Map pending answers to questions if they exist
+						const pendingAnswers = (window as any).__pendingAnswers;
+						if (pendingAnswers && Array.isArray(pendingAnswers)) {
+							const mappedAnswers: Record<string, string> = {};
+							result.questions.forEach((question: any, index: number) => {
+								if (pendingAnswers[index] && pendingAnswers[index].answer !== undefined) {
+									mappedAnswers[question.id] = String(pendingAnswers[index].answer);
+								}
+							});
+							setAnswers(mappedAnswers);
+							console.log('Mapped answers to questions:', mappedAnswers);
+							// Clear pending answers
+							delete (window as any).__pendingAnswers;
+						}
 					} else {
 						setError(result.error || "Failed to load questions");
 					}
@@ -523,6 +650,12 @@ export default function QuizPage() {
 
 	const handleAnswerChange = (questionId: string, value: string) => {
 		setAnswers(prev => ({ ...prev, [questionId]: value }));
+		// Auto-save will be triggered by useEffect
+	};
+
+	const handleTaskUrlChange = (value: string) => {
+		setTaskSubmissionUrl(value);
+		// Auto-save will be triggered by useEffect
 	};
 
 	const handleSubmit = async () => {
@@ -631,7 +764,20 @@ export default function QuizPage() {
 			console.log('API Response:', result);
 
 			if (result.success) {
+				// Clear cached answers after successful submission
+				if (typeof window !== 'undefined') {
+					localStorage.removeItem(cacheKey);
+				}
+				// Show success message
+			setAlertModal({
+				isOpen: true,
+				title: "Success",
+				message: "Submission successful! You can resubmit before the deadline if needed."
+			});
+			// Redirect to dashboard after a short delay
+			setTimeout(() => {
 				router.push('/dashboard');
+			}, 2000);
 			} else {
 				console.error('Submission failed:', result.error);
 				setError(result.error || 'Submission failed. Please try again.');
@@ -651,6 +797,14 @@ export default function QuizPage() {
 		return formatDomainName(domain as string);
 	};
 
+	const getRoundNumber = () => {
+		const roundStr = round as string;
+		if (roundStr.startsWith('round')) {
+			return roundStr.replace('round', '');
+		}
+		return roundStr;
+	};
+
 	return (
 		<FormsShell>
 			<div className="flex flex-col gap-10 p-8">
@@ -660,7 +814,7 @@ export default function QuizPage() {
 							<h2 className="text-3xl font-semibold sm:text-4xl">
 								{getTitle()}
 							</h2>
-							<p className="text-lg text-black/60 sm:text-xl">Round {round}</p>
+							<p className="text-lg text-black/60 sm:text-xl">Round {getRoundNumber()}</p>
 						</div>
 						<div className="text-right text-black/60">
 							<p className="text-sm sm:text-base">{session?.user?.email}</p>
@@ -710,10 +864,15 @@ export default function QuizPage() {
 								<input
 									type="url"
 									value={taskSubmissionUrl}
-									onChange={(e) => setTaskSubmissionUrl(e.target.value)}
+									onChange={(e) => handleTaskUrlChange(e.target.value)}
 									placeholder="https://github.com/username/repository"
 									className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-[#FF8F6B] focus:outline-none text-gray-900"
 								/>
+								{lastSaved && (
+									<p className="text-xs text-gray-500">
+										Auto-saved at {lastSaved.toLocaleTimeString()}
+									</p>
+								)}
 							</div>
 						</>
 					)}
@@ -732,6 +891,11 @@ export default function QuizPage() {
 									onChange={(value) => handleAnswerChange(question.id, value)}
 								/>
 							))}
+							{lastSaved && (
+								<p className="text-xs text-gray-500 text-center">
+									Auto-saved at {lastSaved.toLocaleTimeString()}
+								</p>
+							)}
 						</>
 					)}
 
@@ -764,6 +928,13 @@ export default function QuizPage() {
 					</div>
 				</article>
 			</div>
+
+			<AlertModal
+				isOpen={alertModal.isOpen}
+				title={alertModal.title}
+				message={alertModal.message}
+				onClose={() => setAlertModal({isOpen: false, title: "", message: ""})}
+			/>
 		</FormsShell>
 	);
 }

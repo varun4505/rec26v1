@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { signOut } from "next-auth/react";
 import Image from "next/image";
 import Clock from "./clock";
+import { MobileRestriction } from "@/components/MobileRestriction";
 
 interface FormsShellProps {
 	children: React.ReactNode;
@@ -16,9 +17,14 @@ export default function FormsShell({ children }: FormsShellProps) {
 	const menuRef = useRef<HTMLDivElement>(null);
 
 	return (
-		<main className="flex-col min-h-screen bg-black h-screen w-screen max-h-screen max-w-screen p-[2%]">
-			{/* Header */}
-		<header className="flex items-center justify-between mb-8 w-full h-[10%] px-7">
+		<>
+			{/* Mobile Restriction - Only shows on mobile */}
+			<MobileRestriction />
+
+			{/* Desktop View */}
+			<main className="flex-col min-h-screen bg-black h-screen w-screen max-h-screen max-w-screen p-[2%] desktop-only">
+				{/* Header */}
+			<header className="flex items-center justify-between mb-8 w-full h-[10%] px-7">
 			<div className="flex items-center gap-2">
 				<Image src="/VIIT 2.svg" alt="VinnovatIT" height={150} width={150} />
 			</div>
@@ -78,5 +84,63 @@ export default function FormsShell({ children }: FormsShellProps) {
 				</div>
 			</section>
 		</main>
+
+		<style jsx global>{`
+			/* Responsive Styles */
+			@media (max-width: 1400px) {
+				main {
+					padding: 1.5%;
+				}
+
+				header {
+					margin-bottom: 1.5rem;
+					padding: 0 1.5rem;
+				}
+
+				header img {
+					width: 130px !important;
+					height: auto !important;
+				}
+
+				header button {
+					padding: 0.5rem 1rem;
+					font-size: 1rem;
+				}
+			}
+
+			@media (max-width: 1200px) {
+				main {
+					padding: 1.2%;
+				}
+
+				header {
+					margin-bottom: 1.2rem;
+					padding: 0 1rem;
+					height: auto;
+					min-height: 60px;
+				}
+
+				header img {
+					width: 110px !important;
+				}
+
+				header button {
+					padding: 0.4rem 0.8rem;
+					font-size: 0.9rem;
+				}
+
+				section {
+					height: calc(100% - 80px) !important;
+				}
+			}
+
+			/* Hide desktop view on mobile */
+			@media (max-width: 900px) {
+				.desktop-only {
+					display: none !important;
+				}
+			}
+		`}</style>
+		</>
 	);
 }

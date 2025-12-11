@@ -223,20 +223,30 @@ export async function DELETE(req: Request) {
       );
     }
 
-    // Check if user has already submitted for this domain/subdomain
-    const hasSubmission = application.domainSubmissions.some(
-      (sub: any) =>
-        sub.domain === domain &&
-        (subdomain === "none" || !subdomain
-          ? sub.subdomain === null
-          : sub.subdomain === subdomain)
-    );
+    // Users can modify selections before the deadline, even after submission
+    // Check deadline instead of submission status
+    const now = new Date();
+    
+    // Check if there's a specific deadline for this domain/subdomain
+    const deadline = await prisma.deadline.findFirst({
+      where: {
+        domain: domain === 'tech' ? 'technical' : domain,
+        OR: [
+          { subdomain: subdomain && subdomain !== 'none' ? subdomain : null },
+          { subdomain: null }, // Fall back to domain-wide deadline
+        ],
+        round: 'round1', // Selection changes affect round1
+      },
+      orderBy: {
+        subdomain: 'desc', // Prioritize specific subdomain deadlines
+      },
+    });
 
-    if (hasSubmission) {
+    if (deadline && now > deadline.deadline) {
       return NextResponse.json(
         {
           success: false,
-          error: "Cannot remove selection after submission. Contact admin to change.",
+          error: "Selection deadline has passed. Contact admin to make changes.",
         },
         { status: 400 }
       );

@@ -66,7 +66,10 @@ export async function GET() {
         if (round1Sub.isPassed === true) {
           round1Status = "Passed";
           canAccessRound2 = true;
-        } else if (round1Sub.isPassed === false) {
+        } else if (round1Sub.submittedAt) {
+          // If submitted but not yet evaluated, show "Submitted"
+          round1Status = "Submitted";
+        } else if (round1Sub.isPassed === false && !round1Sub.submittedAt) {
           round1Status = "Not Passed";
         } else {
           round1Status = "Under Review";
@@ -76,7 +79,10 @@ export async function GET() {
       if (round2Sub) {
         if (round2Sub.isPassed === true) {
           round2Status = "Passed";
-        } else if (round2Sub.isPassed === false) {
+        } else if (round2Sub.submittedAt) {
+          // If submitted but not yet evaluated, show "Submitted"
+          round2Status = "Submitted";
+        } else if (round2Sub.isPassed === false && !round2Sub.submittedAt) {
           round2Status = "Not Passed";
         } else {
           round2Status = "Under Review";
