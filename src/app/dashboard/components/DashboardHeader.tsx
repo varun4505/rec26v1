@@ -61,10 +61,10 @@ export default function DashboardHeader() {
         <Link href="/" passHref>
           <button className={styles.goToHomeButton}>Go to Home</button>
         </Link>
-        
+
         {/* --- Wrapper for menu and button --- */}
         <div className={styles.userMenuWrapper} ref={menuRef}>
-          <div 
+          <div
             className={styles.userInitialCircle}
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             style={{ overflow: 'hidden' }}
@@ -81,12 +81,12 @@ export default function DashboardHeader() {
               userInitial
             )}
           </div>
-          
+
           {/* --- Conditionally render the dropdown --- */}
           {isMenuOpen && <UserDropdown />}
         </div>
         {/* --- End of wrapper --- */}
-        
+
         <span className={styles.headerTime}>
           {currentTime || '00:00'}
         </span>

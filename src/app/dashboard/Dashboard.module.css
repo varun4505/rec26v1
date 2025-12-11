@@ -23,8 +23,7 @@
   z-index: 3;
 }
 
-.headerLeft {
-}
+.headerLeft {}
 
 .headerRight {
   display: flex;
@@ -46,7 +45,7 @@
 }
 
 .goToHomeButton:hover {
-   background-color: #f0f0f0;
+  background-color: #f0f0f0;
 }
 
 .userInitialCircle {
@@ -73,21 +72,21 @@
 }
 
 .mainContentArea {
-    width: 100%;
-    max-width: 1440px;
-    margin-top: 0px;
-    display: flex;
-    justify-content: center;
-    position: relative;
-    z-index: 2;
+  width: 100%;
+  max-width: 1440px;
+  margin-top: 0px;
+  display: flex;
+  justify-content: center;
+  position: relative;
+  z-index: 2;
 }
 
 .dashboardCard {
   width: 100%;
-  max-width: 1227px; 
+  max-width: 1227px;
   min-height: 720px;
   background-color: #FFFFFF;
-  border-radius: var(--border-radius-large);
+  border-radius: 57px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
   padding: 40px 56px;
   color: var(--color-text-dark);
@@ -164,7 +163,7 @@
 }
 
 .tabButton:not(.activeTab):hover {
-   background-color: rgba(255, 255, 255, 0.1); 
+  background-color: rgba(255, 255, 255, 0.1);
 }
 
 .domainContentContainer {
@@ -217,7 +216,7 @@
   font-family: var(--font-khand);
   font-weight: 400;
   font-size: 96px;
-  line-height: 1; 
+  line-height: 1;
   letter-spacing: 0.01em;
   color: #000000;
   margin: 0;
@@ -241,17 +240,17 @@
   font-family: var(--font-khand);
   font-weight: 400;
   font-size: 80px;
-  line-height: 1; 
+  line-height: 1;
   letter-spacing: 0.01em;
   color: #000000;
-  margin: 0; 
+  margin: 0;
   padding-top: 22px;
 }
 
 .managementSubtitle {
   font-family: var(--font-khand);
   font-weight: 400;
-  font-size: 24px; 
+  font-size: 24px;
   line-height: 1.2;
   letter-spacing: 0.01em;
   color: rgba(0, 0, 0, 0.25);
@@ -286,7 +285,7 @@
   font-family: var(--font-khand);
   font-weight: 400;
   font-size: 24px;
-  line-height: 1.2; 
+  line-height: 1.2;
   letter-spacing: 0.01em;
   color: #000000;
   margin: 0 0 15px 7px;
@@ -303,7 +302,7 @@
   height: 140px;
   background-color: rgba(248, 104, 0, 0.31);
   border-radius: 19px;
-  cursor: pointer; 
+  cursor: pointer;
   transition: all 0.3s ease;
   display: flex;
   flex-direction: column;
@@ -318,7 +317,7 @@
 }
 
 .subdomainBox:hover {
-   background-color: rgba(248, 104, 0, 0.45); 
+  background-color: rgba(248, 104, 0, 0.45);
 }
 
 .subdomainBox.selected {

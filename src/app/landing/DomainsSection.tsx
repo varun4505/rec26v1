@@ -26,24 +26,24 @@ export default function DomainsSection() {
   ];
 
   return (
-    <section className="domains-section">
+    <section className="domains-section" id="domains">
       <h2 className="domains-title font-array">Domains</h2>
-      
+
       <div className="domains-grid">
         {domainData.map((domain, index) => (
-          <div 
-            key={index} 
+          <div
+            key={index}
             className="domain-card"
             style={{ backgroundColor: domain.bg }}
           >
             <h3 className="card-title font-array">{domain.title}</h3>
             <p className="card-desc font-khand">{domain.desc}</p>
-            
+
             <div className="card-img-container">
-              <Image 
-                src={domain.img} 
-                alt={domain.title} 
-                width={200} 
+              <Image
+                src={domain.img}
+                alt={domain.title}
+                width={200}
                 height={200}
                 className="domain-icon"
               />

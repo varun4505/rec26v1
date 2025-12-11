@@ -508,7 +508,6 @@ html {
   display: inline-flex;
   transform: rotate(4.839deg);
   padding: 0.70675rem 0 0.7465rem 0;
-  justify-content: center;
   align-items: center;
   border-top: 1px solid rgba(255, 255, 255, 0.15);
   border-bottom: 1px solid rgba(255, 255, 255, 0.15);
@@ -521,7 +520,6 @@ html {
   display: inline-flex;
   transform: rotate(-5.859deg);
   padding: 0.65506rem 0 0.65006rem 0;
-  justify-content: center;
   align-items: center;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 }

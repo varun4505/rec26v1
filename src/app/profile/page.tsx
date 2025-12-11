@@ -53,7 +53,9 @@ export default function ProfilePage() {
   const [applications, setApplications] = useState<UserApplication[]>([]);
   const [loading, setLoading] = useState(true);
   const gridRef = useRef<HTMLDivElement>(null);
-  const userName = session?.user?.name || "User";
+  const rawName = session?.user?.name || "User";
+  const userName = rawName.replace(/\b(21|22|23|24|25|26)[A-Za-z0-9]*$/, "").trim();
+
   const userEmail = session?.user?.email || "";
   const userImage = session?.user?.image;
   const userInitial = userName.charAt(0).toUpperCase();
@@ -102,10 +104,10 @@ export default function ProfilePage() {
     try {
       const response = await fetch('/api/profile');
       console.log('API response status:', response.status);
-      
+
       const data = await response.json();
       console.log('Profile API response:', data);
-      
+
       if (data.success) {
         setApplications(data.applications || []);
         console.log('Applications set:', data.applications);
@@ -187,10 +189,10 @@ export default function ProfilePage() {
             <h2 className="applied-heading">Your Applications</h2>
 
             {loading ? (
-              <div style={{ 
-                display: 'flex', 
-                justifyContent: 'center', 
-                alignItems: 'center', 
+              <div style={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
                 flex: 1,
                 fontSize: 'clamp(0.9rem, 2vw, 1.1rem)',
                 color: '#666'

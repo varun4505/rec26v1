@@ -15,16 +15,16 @@ export const Hero: React.FC = () => {
     {
       src: "/assets/images/gallery/1.png",
       alt: "Team Work",
-      rotation: -12,
+      rotation: -6,
       x: -160,
-      y: 110,
+      y: 50,
     },
     {
       src: "/assets/images/gallery/2.png",
       alt: "Lab Life",
-      rotation: -6,
+      rotation: -3,
       x: -80,
-      y: 40,
+      y: 20,
     },
     {
       src: "/assets/images/gallery/3.png",
@@ -36,23 +36,23 @@ export const Hero: React.FC = () => {
     {
       src: "/assets/images/gallery/4.png",
       alt: "Tech Talk",
-      rotation: 6,
+      rotation: 3,
       x: 80,
-      y: 40,
+      y: 20,
     },
     {
       src: "/assets/images/gallery/5.png",
       alt: "Fun Time",
-      rotation: 12,
+      rotation: 6,
       x: 160,
-      y: 110,
+      y: 50,
     },
   ];
 
   return (
     <>
       {/* Hero Section */}
-      <section className="hero-section">
+      <section className="hero-section" id="home">
         <h1 className="hero-title">
           <span className="hero-main-text">VinnovateIT</span>
           <span className="hero-subtitle">recruiting now</span>
@@ -100,7 +100,7 @@ export const Hero: React.FC = () => {
           <div className="marquee-band band-1">
             <div className="marquee-track">
               {/* Repeated content for seamless loop */}
-              {[...Array(20)].map((_, i) => (
+              {[...Array(50)].map((_, i) => (
                 <span key={i} className="marquee-text font-array">
                   Develop. Deliver. Dream. Design. &nbsp;&nbsp;
                 </span>
@@ -111,7 +111,7 @@ export const Hero: React.FC = () => {
           {/* Band 2: Ideas in motion (Khand Font) */}
           <div className="marquee-band band-2">
             <div className="marquee-track reverse">
-              {[...Array(20)].map((_, i) => (
+              {[...Array(50)].map((_, i) => (
                 <span key={i} className="marquee-text font-khand">
                   Ideas in motion. Always. &nbsp;&nbsp;
                 </span>
