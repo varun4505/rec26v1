@@ -2,7 +2,6 @@
 
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import Link from "next/link";
 import { IoArrowForward } from "react-icons/io5";
 
 export const Hero: React.FC = () => {
@@ -60,7 +59,7 @@ export const Hero: React.FC = () => {
         </h1>
 
         <a href="/profile" className="cta-button">
-          LET'S GO
+          LET&apos;S GO
           <IoArrowForward className="button-icon" />
         </a>
       </section>

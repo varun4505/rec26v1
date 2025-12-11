@@ -17,172 +17,62 @@ const ProjectShowcase: React.FC<ProjectShowcaseProps> = ({
 	link,
 }) => {
 	return (
-		<>
-			<div className="project-showcase">
-				<div className="project-images">
-					<div className="project-image-left">
-						<Image
-							src={imageSource}
-							alt="Project"
-							fill
-							className="object-cover"
-						/>
-						<div className="image-overlay"></div>
-					</div>
-					<div className="project-image-right">
-						<Image
-							src={imageSource}
-							alt="Project"
-							fill
-							className="object-cover"
-						/>
-						<div className="image-overlay"></div>
-					</div>
-					<div className="project-image-center">
-						<Image
-							src="/temp_project_image.png"
-							alt="Project"
-							fill
-							className="object-cover"
-						/>
-					</div>
+		<div className="relative z-5 text-center max-w-[900px] px-6 py-16 w-full mx-auto">
+			<div className="relative flex items-center justify-center w-full h-[35vh] mb-8">
+				{/* Left Image */}
+				<div className="absolute left-1/2 -translate-x-[120%] w-[28vh] h-[28vh] rounded-full border-4 border-black overflow-hidden">
+					<Image
+						src={imageSource}
+						alt="Project"
+						fill
+						className="object-cover"
+					/>
+					<div className="absolute inset-0 bg-black rounded-full opacity-25"></div>
 				</div>
-				<div className="project-number">{projectNumber}</div>
-				<h3 className="project-heading">{heading}</h3>
-				<p className="project-about">{about}</p>
-				<div className="project-cta">
-					<a href={link} className="cta-button secondary">
-						Know More
-					</a>
+
+				{/* Right Image */}
+				<div className="absolute left-1/2 translate-x-[20%] w-[28vh] h-[28vh] rounded-full border-4 border-black overflow-hidden">
+					<Image
+						src={imageSource}
+						alt="Project"
+						fill
+						className="object-cover"
+					/>
+					<div className="absolute inset-0 bg-black rounded-full opacity-25"></div>
+				</div>
+
+				{/* Center Image */}
+				<div className="relative w-[35vh] h-[35vh] rounded-full border-4 border-black overflow-hidden shadow-[0_25px_50px_rgba(0,0,0,0.25)]">
+					<Image
+						src="/temp_project_image.png"
+						alt="Project"
+						fill
+						className="object-cover"
+					/>
 				</div>
 			</div>
 
-			<style jsx>{`
-				/* --- Buttons --- */
-				.cta-button.secondary {
-					display: inline-flex;
-					align-items: center;
-					justify-content: center;
-					gap: 12px;
-					border-radius: 9999px;
-					font-family: var(--font-khand), sans-serif;
-					line-height: 1;
-					transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1),
-						box-shadow 0.2s ease;
-					opacity: 80%;
-					cursor: pointer;
-					border: none;
-					position: relative;
-					z-index: 5;
-					text-decoration: none;
-					text-transform: capitalize;
-					background: linear-gradient(90deg, #ff9a5e 0%, #f86800 100%);
-					color: #000;
-					font-weight: 600;
-					padding: 0.8rem 3.5rem;
-					box-shadow: 0 4px 15px rgba(248, 104, 0, 0.2);
-					font-size: 1.4rem;
-				}
-				.cta-button.secondary:hover {
-					transform: scale(1.05) translateY(-2px);
-					box-shadow: 0 10px 30px rgba(248, 104, 0, 0.4);
-				}
-				.cta-button.secondary:active {
-					transform: scale(0.95);
-				}
+			{/* Project Info */}
+			<div className="text-2xl sm:text-3xl lg:text-[2.5rem] mb-2 text-black font-normal font-khand">
+				{projectNumber}
+			</div>
+			<h3 className="text-lg sm:text-xl lg:text-[2.3rem] mb-6 text-black font-medium font-khand">
+				{heading}
+			</h3>
+			<p className="text-base sm:text-lg lg:text-[1.4rem] leading-relaxed text-[#444] mb-12 font-light font-khand">
+				{about}
+			</p>
 
-				/* --- Project Showcase --- */
-				.project-showcase {
-					position: relative;
-					z-index: 5;
-					text-align: center;
-					max-width: 900px;
-					padding: 4rem 1.5rem;
-					width: 100%;
-					margin: 0 auto;
-				}
-
-				.project-images {
-					position: relative;
-					display: flex;
-					align-items: center;
-					justify-content: center;
-					width: 100%;
-					height: 35vh;
-					margin-bottom: 2rem;
-				}
-
-				.project-image-left {
-					position: absolute;
-					left: 50%;
-					transform: translateX(-120%);
-					width: 28vh;
-					height: 28vh;
-					border-radius: 50%;
-					border: 4px solid #000;
-					overflow: hidden;
-				}
-
-				.project-image-right {
-					position: absolute;
-					left: 50%;
-					transform: translateX(20%);
-					width: 28vh;
-					height: 28vh;
-					border-radius: 50%;
-					border: 4px solid #000;
-					overflow: hidden;
-				}
-
-				.image-overlay {
-					position: absolute;
-					inset: 0;
-					background: black;
-					opacity: 0.25;
-					border-radius: 50%;
-				}
-
-				.project-image-center {
-					position: relative;
-					width: 35vh;
-					height: 35vh;
-					border-radius: 50%;
-					border: 4px solid #000;
-					overflow: hidden;
-					box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
-				}
-
-				.project-number {
-					font-size: clamp(1.5rem, 3vw, 2.5rem);
-					margin-bottom: 0.5rem;
-					color: #000;
-					font-weight: 400;
-					font-family: var(--font-khand), sans-serif;
-				}
-
-				.project-heading {
-					font-size: clamp(1.3rem, 2.5vw, 1.8rem);
-					margin-bottom: 1.5rem;
-					color: #000;
-					font-weight: 500;
-					font-family: var(--font-khand), sans-serif;
-				}
-
-				.project-about {
-					font-size: clamp(1.1rem, 2vw, 1.4rem);
-					line-height: 1.6;
-					color: #444;
-					margin-bottom: 3rem;
-					font-weight: 300;
-					font-family: var(--font-khand), sans-serif;
-				}
-
-				.project-cta {
-					display: flex;
-					justify-content: center;
-				}
-			`}</style>
-		</>
+			{/* CTA Button */}
+			<div className="flex justify-center">
+				<a
+					href={link}
+					className="inline-flex items-center justify-center gap-3 rounded-full font-khand leading-none transition-all duration-200 opacity-80 cursor-pointer border-none relative z-5 no-underline capitalize bg-gradient-to-r from-[#ff9a5e] to-[#f86800] text-black font-semibold px-14 py-3 text-2xl shadow-[0_4px_15px_rgba(248,104,0,0.2)] hover:scale-105 hover:-translate-y-0.5 hover:shadow-[0_10px_30px_rgba(248,104,0,0.4)] active:scale-95"
+				>
+					Know More
+				</a>
+			</div>
+		</div>
 	);
 };
 export default ProjectShowcase;
