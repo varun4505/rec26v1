@@ -1,10 +1,13 @@
 "use client";
 
 import React from "react";
+import { useRouter } from "next/navigation";
 import { MdOutlineFolderOpen } from "react-icons/md";
 import { IoAddCircleOutline } from "react-icons/io5";
 
 export const EmptyState: React.FC = () => {
+  const router = useRouter();
+
   return (
     <>
       <div className="empty-state">
@@ -14,7 +17,11 @@ export const EmptyState: React.FC = () => {
         </div>
         <h3>No Applications Yet</h3>
         <p>Choose your subdomains and start your journey with us!</p>
-        <button className="glass-button" style={{ padding: '0.675rem 1.8rem', fontSize: '0.855rem', display: 'flex', alignItems: 'center', gap: '0.45rem', flexShrink: 0, fontWeight: 600 }}>
+        <button 
+          className="glass-button" 
+          style={{ padding: '0.675rem 1.8rem', fontSize: '0.855rem', display: 'flex', alignItems: 'center', gap: '0.45rem', flexShrink: 0, fontWeight: 600 }}
+          onClick={() => router.push('/dashboard')}
+        >
           <svg
             width="16"
             height="16"

@@ -69,7 +69,6 @@ export async function GET(request: NextRequest) {
         submissionUrl: submission.submissionUrl,
         submittedAt: submission.submittedAt,
         isPassed: submission.isPassed,
-        feedback: submission.feedback,
       },
     });
   } catch (error) {

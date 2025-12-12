@@ -244,6 +244,32 @@ export default function SubdomainSelector({ domain }: SubdomainSelectorProps) {
               const round1Status = status?.round1Status || 'Pending';
               const canAccessRound2 = status?.canAccessRound2 || false;
               const round2Status = status?.round2Status;
+              const isRejected = round1Status === 'Not Passed' || round2Status === 'Not Passed';
+
+              if (isRejected) {
+                return (
+                  <div style={{ marginTop: '10px', display: 'flex', gap: '10px', flexDirection: 'column' }}>
+                    <div style={{ 
+                      fontSize: '13px', 
+                      fontWeight: 700,
+                      color: '#000',
+                      textAlign: 'left',
+                      lineHeight: '1.4'
+                    }}>
+                      Hey, thanks for giving the recruitment your best shot.
+                    </div>
+                    <div style={{ 
+                      fontSize: '12px', 
+                      color: '#333',
+                      textAlign: 'left',
+                      lineHeight: '1.5'
+                    }}>
+                      You didn't make it to the next round this time, but your effort didn't go unnoticed.
+                      Keep learning, keep building — we'd love to see you apply again soon.
+                    </div>
+                  </div>
+                );
+              }
 
               return (
                 <div style={{ marginTop: '10px', display: 'flex', gap: '8px', flexDirection: 'column' }}>
@@ -322,7 +348,7 @@ export default function SubdomainSelector({ domain }: SubdomainSelectorProps) {
                       )}
                     </div>
                   )}
-                  {canModify && (
+                  {canModify && round1Status !== 'Passed' && round2Status !== 'Passed' && (
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
@@ -369,6 +395,32 @@ export default function SubdomainSelector({ domain }: SubdomainSelectorProps) {
                 const round1Status = status?.round1Status || 'Pending';
                 const canAccessRound2 = status?.canAccessRound2 || false;
                 const round2Status = status?.round2Status;
+                const isRejected = round1Status === 'Not Passed' || round2Status === 'Not Passed';
+
+                if (isRejected) {
+                  return (
+                    <div style={{ marginTop: '6px', display: 'flex', gap: '8px', flexDirection: 'column', width: '100%' }}>
+                      <div style={{ 
+                        fontSize: '13px', 
+                        fontWeight: 700,
+                        color: '#000',
+                        textAlign: 'left',
+                        lineHeight: '1.4'
+                      }}>
+                        Hey, thanks for giving the recruitment your best shot.
+                      </div>
+                      <div style={{ 
+                        fontSize: '12px', 
+                        color: '#333',
+                        textAlign: 'left',
+                        lineHeight: '1.5'
+                      }}>
+                        You didn't make it to the next round this time, but your effort didn't go unnoticed.
+                        Keep learning, keep building — we'd love to see you apply again soon.
+                      </div>
+                    </div>
+                  );
+                }
 
                 return (
                   <div style={{ marginTop: '6px', display: 'flex', gap: '6px', flexDirection: 'column', width: '100%' }}>
@@ -448,7 +500,7 @@ export default function SubdomainSelector({ domain }: SubdomainSelectorProps) {
                         )}
                       </>
                     )}
-                    {canModify && (
+                    {canModify && round1Status !== 'Passed' && round2Status !== 'Passed' && (
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
@@ -474,7 +526,7 @@ export default function SubdomainSelector({ domain }: SubdomainSelectorProps) {
       <ConfirmModal
         isOpen={showConfirmModal}
         title="Remove Selection"
-        message="Are you sure you want to remove this selection? This action cannot be undone."
+        message="Are you sure you want to remove this selection? All your responses and submissions for this domain will be permanently deleted. This action cannot be undone."
         onConfirm={handleConfirmRemoval}
         onCancel={handleCancelRemoval}
         confirmText="Remove"

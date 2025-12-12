@@ -9,15 +9,14 @@ interface UserApplication {
   domain: string;
   subdomain: string | null;
   round1Status: string;
-  round1Feedback: string | null;
   round2Status: string | null;
-  round2Feedback: string | null;
   canAccessRound2: boolean;
 }
 
 interface ApplicationCardProps {
   application: UserApplication;
   index: number;
+  onHide?: (domain: string, subdomain: string | null) => void;
 }
 
 const formatDomainName = (domain: string): string => {
@@ -35,6 +34,7 @@ const formatSubdomainName = (subdomain: string | null): string => {
 export const ApplicationCard: React.FC<ApplicationCardProps> = ({
   application,
   index,
+  onHide,
 }) => {
   const router = useRouter();
   const domainName = formatDomainName(application.domain);
@@ -50,7 +50,7 @@ export const ApplicationCard: React.FC<ApplicationCardProps> = ({
     router.push(url);
   };
 
-  const isRejected = application.round1Status === "Not Passed";
+  const isRejected = application.round1Status === "Not Passed" || application.round2Status === "Not Passed";
   const round1FormSubmitted = application.round1Status === "Under Review" || application.round1Status === "Passed";
   const round2FormSubmitted = application.round2Status === "Under Review" || application.round2Status === "Passed";
 
@@ -77,11 +77,6 @@ export const ApplicationCard: React.FC<ApplicationCardProps> = ({
                 Keep learning, keep building — we'd love to see you apply again
                 soon.
               </div>
-              {application.round1Feedback && (
-                <div className="feedback-inline">
-                  <strong>Feedback:</strong> {application.round1Feedback}
-                </div>
-              )}
             </div>
           ) : (
             <>
@@ -121,104 +116,75 @@ export const ApplicationCard: React.FC<ApplicationCardProps> = ({
                 )}
               </div>
 
-              {/* Round 1 Feedback */}
-              {application.round1Feedback && !isRejected && (
-                <div className="feedback-box">
-                  <div className="feedback-label">Feedback:</div>
-                  <div className="feedback-text">{application.round1Feedback}</div>
-                </div>
-              )}
-
               {/* Round 2 Status (if applicable) */}
-              {application.round2Status && (
-                <>
-                  <div className="status-item" style={{ marginTop: "12px" }}>
-                    <div className="status-info">
-                      <div className="round-label">Round 2</div>
-                      <div className="status-label">{application.round2Status}</div>
-                    </div>
-                    {application.round2Status === "Pending" && (
-                      <button
-                        className="glass-icon-button"
-                        style={{
-                          width: "clamp(30px, 5vw, 36px)",
-                          height: "clamp(30px, 5vw, 36px)",
-                        }}
-                        aria-label="Edit Round 2"
-                        onClick={() => handleRoundClick("Round 2")}
-                      >
-                        <svg
-                          width="20"
-                          height="20"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                          style={{
-                            width: "clamp(14px, 2.5vw, 17px)",
-                            height: "clamp(14px, 2.5vw, 17px)",
-                          }}
-                        >
-                          <path
-                            d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"
-                            fill="currentColor"
-                          />
-                        </svg>
-                      </button>
-                    )}
+              {application.round2Status && !isRejected && (
+                <div className="status-item" style={{ marginTop: "12px" }}>
+                  <div className="status-info">
+                    <div className="round-label">Round 2</div>
+                    <div className="status-label">{application.round2Status}</div>
                   </div>
-
-                  {/* Round 2 Feedback */}
-                  {application.round2Feedback && (
-                    <div className="feedback-box">
-                      <div className="feedback-label">Feedback:</div>
-                      <div className="feedback-text">
-                        {application.round2Feedback}
-                      </div>
-                    </div>
+                  {application.round2Status === "Pending" && (
+                    <button
+                      className="glass-icon-button"
+                      style={{
+                        width: "clamp(30px, 5vw, 36px)",
+                        height: "clamp(30px, 5vw, 36px)",
+                      }}
+                      aria-label="Edit Round 2"
+                      onClick={() => handleRoundClick("Round 2")}
+                    >
+                      <svg
+                        width="20"
+                        height="20"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                        style={{
+                          width: "clamp(14px, 2.5vw, 17px)",
+                          height: "clamp(14px, 2.5vw, 17px)",
+                        }}
+                      >
+                        <path
+                          d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"
+                          fill="currentColor"
+                        />
+                      </svg>
+                    </button>
                   )}
-                </>
+                </div>
               )}
             </>
           )}
         </div>
 
         {/* Footer - Fixed */}
-        {!isRejected && (
-          <div className="card-footer-fixed">
-            <button 
-              className="glass-button" 
-              style={{ 
-                width: '100%', 
-                padding: 'clamp(0.55rem, 1.3vw, 0.75rem) clamp(1.8rem, 3.5vw, 2.5rem)', 
-                fontSize: 'clamp(0.75rem, 1.6vw, 0.88rem)' 
-              }}
-              onClick={() => handleRoundClick(application.round2Status ? "Round 2" : "Round 1")}
-            >
-              {application.round2Status === "Pending" || application.round2Status === "Not Started" 
-                ? "MOVE TO NEXT STEP" 
-                : application.round1Status === "Pending" 
-                ? "MOVE TO NEXT STEP" 
-                : application.round1Status === "Submitted" || application.round1Status === "Under Review" || application.round1Status === "Passed"
-                ? "EDIT FORM"
-                : "VIEW STATUS"}
-            </button>
-          </div>
-        )}
-
-        {isRejected && (
-          <div className="card-footer-fixed">
-            <button 
-              className="glass-button" 
-              style={{ 
-                width: '100%', 
-                padding: 'clamp(0.55rem, 1.3vw, 0.75rem) clamp(1.8rem, 3.5vw, 2.5rem)', 
-                fontSize: 'clamp(0.75rem, 1.6vw, 0.88rem)' 
-              }}
-            >
-              HIDE APPLICATION
-            </button>
-          </div>
-        )}
+        <div className="card-footer-fixed">
+          <button 
+            className="glass-button" 
+            style={{ 
+              width: '100%', 
+              padding: 'clamp(0.55rem, 1.3vw, 0.75rem) clamp(1.8rem, 3.5vw, 2.5rem)', 
+              fontSize: 'clamp(0.75rem, 1.6vw, 0.88rem)' 
+            }}
+            onClick={() => {
+              if (isRejected && onHide) {
+                onHide(application.domain, application.subdomain);
+              } else if (!isRejected) {
+                handleRoundClick(application.round2Status ? "Round 2" : "Round 1");
+              }
+            }}
+          >
+            {isRejected
+              ? "HIDE APPLICATION"
+              : application.round2Status === "Pending" || application.round2Status === "Not Started" 
+              ? "MOVE TO NEXT STEP" 
+              : application.round1Status === "Pending" 
+              ? "MOVE TO NEXT STEP" 
+              : application.round1Status === "Submitted" || application.round1Status === "Under Review" || application.round1Status === "Passed"
+              ? "EDIT FORM"
+              : "VIEW STATUS"}
+          </button>
+        </div>
       </div>
 
       <style jsx>{`

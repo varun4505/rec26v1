@@ -32,7 +32,6 @@ interface Submission {
   round: string;
   submissionUrl: string | null;
   isPassed: boolean | null;
-  feedback: string | null;
   submittedAt: string;
 }
 
@@ -40,9 +39,7 @@ interface UserApplication {
   domain: string;
   subdomain: string | null;
   round1Status: string;
-  round1Feedback: string | null;
   round2Status: string | null;
-  round2Feedback: string | null;
   canAccessRound2: boolean;
 }
 
@@ -52,6 +49,8 @@ export default function ProfilePage() {
   const [showFade, setShowFade] = useState(false);
   const [applications, setApplications] = useState<UserApplication[]>([]);
   const [loading, setLoading] = useState(true);
+  const [showScrollIndicator, setShowScrollIndicator] = useState(false);
+  const [hiddenApplications, setHiddenApplications] = useState<Set<string>>(new Set());
   const gridRef = useRef<HTMLDivElement>(null);
   const rawName = session?.user?.name || "User";
   const userName = rawName.replace(/\b(21|22|23|24|25|26)[A-Za-z0-9]*$/, "").trim();
@@ -59,7 +58,11 @@ export default function ProfilePage() {
   const userEmail = session?.user?.email || "";
   const userImage = session?.user?.image;
   const userInitial = userName.charAt(0).toUpperCase();
-  const hasApplications = applications.length > 0;
+  const visibleApplications = applications.filter(app => {
+    const key = `${app.domain}-${app.subdomain || 'none'}`;
+    return !hiddenApplications.has(key);
+  });
+  const hasApplications = visibleApplications.length > 0;
 
   // Extract registration number from user's name (format: "Varun B 23MID0026")
   const extractRegistrationNumber = (userName: string): string => {
@@ -70,6 +73,27 @@ export default function ProfilePage() {
   };
 
   const registrationNumber = extractRegistrationNumber(session?.user?.name || "");
+
+  // Load hidden applications from localStorage
+  useEffect(() => {
+    const stored = localStorage.getItem('hiddenApplications');
+    if (stored) {
+      try {
+        setHiddenApplications(new Set(JSON.parse(stored)));
+      } catch (e) {
+        console.error('Error parsing hidden applications:', e);
+      }
+    }
+  }, []);
+
+  // Handle hiding an application
+  const handleHideApplication = (domain: string, subdomain: string | null) => {
+    const key = `${domain}-${subdomain || 'none'}`;
+    const newHidden = new Set(hiddenApplications);
+    newHidden.add(key);
+    setHiddenApplications(newHidden);
+    localStorage.setItem('hiddenApplications', JSON.stringify([...newHidden]));
+  };
 
   useEffect(() => {
     const updateTime = () => {
@@ -100,9 +124,62 @@ export default function ProfilePage() {
     }
   }, [status]);
 
+  // Check if content is scrollable and handle scroll indicator
+  useEffect(() => {
+    const checkScrollable = () => {
+      const element = gridRef.current;
+      if (element && visibleApplications.length > 0) {
+        const isScrollableX = element.scrollWidth > element.clientWidth;
+        const isScrollableY = element.scrollHeight > element.clientHeight;
+        const isAtEnd = element.scrollWidth - element.scrollLeft <= element.clientWidth + 50;
+        const isAtBottom = element.scrollHeight - element.scrollTop <= element.clientHeight + 50;
+        setShowScrollIndicator((isScrollableX && !isAtEnd) || (isScrollableY && !isAtBottom));
+      } else {
+        setShowScrollIndicator(false);
+      }
+    };
+
+    checkScrollable();
+    const element = gridRef.current;
+    if (element) {
+      element.addEventListener('scroll', checkScrollable);
+      window.addEventListener('resize', checkScrollable);
+    }
+
+    const timeout = setTimeout(checkScrollable, 500);
+
+    return () => {
+      if (element) {
+        element.removeEventListener('scroll', checkScrollable);
+      }
+      window.removeEventListener('resize', checkScrollable);
+      clearTimeout(timeout);
+    };
+  }, [visibleApplications]);
+
+  // Refetch applications when page becomes visible
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (!document.hidden && status === "authenticated") {
+        console.log('Page became visible, refetching applications...');
+        fetchApplications();
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
+  }, [status]);
+
   const fetchApplications = async () => {
     try {
-      const response = await fetch('/api/profile');
+      // Add cache-busting parameter and no-cache headers
+      const response = await fetch(`/api/profile?t=${Date.now()}`, {
+        cache: 'no-store',
+        headers: {
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          'Pragma': 'no-cache',
+        },
+      });
       console.log('API response status:', response.status);
 
       const data = await response.json();
@@ -201,15 +278,22 @@ export default function ProfilePage() {
               </div>
             ) : hasApplications ? (
               <div className="applications-container">
+                {showScrollIndicator && (
+                  <div className={`scroll-indicator ${!showScrollIndicator ? 'hidden' : ''}`}>
+                    <div className="scroll-arrow"></div>
+                    <div className="scroll-text">SCROLL</div>
+                  </div>
+                )}
                 <div
                   className={`applications-grid ${showFade ? "with-fade" : ""}`}
                   ref={gridRef}
                 >
-                  {applications.map((application, index) => (
+                  {visibleApplications.map((application, index) => (
                     <ApplicationCard
                       key={index}
                       application={application}
                       index={index}
+                      onHide={handleHideApplication}
                     />
                   ))}
                 </div>
@@ -354,7 +438,7 @@ export default function ProfilePage() {
           min-height: 0;
           max-height: 100%;
           overflow-x: auto;
-          overflow-y: hidden;
+          overflow-y: auto;
           scrollbar-width: none;
           -ms-overflow-style: none;
           scroll-behavior: smooth;
@@ -362,6 +446,80 @@ export default function ProfilePage() {
           align-items: stretch;
           padding: 0 1.35rem 0.5rem 1.35rem;
           margin: 0 -1.35rem;
+          flex-wrap: wrap;
+          justify-content: flex-start;
+        }
+
+        .scroll-indicator {
+          position: fixed;
+          right: clamp(2rem, 4vw, 3rem);
+          top: 50%;
+          transform: translateY(-50%);
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 8px;
+          z-index: 100;
+          opacity: 0;
+          animation: fadeInIndicator 0.5s ease-in 1s forwards;
+          pointer-events: none;
+        }
+
+        .scroll-indicator.hidden {
+          animation: fadeOutIndicator 0.3s ease-out forwards;
+        }
+
+        .scroll-arrow {
+          width: 0;
+          height: 0;
+          border-left: 8px solid transparent;
+          border-right: 8px solid transparent;
+          border-top: 12px solid rgba(248, 104, 0, 0.8);
+          animation: bounceDown 1.5s ease-in-out infinite;
+        }
+
+        .scroll-text {
+          font-family: var(--font-khand);
+          font-size: 14px;
+          font-weight: 500;
+          color: rgba(248, 104, 0, 0.9);
+          writing-mode: vertical-rl;
+          text-orientation: mixed;
+          letter-spacing: 0.05em;
+          margin-top: 4px;
+        }
+
+        @keyframes fadeInIndicator {
+          from {
+            opacity: 0;
+            transform: translateY(-50%) translateX(20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(-50%) translateX(0);
+          }
+        }
+
+        @keyframes fadeOutIndicator {
+          from {
+            opacity: 1;
+            transform: translateY(-50%) translateX(0);
+          }
+          to {
+            opacity: 0;
+            transform: translateY(-50%) translateX(20px);
+          }
+        }
+
+        @keyframes bounceDown {
+          0%, 100% {
+            transform: translateY(0);
+            opacity: 1;
+          }
+          50% {
+            transform: translateY(8px);
+            opacity: 0.6;
+          }
         }
         .applications-grid.with-fade {
           mask-image: linear-gradient(

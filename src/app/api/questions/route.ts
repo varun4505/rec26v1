@@ -37,6 +37,7 @@ export async function GET(req: Request) {
         type: true,
         options: true,
         meta: true,
+        isOptional: true,
       },
     });
 

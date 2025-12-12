@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useSession } from 'next-auth/react';
 
 import styles from './Dashboard.module.css';
@@ -21,6 +21,8 @@ export default function DashboardPage() {
   const [showPhoneModal, setShowPhoneModal] = useState(false);
   const [isCheckingPhone, setIsCheckingPhone] = useState(true);
   const [isSubmittingPhone, setIsSubmittingPhone] = useState(false);
+  const [showScrollIndicator, setShowScrollIndicator] = useState(false);
+  const dashboardCardRef = useRef<HTMLDivElement>(null);
   const { data: session, status } = useSession();
 
   // Check if user has provided phone number
@@ -80,6 +82,32 @@ export default function DashboardPage() {
     setActiveTab(tabName);
   };
 
+  // Check if content is scrollable and handle scroll indicator
+  useEffect(() => {
+    const checkScrollable = () => {
+      const element = dashboardCardRef.current;
+      if (element) {
+        const isScrollable = element.scrollHeight > element.clientHeight;
+        const isAtBottom = element.scrollHeight - element.scrollTop <= element.clientHeight + 50;
+        setShowScrollIndicator(isScrollable && !isAtBottom);
+      }
+    };
+
+    checkScrollable();
+    const element = dashboardCardRef.current;
+    if (element) {
+      element.addEventListener('scroll', checkScrollable);
+      window.addEventListener('resize', checkScrollable);
+    }
+
+    return () => {
+      if (element) {
+        element.removeEventListener('scroll', checkScrollable);
+      }
+      window.removeEventListener('resize', checkScrollable);
+    };
+  }, [activeTab]);
+
   return (
     <>
       {/* Mobile Restriction - Only shows on mobile */}
@@ -98,7 +126,13 @@ export default function DashboardPage() {
         <DashboardHeader />
 
         <main className={styles.mainContentArea}>
-          <div className={styles.dashboardCard}>
+          {showScrollIndicator && (
+            <div className={`${styles.scrollIndicator} ${!showScrollIndicator ? styles.hidden : ''}`}>
+              <div className={styles.scrollArrow}></div>
+              <div className={styles.scrollText}>SCROLL</div>
+            </div>
+          )}
+          <div className={styles.dashboardCard} ref={dashboardCardRef}>
 
             <UserGreeting />
 

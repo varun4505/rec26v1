@@ -100,13 +100,87 @@
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
-  overflow: hidden;
+  overflow-y: auto;
+  overflow-x: hidden;
   position: relative;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
 }
 
+.scrollIndicator {
+  position: fixed;
+  right: clamp(2rem, 4vw, 3rem);
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  z-index: 100;
+  opacity: 0;
+  animation: fadeInIndicator 0.5s ease-in 1s forwards;
+  pointer-events: none;
+}
+
+.scrollIndicator.hidden {
+  animation: fadeOutIndicator 0.3s ease-out forwards;
+}
+
+.scrollArrow {
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-top: 12px solid rgba(248, 104, 0, 0.8);
+  animation: bounceDown 1.5s ease-in-out infinite;
+}
+
+.scrollText {
+  font-family: var(--font-khand);
+  font-size: 14px;
+  font-weight: 500;
+  color: rgba(248, 104, 0, 0.9);
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  letter-spacing: 0.05em;
+  margin-top: 4px;
+}
+
+@keyframes fadeInIndicator {
+  from {
+    opacity: 0;
+    transform: translateY(-50%) translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(-50%) translateX(0);
+  }
+}
+
+@keyframes fadeOutIndicator {
+  from {
+    opacity: 1;
+    transform: translateY(-50%) translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-50%) translateX(20px);
+  }
+}
+
+@keyframes bounceDown {
+  0%, 100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  50% {
+    transform: translateY(8px);
+    opacity: 0.6;
+  }
+}
+
 .domainContentWrapper {
   flex: 1;
+  min-height: min-content;
 }
 
 .userGreetingContainer {
@@ -303,16 +377,16 @@
 
 .subdomainBoxes {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   gap: 12px;
-  flex-wrap: nowrap;
+  flex-wrap: wrap;
 }
 
 .subdomainBox {
   flex: 1;
   min-width: 230px;
   max-width: 300px;
-  height: 145px;
+  min-height: 145px;
   background-color: rgba(248, 104, 0, 0.31);
   border-radius: 17px;
   cursor: pointer;
@@ -336,7 +410,8 @@
 .subdomainBox.selected {
   background-color: rgba(255, 179, 122, 0.5);
   border: 2px solid rgba(255, 143, 107, 0.8);
-  height: 145px;
+  min-height: 145px;
+  height: auto;
   padding: 13px;
 }
 

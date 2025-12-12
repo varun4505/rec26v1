@@ -571,14 +571,6 @@ export default function QuizPage() {
 						<div className="text-6xl mb-4">🔒</div>
 						<h1 className="text-2xl font-bold mb-4">Access Denied</h1>
 						<p className="text-gray-600 mb-6">{accessCheck.reason}</p>
-						{accessCheck.round1Status && (
-							<div className="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-6 text-left">
-								<p className="font-semibold mb-2">Round 1 Status:</p>
-								<p className="text-sm text-gray-700">
-									{accessCheck.round1Status.feedback || "Awaiting evaluation from admin"}
-								</p>
-							</div>
-						)}
 						<button
 							onClick={() => router.push("/dashboard")}
 							className="rounded-full bg-gradient-to-r from-[#FFB37A] to-[#FF8F6B] px-6 py-2 text-white font-semibold hover:shadow-lg transition-all"
@@ -687,11 +679,11 @@ export default function QuizPage() {
 				return;
 			}
 		} else {
-			// For question rounds, validate that all questions are answered
+			// For question rounds, validate that all required questions are answered
 			if (questions.length > 0) {
-				const unanswered = questions.filter(q => !answers[q.id]);
-				if (unanswered.length > 0) {
-					setError(`Please answer all questions before submitting.`);
+				const unansweredRequired = questions.filter(q => !q.isOptional && !answers[q.id]);
+				if (unansweredRequired.length > 0) {
+					setError(`Please answer all required questions before submitting.`);
 					return;
 				}
 			}
@@ -889,6 +881,7 @@ export default function QuizPage() {
 									helperText=""
 									value={answers[question.id] || ''}
 									onChange={(value) => handleAnswerChange(question.id, value)}
+									isOptional={question.isOptional}
 								/>
 							))}
 							{lastSaved && (
