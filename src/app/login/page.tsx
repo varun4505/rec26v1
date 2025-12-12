@@ -103,8 +103,44 @@ export default function LoginPage() {
         </h2>
         
         <div className={styles.instructionsBox}>
-          {/* Instructions will go here */}
+          
+          <div className={styles.instructionSection}>
+            <p style={{ marginBottom: '16px' }}>
+              <strong>📋 Please Note:</strong> Read all guidelines carefully before filling out the application form. Your understanding of these principles will reflect in your application process.
+            </p>
+          </div>
+
+          <div className={styles.instructionSection}>
+            <h3>Guidelines</h3>
+            <ul>
+              <li>Perfect for freshers and sophomores looking to kickstart their innovation journey</li>
+              <li>Open to all branches - because great ideas know no boundaries</li>
+              <li>Choose your path: Technical, Management, or Design - where would you shine?</li>
+              <li>Show us your creativity and passion - perfection isn&apos;t required, enthusiasm is!</li>
+            </ul>
+            
+            {/* Horizontal Line 1 */}
+            <hr className={styles.divider} />
+            
+            <p style={{ fontStyle: 'italic' }}>
+              Take the first step into becoming part of the <strong>VinnovateIT family</strong> - where innovation never sleeps!
+            </p>
+
+            {/* Horizontal Line 2 */}
+            <hr className={styles.divider} />
+          </div>
+
+          <div className={styles.instructionSection}>
+            <p style={{ marginBottom: '12px' }}>
+              <strong>⚠️ Important:</strong> You can only fill this form once. Make sure all information is accurate before submitting.
+            </p>
+            <p>
+              <strong>🔍 Insider tip:</strong> Explore the website to discover hidden surprises that could help you in future interviews! The curious ones always find the treasures.
+            </p>
+          </div>
+
         </div>
+
       </main>   
     </div>
   );
