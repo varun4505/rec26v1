@@ -659,7 +659,7 @@ html {
   margin-bottom: 3rem;
   font-weight: 300;
 }
-  
+
 /* Tablet */
 @media (max-width: 1024px) {
   .gallery-section {
@@ -724,4 +724,45 @@ html {
   .hero-section {
     padding-top: 110px;
   }
+}
+
+.gallery-card {
+  --drag-x: 0px;
+  --drag-y: 0px;
+  --drag-scale: 1;
+  touch-action: none;
+  will-change: transform;
+}
+
+.spread .gallery-card {
+  transform: translate(calc(var(--final-x)), calc(var(--final-y)))
+             translate(calc(var(--drag-x)), calc(var(--drag-y)))
+             rotate(var(--final-rot))
+             scale(calc(var(--final-scale, 1) * var(--drag-scale)));
+  transition: transform 600ms cubic-bezier(.2,.9,.3,1);
+}
+
+.gallery-card {
+  transform: translate(calc(var(--drag-x)), calc(var(--drag-y)))
+             rotate(var(--final-rot, 0deg))
+             scale(calc(var(--final-scale, 1) * var(--drag-scale, 1)));
+}
+
+.gallery-card .gallery-image {
+  pointer-events: none;
+  user-select: none;
+}
+
+@media (max-width: 420px) {
+  .marquee-track {
+    animation-duration: 80s;
+  }
+}
+
+@media (max-width: 1024px) {
+  .gallery-container { --responsive-x-factor: 0.6; --responsive-y-factor: 0.65; --responsive-scale-factor: 0.9; }
+}
+
+@media (max-width: 640px) {
+  .gallery-container { --responsive-x-factor: 0.42; --responsive-y-factor: 0.48; --responsive-scale-factor: 0.78; }
 }

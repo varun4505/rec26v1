@@ -1,8 +1,109 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { IoArrowForward } from "react-icons/io5";
+
+type GalleryImage = {
+  src: string;
+  alt: string;
+  rotation: number;
+  x: number;
+  y: number;
+  scale: number;
+};
+
+const DragCard: React.FC<{
+  img: GalleryImage;
+  zIndex: number;
+  isSpread: boolean;
+}> = ({ img, zIndex, isSpread }) => {
+  const ref = useRef<HTMLDivElement | null>(null);
+  const pointerIdRef = useRef<number | null>(null);
+  const startRef = useRef<{ x: number; y: number } | null>(null);
+  const draggingRef = useRef(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    el.style.setProperty("--drag-x", "0px");
+    el.style.setProperty("--drag-y", "0px");
+    el.style.setProperty("--drag-scale", "1");
+    el.style.touchAction = "none";
+    el.style.transition = "transform 600ms cubic-bezier(.2,.9,.3,1)";
+  }, []);
+
+  const onPointerDown = (e: React.PointerEvent) => {
+    const el = ref.current;
+    if (!el) return;
+    pointerIdRef.current = e.pointerId;
+    startRef.current = { x: e.clientX, y: e.clientY };
+    draggingRef.current = true;
+    el.setPointerCapture(e.pointerId);
+    el.style.transition = "none";
+    el.style.setProperty("--drag-scale", "1.03");
+  };
+
+  const onPointerMove = (e: React.PointerEvent) => {
+    const el = ref.current;
+    if (!el) return;
+    if (!draggingRef.current) return;
+    if (pointerIdRef.current !== e.pointerId) return;
+    const start = startRef.current;
+    if (!start) return;
+    const dx = e.clientX - start.x;
+    const dy = e.clientY - start.y;
+    el.style.setProperty("--drag-x", `${dx}px`);
+    el.style.setProperty("--drag-y", `${dy}px`);
+  };
+
+  const release = (e?: React.PointerEvent) => {
+    const el = ref.current;
+    if (!el) return;
+    draggingRef.current = false;
+    pointerIdRef.current = null;
+    startRef.current = null;
+    el.style.transition = "transform 600ms cubic-bezier(.2,.9,.3,1)";
+    el.style.setProperty("--drag-x", `0px`);
+    el.style.setProperty("--drag-y", `0px`);
+    el.style.setProperty("--drag-scale", "1");
+    if (e && el.releasePointerCapture) {
+      try {
+        el.releasePointerCapture(e.pointerId);
+      } catch {}
+    }
+  };
+
+  return (
+    <div
+      ref={ref}
+      className="gallery-card"
+      style={
+        {
+          zIndex,
+          ["--final-rot" as any]: `${img.rotation}deg`,
+          ["--final-x" as any]: `${img.x}%`,
+          ["--final-y" as any]: `${img.y}px`,
+          ["--final-scale" as any]: img.scale,
+        } as React.CSSProperties
+      }
+      onPointerDown={onPointerDown}
+      onPointerMove={onPointerMove}
+      onPointerUp={release}
+      onPointerCancel={release}
+      onPointerLeave={release}
+    >
+      <Image
+        src={img.src}
+        alt={img.alt}
+        className="gallery-image"
+        draggable={false}
+        fill
+        sizes="(max-width: 768px) 100vw, 320px"
+      />
+    </div>
+  );
+};
 
 export const Hero: React.FC = () => {
   const [isLoaded, setIsLoaded] = useState(false);
@@ -11,7 +112,7 @@ export const Hero: React.FC = () => {
     setIsLoaded(true);
   }, []);
 
-  const galleryImages = [
+  const galleryImages: GalleryImage[] = [
     {
       src: "/assets/images/gallery/1.png",
       alt: "Team Work",
@@ -56,7 +157,6 @@ export const Hero: React.FC = () => {
 
   return (
     <>
-      {/* Hero Section */}
       <section className="hero-section" id="home">
         <h1 className="hero-title">
           <span className="hero-main-text">VinnovateIT</span>
@@ -69,57 +169,34 @@ export const Hero: React.FC = () => {
         </a>
       </section>
 
-      {/* Gallery & Marquee Stack */}
       <section className="gallery-section">
-        {/* Stacked Images */}
         <div className={`gallery-container ${isLoaded ? "spread" : ""}`}>
           {galleryImages.map((img, index) => (
-            <div
+            <DragCard
               key={index}
-              className="gallery-card"
-              style={
-                {
-                  zIndex: index === 2 ? 15 : 10,
-                  "--final-rot": `${img.rotation}deg`,
-                  "--final-x": `${img.x}%`,
-                  "--final-y": `${img.y}px`,
-                  "--final-scale": img.scale,
-                } as React.CSSProperties
-              }
-            >
-              {/* Image Rendering */}
-              <Image
-                src={img.src}
-                alt={img.alt}
-                className="gallery-image"
-                draggable={false}
-                fill
-                sizes="(max-width: 768px) 100vw, 320px"
-              />
-            </div>
+              img={img}
+              zIndex={index === 2 ? 15 : 10}
+              isSpread={isLoaded}
+            />
           ))}
         </div>
 
-        {/* Marquee Bands */}
         <div className="marquee-wrapper">
-          {/* Band 1: Develop. Deliver. Dream. Design. (Array Font) */}
           <div className="marquee-band band-1">
             <div className="marquee-track">
-              {/* Repeated content for seamless loop */}
               {[...Array(50)].map((_, i) => (
                 <span key={i} className="marquee-text font-array">
-                  Develop. Deliver. Dream. Design. &nbsp;&nbsp;
+                  Develop. Deliver. Dream. Design.&nbsp;&nbsp;
                 </span>
               ))}
             </div>
           </div>
 
-          {/* Band 2: Ideas in motion (Khand Font) */}
           <div className="marquee-band band-2">
             <div className="marquee-track reverse">
               {[...Array(50)].map((_, i) => (
                 <span key={i} className="marquee-text font-khand">
-                  Ideas in motion. Always. &nbsp;&nbsp;
+                  Ideas in motion. Always.&nbsp;&nbsp;
                 </span>
               ))}
             </div>
