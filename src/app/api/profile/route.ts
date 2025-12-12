@@ -5,6 +5,10 @@ import { authOptions } from "@/lib/authOptions";
 import prisma from "@/lib/prisma";
 import { DOMAIN_CONFIG } from "@/data/domainConfig";
 
+// Disable caching for this route to ensure students always see fresh data
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export async function GET() {
   try {
     const session = await getServerSession(authOptions);
@@ -63,29 +67,31 @@ export async function GET() {
       let canAccessRound2 = false;
 
       if (round1Sub) {
-        if (round1Sub.isPassed === true) {
+        if (round1Sub.isPassed === false) {
+          // Failed - regardless of submission status
+          round1Status = "Not Passed";
+        } else if (round1Sub.isPassed === true) {
           round1Status = "Passed";
           canAccessRound2 = true;
         } else if (round1Sub.submittedAt) {
-          // If submitted but not yet evaluated, show "Submitted"
-          round1Status = "Submitted";
-        } else if (round1Sub.isPassed === false && !round1Sub.submittedAt) {
-          round1Status = "Not Passed";
-        } else {
+          // If submitted but not yet evaluated, show "Under Review"
           round1Status = "Under Review";
+        } else {
+          round1Status = "Pending";
         }
       }
 
       if (round2Sub) {
-        if (round2Sub.isPassed === true) {
+        if (round2Sub.isPassed === false) {
+          // Failed - regardless of submission status
+          round2Status = "Not Passed";
+        } else if (round2Sub.isPassed === true) {
           round2Status = "Passed";
         } else if (round2Sub.submittedAt) {
-          // If submitted but not yet evaluated, show "Submitted"
-          round2Status = "Submitted";
-        } else if (round2Sub.isPassed === false && !round2Sub.submittedAt) {
-          round2Status = "Not Passed";
-        } else {
+          // If submitted but not yet evaluated, show "Under Review"
           round2Status = "Under Review";
+        } else {
+          round2Status = "Pending";
         }
       } else if (canAccessRound2) {
         round2Status = "Pending";
@@ -95,17 +101,22 @@ export async function GET() {
         domain,
         subdomain,
         round1Status,
-        round1Feedback: round1Sub?.feedback || null,
         round2Status,
-        round2Feedback: round2Sub?.feedback || null,
         canAccessRound2,
       };
     });
 
-    return NextResponse.json({
+    const response = NextResponse.json({
       success: true,
       applications,
     });
+    
+    // Set cache control headers to prevent browser caching
+    response.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+    response.headers.set('Pragma', 'no-cache');
+    response.headers.set('Expires', '0');
+    
+    return response;
   } catch (error) {
     console.error("Error fetching profile:", error);
     return NextResponse.json(

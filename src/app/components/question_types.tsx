@@ -9,6 +9,7 @@ interface SubjectiveQuestionProps {
 	helperText?: string;
 	onChange?: (value: string) => void;
 	value?: string;
+	isOptional?: boolean;
 }
 
 export function SubjectiveQuestion({
@@ -18,11 +19,17 @@ export function SubjectiveQuestion({
 	helperText,
 	onChange,
 	value,
+	isOptional,
 }: SubjectiveQuestionProps) {
 	return (
 		<section className="flex flex-col gap-3 rounded-[28px] bg-[#F7B58D]/40 p-6">
-			<label htmlFor={id} className="text-xl font-semibold">
+			<label htmlFor={id} className="text-xl font-semibold flex items-center gap-2">
 				{prompt}
+				{isOptional && (
+					<span className="text-sm font-normal text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full">
+						Optional
+					</span>
+				)}
 			</label>
 			<textarea
 				id={id}

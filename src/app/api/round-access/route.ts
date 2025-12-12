@@ -93,19 +93,22 @@ export async function GET(req: Request) {
     if (existingSubmission) {
       // Check if deadline has passed
       if (deadline && now > deadline.deadline) {
-        return NextResponse.json({
-          success: true,
-          canAccess: false,
-          reason: "Submission deadline has passed. You cannot edit your submission.",
-          submission: {
-            isPassed: existingSubmission.isPassed,
-            feedback: existingSubmission.feedback,
-            submittedAt: existingSubmission.submittedAt,
-          },
-        });
+        // Allow editing if user has passed, even after deadline
+        if (!existingSubmission.isPassed) {
+          return NextResponse.json({
+            success: true,
+            canAccess: false,
+            reason: "Submission deadline has passed. You cannot edit your submission.",
+            submission: {
+              isPassed: existingSubmission.isPassed,
+              submittedAt: existingSubmission.submittedAt,
+            },
+          });
+        }
+        // If passed, allow editing even after deadline - fall through to allow access
       }
       
-      // If deadline hasn't passed, allow resubmission (user can edit)
+      // If deadline hasn't passed or user has passed, allow resubmission (user can edit)
       // Don't block access - just proceed to allow them to resubmit
     }
 
@@ -133,7 +136,6 @@ export async function GET(req: Request) {
           reason: "You must pass Round 1 to access Round 2",
           round1Status: {
             isPassed: false,
-            feedback: round1Submission.feedback,
           },
         });
       }
