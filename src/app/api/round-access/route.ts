@@ -104,22 +104,20 @@ export async function GET(req: Request) {
 
     // Check if deadline has passed (applies to both new and existing submissions)
     if (deadline && now > deadline.deadline) {
-      // If there's an existing submission
+      // If there's an existing submission - allow read-only access
       if (existingSubmission) {
-        // Allow editing only if user has passed
-        if (existingSubmission.isPassed) {
-          // Allow access for passed users even after deadline
-        } else {
-          return NextResponse.json({
-            success: true,
-            canAccess: false,
-            reason: "Submission deadline has passed. You cannot edit your submission.",
-            submission: {
-              isPassed: existingSubmission.isPassed,
-              submittedAt: existingSubmission.submittedAt,
-            },
-          });
-        }
+        // Allow access to view their submission (will be read-only on frontend)
+        return NextResponse.json({
+          success: true,
+          canAccess: true,
+          readOnly: true,
+          reason: "Submission deadline has passed. Your submission is under review.",
+          submission: {
+            submitted: true,
+            isPassed: existingSubmission.isPassed,
+            submittedAt: existingSubmission.submittedAt,
+          },
+        });
       } else {
         // No submission and deadline passed - block access
         return NextResponse.json({
