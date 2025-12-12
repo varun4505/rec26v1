@@ -48,9 +48,6 @@ export default function ProfilePage() {
   const [applications, setApplications] = useState<UserApplication[]>([]);
   const [loading, setLoading] = useState(true);
   const [showScrollIndicator, setShowScrollIndicator] = useState(false);
-  const [hiddenApplications, setHiddenApplications] = useState<Set<string>>(
-    new Set()
-  );
   const gridRef = useRef<HTMLDivElement>(null);
   const rawName = session?.user?.name || "User";
   const userName = rawName
@@ -60,11 +57,7 @@ export default function ProfilePage() {
   const userEmail = session?.user?.email || "";
   const userImage = session?.user?.image;
   const userInitial = userName.charAt(0).toUpperCase();
-  const visibleApplications = applications.filter((app) => {
-    const key = `${app.domain}-${app.subdomain || "none"}`;
-    return !hiddenApplications.has(key);
-  });
-  const hasApplications = visibleApplications.length > 0;
+  const hasApplications = applications.length > 0;
 
   // Extract registration number from user's name (format: "Varun B 23MID0026")
   const extractRegistrationNumber = (userName: string): string => {
@@ -78,26 +71,7 @@ export default function ProfilePage() {
     session?.user?.name || ""
   );
 
-  // Load hidden applications from localStorage
-  useEffect(() => {
-    const stored = localStorage.getItem("hiddenApplications");
-    if (stored) {
-      try {
-        setHiddenApplications(new Set(JSON.parse(stored)));
-      } catch (e) {
-        console.error("Error parsing hidden applications:", e);
-      }
-    }
-  }, []);
 
-  // Handle hiding an application
-  const handleHideApplication = (domain: string, subdomain: string | null) => {
-    const key = `${domain}-${subdomain || "none"}`;
-    const newHidden = new Set(hiddenApplications);
-    newHidden.add(key);
-    setHiddenApplications(newHidden);
-    localStorage.setItem("hiddenApplications", JSON.stringify([...newHidden]));
-  };
 
   useEffect(() => {
     const updateTime = () => {
@@ -132,7 +106,7 @@ export default function ProfilePage() {
   useEffect(() => {
     const checkScrollable = () => {
       const element = gridRef.current;
-      if (element && visibleApplications.length > 0) {
+      if (element && applications.length > 0) {
         const isScrollableX = element.scrollWidth > element.clientWidth;
         const isScrollableY = element.scrollHeight > element.clientHeight;
         const isAtEnd =
@@ -163,7 +137,7 @@ export default function ProfilePage() {
       window.removeEventListener("resize", checkScrollable);
       clearTimeout(timeout);
     };
-  }, [visibleApplications]);
+  }, [applications]);
 
   // Refetch applications when page becomes visible
   useEffect(() => {
@@ -303,12 +277,11 @@ export default function ProfilePage() {
                   className={`applications-grid ${showFade ? "with-fade" : ""}`}
                   ref={gridRef}
                 >
-                  {visibleApplications.map((application, index) => (
+                  {applications.map((application, index) => (
                     <ApplicationCard
                       key={index}
                       application={application}
                       index={index}
-                      onHide={handleHideApplication}
                     />
                   ))}
                 </div>

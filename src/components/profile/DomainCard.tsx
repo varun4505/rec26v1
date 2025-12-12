@@ -16,7 +16,6 @@ interface UserApplication {
 interface ApplicationCardProps {
   application: UserApplication;
   index: number;
-  onHide?: (domain: string, subdomain: string | null) => void;
 }
 
 const formatDomainName = (domain: string): string => {
@@ -34,7 +33,6 @@ const formatSubdomainName = (subdomain: string | null): string => {
 export const ApplicationCard: React.FC<ApplicationCardProps> = ({
   application,
   index,
-  onHide,
 }) => {
   const router = useRouter();
   const domainName = formatDomainName(application.domain);
@@ -167,37 +165,33 @@ export const ApplicationCard: React.FC<ApplicationCardProps> = ({
 
         {/* Footer - Fixed */}
         <div className="card-footer-fixed">
-          <button
-            className="glass-button"
-            style={{
-              width: "100%",
-              padding:
-                "clamp(0.55rem, 1.3vw, 0.75rem) clamp(1.8rem, 3.5vw, 2.5rem)",
-              fontSize: "clamp(0.75rem, 1.6vw, 0.88rem)",
-            }}
-            onClick={() => {
-              if (isRejected && onHide) {
-                onHide(application.domain, application.subdomain);
-              } else if (!isRejected) {
+          {!isRejected && (
+            <button
+              className="glass-button"
+              style={{
+                width: "100%",
+                padding:
+                  "clamp(0.55rem, 1.3vw, 0.75rem) clamp(1.8rem, 3.5vw, 2.5rem)",
+                fontSize: "clamp(0.75rem, 1.6vw, 0.88rem)",
+              }}
+              onClick={() => {
                 handleRoundClick(
                   application.round2Status ? "Round 2" : "Round 1"
                 );
-              }
-            }}
-          >
-            {isRejected
-              ? "HIDE APPLICATION"
-              : application.round2Status === "Pending" ||
-                application.round2Status === "Not Started"
-              ? "MOVE TO NEXT STEP"
-              : application.round1Status === "Pending"
-              ? "MOVE TO NEXT STEP"
-              : application.round1Status === "Submitted" ||
-                application.round1Status === "Under Review" ||
-                application.round1Status === "Passed"
-              ? "EDIT FORM"
-              : "VIEW STATUS"}
-          </button>
+              }}
+            >
+              {application.round2Status === "Pending" ||
+              application.round2Status === "Not Started"
+                ? "MOVE TO NEXT STEP"
+                : application.round1Status === "Pending"
+                ? "MOVE TO NEXT STEP"
+                : application.round1Status === "Submitted" ||
+                  application.round1Status === "Under Review" ||
+                  application.round1Status === "Passed"
+                ? "EDIT FORM"
+                : "VIEW STATUS"}
+            </button>
+          )}
         </div>
       </div>
 
