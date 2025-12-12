@@ -44,9 +44,11 @@ export async function GET() {
     });
 
     const now = new Date();
-    const canModifySelections = config 
+    // Check if selection deadline has passed
+    // If no config or no deadline set, allow modifications
+    const canModifySelections = config?.selectionDeadline
       ? now < new Date(config.selectionDeadline)
-      : true; // Allow if no config exists
+      : true;
 
     return NextResponse.json({
       success: true,
@@ -199,13 +201,14 @@ export async function DELETE(req: Request) {
       );
     }
 
-    // Check if selection deadline has passed
+    // Check if selection deadline has passed (only if config exists)
     const config = await prisma.recruitmentConfig.findFirst({
       where: { isActive: true },
       orderBy: { updatedAt: "desc" },
     });
 
-    if (config && new Date() > new Date(config.selectionDeadline)) {
+    // Only block if config exists AND deadline has passed
+    if (config?.selectionDeadline && new Date() > new Date(config.selectionDeadline)) {
       return NextResponse.json(
         { success: false, error: "Selection deadline has passed" },
         { status: 403 }
@@ -225,44 +228,6 @@ export async function DELETE(req: Request) {
         { success: false, error: "Application not found" },
         { status: 404 }
       );
-    }
-
-    // Users can modify selections before the deadline, even after submission
-    // Check deadline instead of submission status
-    const now = new Date();
-    
-    // Check if there's a specific deadline for this domain/subdomain
-    try {
-      const subdomainValue = subdomain && subdomain !== 'none' ? subdomain : null;
-      const deadline = await prisma.deadline.findFirst({
-        where: {
-          domain: domain,
-          subdomain: subdomainValue,
-          round: 'round1', // Selection changes affect round1
-        },
-      });
-
-      // If no specific deadline found, try domain-wide deadline
-      const effectiveDeadline = deadline || await prisma.deadline.findFirst({
-        where: {
-          domain: domain,
-          subdomain: null,
-          round: 'round1',
-        },
-      });
-
-      if (effectiveDeadline && now > effectiveDeadline.deadline) {
-        return NextResponse.json(
-          {
-            success: false,
-            error: "Selection deadline has passed. Contact admin to make changes.",
-          },
-          { status: 400 }
-        );
-      }
-    } catch (deadlineError) {
-      // If deadline check fails, continue without blocking
-      console.warn("Deadline check failed:", deadlineError);
     }
 
     // Find and delete the selection
