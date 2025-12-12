@@ -548,8 +548,8 @@ export default function QuizPage() {
 		}
 	};
 
-	// Show loading while checking session or access or loading questions/tasks
-	if (sessionStatus === "loading" || accessCheck.loading || questionsLoading || tasksLoading) {
+	// Show loading while checking session or access
+	if (sessionStatus === "loading" || accessCheck.loading) {
 		return (
 			<FormsShell>
 				<div className="flex items-center justify-center h-full">
@@ -577,6 +577,20 @@ export default function QuizPage() {
 						>
 							Back to Dashboard
 						</button>
+					</div>
+				</div>
+			</FormsShell>
+		);
+	}
+
+	// Show loading while fetching questions/tasks (only after access is granted)
+	if (questionsLoading || tasksLoading) {
+		return (
+			<FormsShell>
+				<div className="flex items-center justify-center h-full">
+					<div className="text-center">
+						<div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#FF8F6B] mx-auto mb-4"></div>
+						<p className="text-gray-600">Loading questions...</p>
 					</div>
 				</div>
 			</FormsShell>

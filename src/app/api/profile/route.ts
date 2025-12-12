@@ -67,29 +67,33 @@ export async function GET() {
       let canAccessRound2 = false;
 
       if (round1Sub) {
-        if (round1Sub.isPassed === false) {
-          // Failed - regardless of submission status
-          round1Status = "Not Passed";
-        } else if (round1Sub.isPassed === true) {
-          round1Status = "Passed";
-          canAccessRound2 = true;
+        // Only check isPassed if admin has evaluated (evaluatedAt is set)
+        if (round1Sub.evaluatedAt) {
+          if (round1Sub.isPassed === true) {
+            round1Status = "Passed";
+            canAccessRound2 = true;
+          } else {
+            round1Status = "Not Passed";
+          }
         } else if (round1Sub.submittedAt) {
-          // If submitted but not yet evaluated, show "Under Review"
-          round1Status = "Under Review";
+          // Submitted but not yet evaluated by admin
+          round1Status = "Submitted";
         } else {
           round1Status = "Pending";
         }
       }
 
       if (round2Sub) {
-        if (round2Sub.isPassed === false) {
-          // Failed - regardless of submission status
-          round2Status = "Not Passed";
-        } else if (round2Sub.isPassed === true) {
-          round2Status = "Passed";
+        // Only check isPassed if admin has evaluated (evaluatedAt is set)
+        if (round2Sub.evaluatedAt) {
+          if (round2Sub.isPassed === true) {
+            round2Status = "Passed";
+          } else {
+            round2Status = "Not Passed";
+          }
         } else if (round2Sub.submittedAt) {
-          // If submitted but not yet evaluated, show "Under Review"
-          round2Status = "Under Review";
+          // Submitted but not yet evaluated by admin
+          round2Status = "Submitted";
         } else {
           round2Status = "Pending";
         }

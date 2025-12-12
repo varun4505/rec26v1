@@ -30,23 +30,16 @@ export default function SubdomainSelector({ domain }: SubdomainSelectorProps) {
 
   const config = DOMAIN_CONFIG[domain];
 
-  // Guard clause for invalid domain
-  if (!config) {
-    return (
-      <div className={styles.subdomainContainer}>
-        <p style={{ color: 'red' }}>Invalid domain: {domain}</p>
-      </div>
-    );
-  }
-
   useEffect(() => {
-    fetchSelections();
-    fetchSubmissions();
-  }, []);
+    if (config) {
+      fetchSelections();
+      fetchSubmissions();
+    }
+  }, [domain]);
 
   const fetchSelections = async () => {
     try {
-      const response = await fetch('/api/selections');
+      const response = await fetch('/api/selections', { cache: 'no-store' });
       const data = await response.json();
       
       if (data.success) {
@@ -64,7 +57,7 @@ export default function SubdomainSelector({ domain }: SubdomainSelectorProps) {
 
   const fetchSubmissions = async () => {
     try {
-      const response = await fetch('/api/profile');
+      const response = await fetch('/api/profile', { cache: 'no-store' });
       const data = await response.json();
       
       if (data.success) {
@@ -74,6 +67,15 @@ export default function SubdomainSelector({ domain }: SubdomainSelectorProps) {
       console.error('Error fetching submissions:', error);
     }
   };
+
+  // Guard clause for invalid domain - MUST be after all hooks
+  if (!config) {
+    return (
+      <div className={styles.subdomainContainer}>
+        <p style={{ color: 'red' }}>Invalid domain: {domain}</p>
+      </div>
+    );
+  }
 
   const getSubmissionStatus = (subdomainSlug: string | null) => {
     const submission = submissions.find(
