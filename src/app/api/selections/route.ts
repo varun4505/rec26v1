@@ -3,6 +3,10 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/authOptions";
 import prisma from "@/lib/prisma";
 
+// Disable caching for this route to ensure fresh data
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 // GET - Fetch user's current selections
 export async function GET() {
   try {
@@ -228,28 +232,37 @@ export async function DELETE(req: Request) {
     const now = new Date();
     
     // Check if there's a specific deadline for this domain/subdomain
-    const deadline = await prisma.deadline.findFirst({
-      where: {
-        domain: domain === 'tech' ? 'technical' : domain,
-        OR: [
-          { subdomain: subdomain && subdomain !== 'none' ? subdomain : null },
-          { subdomain: null }, // Fall back to domain-wide deadline
-        ],
-        round: 'round1', // Selection changes affect round1
-      },
-      orderBy: {
-        subdomain: 'desc', // Prioritize specific subdomain deadlines
-      },
-    });
-
-    if (deadline && now > deadline.deadline) {
-      return NextResponse.json(
-        {
-          success: false,
-          error: "Selection deadline has passed. Contact admin to make changes.",
+    try {
+      const subdomainValue = subdomain && subdomain !== 'none' ? subdomain : null;
+      const deadline = await prisma.deadline.findFirst({
+        where: {
+          domain: domain,
+          subdomain: subdomainValue,
+          round: 'round1', // Selection changes affect round1
         },
-        { status: 400 }
-      );
+      });
+
+      // If no specific deadline found, try domain-wide deadline
+      const effectiveDeadline = deadline || await prisma.deadline.findFirst({
+        where: {
+          domain: domain,
+          subdomain: null,
+          round: 'round1',
+        },
+      });
+
+      if (effectiveDeadline && now > effectiveDeadline.deadline) {
+        return NextResponse.json(
+          {
+            success: false,
+            error: "Selection deadline has passed. Contact admin to make changes.",
+          },
+          { status: 400 }
+        );
+      }
+    } catch (deadlineError) {
+      // If deadline check fails, continue without blocking
+      console.warn("Deadline check failed:", deadlineError);
     }
 
     // Find and delete the selection

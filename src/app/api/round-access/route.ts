@@ -75,19 +75,32 @@ export async function GET(req: Request) {
 
     // Check deadline - allow resubmission before deadline
     const now = new Date();
-    const deadline = await prisma.deadline.findFirst({
-      where: {
-        domain: domain,
-        OR: [
-          { subdomain: subdomain && subdomain !== 'none' ? subdomain : null },
-          { subdomain: null }, // Fall back to domain-wide deadline
-        ],
-        round: round,
-      },
-      orderBy: {
-        subdomain: 'desc', // Prioritize specific subdomain deadlines
-      },
-    });
+    let deadline = null;
+    
+    try {
+      const subdomainValue = subdomain && subdomain !== 'none' ? subdomain : null;
+      // First try to find specific subdomain deadline
+      deadline = await prisma.deadline.findFirst({
+        where: {
+          domain: domain,
+          subdomain: subdomainValue,
+          round: round,
+        },
+      });
+
+      // If no specific deadline, try domain-wide deadline
+      if (!deadline) {
+        deadline = await prisma.deadline.findFirst({
+          where: {
+            domain: domain,
+            subdomain: null,
+            round: round,
+          },
+        });
+      }
+    } catch (deadlineError) {
+      console.warn("Deadline check failed:", deadlineError);
+    }
 
     // If there's an existing submission
     if (existingSubmission) {
