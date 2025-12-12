@@ -50,9 +50,15 @@ export const ApplicationCard: React.FC<ApplicationCardProps> = ({
     router.push(url);
   };
 
-  const isRejected = application.round1Status === "Not Passed" || application.round2Status === "Not Passed";
-  const round1FormSubmitted = application.round1Status === "Under Review" || application.round1Status === "Passed";
-  const round2FormSubmitted = application.round2Status === "Under Review" || application.round2Status === "Passed";
+  const isRejected =
+    application.round1Status === "Not Passed" ||
+    application.round2Status === "Not Passed";
+  const round1FormSubmitted =
+    application.round1Status === "Under Review" ||
+    application.round1Status === "Passed";
+  const round2FormSubmitted =
+    application.round2Status === "Under Review" ||
+    application.round2Status === "Passed";
 
   return (
     <>
@@ -121,7 +127,9 @@ export const ApplicationCard: React.FC<ApplicationCardProps> = ({
                 <div className="status-item" style={{ marginTop: "12px" }}>
                   <div className="status-info">
                     <div className="round-label">Round 2</div>
-                    <div className="status-label">{application.round2Status}</div>
+                    <div className="status-label">
+                      {application.round2Status}
+                    </div>
                   </div>
                   {application.round2Status === "Pending" && (
                     <button
@@ -159,28 +167,34 @@ export const ApplicationCard: React.FC<ApplicationCardProps> = ({
 
         {/* Footer - Fixed */}
         <div className="card-footer-fixed">
-          <button 
-            className="glass-button" 
-            style={{ 
-              width: '100%', 
-              padding: 'clamp(0.55rem, 1.3vw, 0.75rem) clamp(1.8rem, 3.5vw, 2.5rem)', 
-              fontSize: 'clamp(0.75rem, 1.6vw, 0.88rem)' 
+          <button
+            className="glass-button"
+            style={{
+              width: "100%",
+              padding:
+                "clamp(0.55rem, 1.3vw, 0.75rem) clamp(1.8rem, 3.5vw, 2.5rem)",
+              fontSize: "clamp(0.75rem, 1.6vw, 0.88rem)",
             }}
             onClick={() => {
               if (isRejected && onHide) {
                 onHide(application.domain, application.subdomain);
               } else if (!isRejected) {
-                handleRoundClick(application.round2Status ? "Round 2" : "Round 1");
+                handleRoundClick(
+                  application.round2Status ? "Round 2" : "Round 1"
+                );
               }
             }}
           >
             {isRejected
               ? "HIDE APPLICATION"
-              : application.round2Status === "Pending" || application.round2Status === "Not Started" 
-              ? "MOVE TO NEXT STEP" 
-              : application.round1Status === "Pending" 
-              ? "MOVE TO NEXT STEP" 
-              : application.round1Status === "Submitted" || application.round1Status === "Under Review" || application.round1Status === "Passed"
+              : application.round2Status === "Pending" ||
+                application.round2Status === "Not Started"
+              ? "MOVE TO NEXT STEP"
+              : application.round1Status === "Pending"
+              ? "MOVE TO NEXT STEP"
+              : application.round1Status === "Submitted" ||
+                application.round1Status === "Under Review" ||
+                application.round1Status === "Passed"
               ? "EDIT FORM"
               : "VIEW STATUS"}
           </button>
@@ -195,6 +209,8 @@ export const ApplicationCard: React.FC<ApplicationCardProps> = ({
           flex: 0 0 auto;
           min-width: 340px;
           max-width: 400px;
+          min-height: 200px; /* or whatever works */
+          flex-shrink: 0;
           height: 100%;
           max-height: 100%;
           display: flex;

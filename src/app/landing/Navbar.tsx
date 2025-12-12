@@ -158,11 +158,12 @@ const MainNavbar: React.FC = () => {
     if (targetSection) {
       const navbarHeight = 100; // Approximate navbar height + padding
       const elementPosition = targetSection.getBoundingClientRect().top;
-      const offsetPosition = elementPosition + window.pageYOffset - navbarHeight;
+      const offsetPosition =
+        elementPosition + window.pageYOffset - navbarHeight;
 
       window.scrollTo({
         top: offsetPosition,
-        behavior: "smooth"
+        behavior: "smooth",
       });
     }
     if (isDrawerOpen) {
@@ -253,7 +254,7 @@ const MainNavbar: React.FC = () => {
       <nav
         ref={navRef}
         // Apply the font class name to the main nav container
-        className={`z-[100] fixed top-4 left-1/2 transform -translate-x-1/2 w-[95%] lg:w-2/3 max-w-4xl rounded-full px-4 sm:px-6 opacity-0 ${FONT_CLASS_NAMES}`}
+        className={`z-100 fixed top-4 left-1/2 transform -translate-x-1/2 w-[95%] lg:w-2/3 max-w-4xl rounded-full px-4 sm:px-6 opacity-0 ${FONT_CLASS_NAMES}`}
       >
         {/* Container for the Glassmorphism and Shadow */}
         <div
@@ -299,7 +300,7 @@ const MainNavbar: React.FC = () => {
                     {isActive(link.sectionId) && (
                       <motion.div
                         layoutId="nav-underline"
-                        className="absolute bottom-[-4px] left-0 w-full h-[3px] bg-gray-500 rounded"
+                        className="absolute bottom-4px left-0 w-full h-[3px] bg-gray-500 rounded"
                         transition={{
                           type: "spring",
                           stiffness: 500,
@@ -374,7 +375,7 @@ const MainNavbar: React.FC = () => {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.3 }}
-              className="fixed inset-0 bg-black/50 z-[500]"
+              className="fixed inset-0 bg-black/50 z-500"
               onClick={toggleDrawer}
             />
 
@@ -384,10 +385,10 @@ const MainNavbar: React.FC = () => {
               animate={{ y: "0vh" }}
               exit={{ y: "-100vh" }}
               transition={{ duration: 0.5, ease: "easeInOut" }}
-              className={`fixed top-0 left-0 w-full h-full text-gray-800 z-[600] overflow-hidden ${FONT_CLASS_NAMES}`}
+              className={`fixed top-0 left-0 w-full h-full text-gray-800 z-600 overflow-hidden ${FONT_CLASS_NAMES}`}
             >
               <div className="absolute inset-0 backdrop-blur-md bg-white/90" />
-              <div className="absolute inset-0 bg-gradient-to-b from-white/90 via-white/95 to-white/90" />
+              <div className="absolute inset-0 bg-linear-to-b from-white/90 via-white/95 to-white/90" />
 
               <div className="relative h-full flex flex-col">
                 <div className="flex justify-between items-center p-4 sm:p-6 pt-8 sm:pt-12">
@@ -449,10 +450,11 @@ const MainNavbar: React.FC = () => {
                           <a
                             href={link.href}
                             onClick={(e) => handleNavClick(e, link.href)}
-                            className={`sidebar-link block font-medium text-xl sm:text-2xl md:text-3xl lg:text-4xl py-3 sm:py-4 px-4 sm:px-6 md:px-8 rounded-xl transition-all tracking-wider hover:bg-gray-800/20 hover:scale-105 cursor-pointer ${isActiveLink
-                              ? "text-gray-800 bg-gray-200/30 scale-105"
-                              : "text-gray-800 hover:text-gray-600"
-                              }`}
+                            className={`sidebar-link block font-medium text-xl sm:text-2xl md:text-3xl lg:text-4xl py-3 sm:py-4 px-4 sm:px-6 md:px-8 rounded-xl transition-all tracking-wider hover:bg-gray-800/20 hover:scale-105 cursor-pointer ${
+                              isActiveLink
+                                ? "text-gray-800 bg-gray-200/30 scale-105"
+                                : "text-gray-800 hover:text-gray-600"
+                            }`}
                           >
                             {link.text}
                           </a>
@@ -467,9 +469,7 @@ const MainNavbar: React.FC = () => {
                         delay: 0.3 + navigationLinks.length * 0.1,
                       }}
                     >
-                      <Link
-                        href={session ? "/profile" : "/login"}
-                      >
+                      <Link href={session ? "/profile" : "/login"}>
                         <motion.button
                           whileHover={{ scale: 1.05 }}
                           whileTap={{ scale: 0.95 }}
