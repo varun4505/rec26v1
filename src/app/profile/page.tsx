@@ -1,5 +1,3 @@
-// src/app/profile/page.tsx
-
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
@@ -50,16 +48,20 @@ export default function ProfilePage() {
   const [applications, setApplications] = useState<UserApplication[]>([]);
   const [loading, setLoading] = useState(true);
   const [showScrollIndicator, setShowScrollIndicator] = useState(false);
-  const [hiddenApplications, setHiddenApplications] = useState<Set<string>>(new Set());
+  const [hiddenApplications, setHiddenApplications] = useState<Set<string>>(
+    new Set()
+  );
   const gridRef = useRef<HTMLDivElement>(null);
   const rawName = session?.user?.name || "User";
-  const userName = rawName.replace(/\b(21|22|23|24|25|26)[A-Za-z0-9]*$/, "").trim();
+  const userName = rawName
+    .replace(/\b(21|22|23|24|25|26)[A-Za-z0-9]*$/, "")
+    .trim();
 
   const userEmail = session?.user?.email || "";
   const userImage = session?.user?.image;
   const userInitial = userName.charAt(0).toUpperCase();
-  const visibleApplications = applications.filter(app => {
-    const key = `${app.domain}-${app.subdomain || 'none'}`;
+  const visibleApplications = applications.filter((app) => {
+    const key = `${app.domain}-${app.subdomain || "none"}`;
     return !hiddenApplications.has(key);
   });
   const hasApplications = visibleApplications.length > 0;
@@ -72,27 +74,29 @@ export default function ProfilePage() {
     return match ? match[1] : "";
   };
 
-  const registrationNumber = extractRegistrationNumber(session?.user?.name || "");
+  const registrationNumber = extractRegistrationNumber(
+    session?.user?.name || ""
+  );
 
   // Load hidden applications from localStorage
   useEffect(() => {
-    const stored = localStorage.getItem('hiddenApplications');
+    const stored = localStorage.getItem("hiddenApplications");
     if (stored) {
       try {
         setHiddenApplications(new Set(JSON.parse(stored)));
       } catch (e) {
-        console.error('Error parsing hidden applications:', e);
+        console.error("Error parsing hidden applications:", e);
       }
     }
   }, []);
 
   // Handle hiding an application
   const handleHideApplication = (domain: string, subdomain: string | null) => {
-    const key = `${domain}-${subdomain || 'none'}`;
+    const key = `${domain}-${subdomain || "none"}`;
     const newHidden = new Set(hiddenApplications);
     newHidden.add(key);
     setHiddenApplications(newHidden);
-    localStorage.setItem('hiddenApplications', JSON.stringify([...newHidden]));
+    localStorage.setItem("hiddenApplications", JSON.stringify([...newHidden]));
   };
 
   useEffect(() => {
@@ -131,9 +135,13 @@ export default function ProfilePage() {
       if (element && visibleApplications.length > 0) {
         const isScrollableX = element.scrollWidth > element.clientWidth;
         const isScrollableY = element.scrollHeight > element.clientHeight;
-        const isAtEnd = element.scrollWidth - element.scrollLeft <= element.clientWidth + 50;
-        const isAtBottom = element.scrollHeight - element.scrollTop <= element.clientHeight + 50;
-        setShowScrollIndicator((isScrollableX && !isAtEnd) || (isScrollableY && !isAtBottom));
+        const isAtEnd =
+          element.scrollWidth - element.scrollLeft <= element.clientWidth + 50;
+        const isAtBottom =
+          element.scrollHeight - element.scrollTop <= element.clientHeight + 50;
+        setShowScrollIndicator(
+          (isScrollableX && !isAtEnd) || (isScrollableY && !isAtBottom)
+        );
       } else {
         setShowScrollIndicator(false);
       }
@@ -142,17 +150,17 @@ export default function ProfilePage() {
     checkScrollable();
     const element = gridRef.current;
     if (element) {
-      element.addEventListener('scroll', checkScrollable);
-      window.addEventListener('resize', checkScrollable);
+      element.addEventListener("scroll", checkScrollable);
+      window.addEventListener("resize", checkScrollable);
     }
 
     const timeout = setTimeout(checkScrollable, 500);
 
     return () => {
       if (element) {
-        element.removeEventListener('scroll', checkScrollable);
+        element.removeEventListener("scroll", checkScrollable);
       }
-      window.removeEventListener('resize', checkScrollable);
+      window.removeEventListener("resize", checkScrollable);
       clearTimeout(timeout);
     };
   }, [visibleApplications]);
@@ -161,39 +169,40 @@ export default function ProfilePage() {
   useEffect(() => {
     const handleVisibilityChange = () => {
       if (!document.hidden && status === "authenticated") {
-        console.log('Page became visible, refetching applications...');
+        console.log("Page became visible, refetching applications...");
         fetchApplications();
       }
     };
 
-    document.addEventListener('visibilitychange', handleVisibilityChange);
-    return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    return () =>
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
   }, [status]);
 
   const fetchApplications = async () => {
     try {
       // Add cache-busting parameter and no-cache headers
       const response = await fetch(`/api/profile?t=${Date.now()}`, {
-        cache: 'no-store',
+        cache: "no-store",
         headers: {
-          'Cache-Control': 'no-cache, no-store, must-revalidate',
-          'Pragma': 'no-cache',
+          "Cache-Control": "no-cache, no-store, must-revalidate",
+          Pragma: "no-cache",
         },
       });
-      console.log('API response status:', response.status);
+      console.log("API response status:", response.status);
 
       const data = await response.json();
-      console.log('Profile API response:', data);
+      console.log("Profile API response:", data);
 
       if (data.success) {
         setApplications(data.applications || []);
-        console.log('Applications set:', data.applications);
+        console.log("Applications set:", data.applications);
       } else {
-        console.error('API returned success: false', data);
-        console.error('Error from API:', data.error);
+        console.error("API returned success: false", data);
+        console.error("Error from API:", data.error);
       }
     } catch (error) {
-      console.error('Error fetching applications:', error);
+      console.error("Error fetching applications:", error);
     } finally {
       setLoading(false);
     }
@@ -236,14 +245,14 @@ export default function ProfilePage() {
             <a href="/dashboard" className="dashboard-button">
               Back to Dashboard
             </a>
-            <div className="avatar-monogram" style={{ overflow: 'hidden' }}>
+            <div className="avatar-monogram" style={{ overflow: "hidden" }}>
               {userImage ? (
                 <Image
                   src={userImage}
                   alt={userName}
                   width={34}
                   height={34}
-                  style={{ borderRadius: '50%', objectFit: 'cover' }}
+                  style={{ borderRadius: "50%", objectFit: "cover" }}
                 />
               ) : (
                 userInitial
@@ -266,20 +275,26 @@ export default function ProfilePage() {
             <h2 className="applied-heading">Your Applications</h2>
 
             {loading ? (
-              <div style={{
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                flex: 1,
-                fontSize: 'clamp(0.9rem, 2vw, 1.1rem)',
-                color: '#666'
-              }}>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  flex: 1,
+                  fontSize: "clamp(0.9rem, 2vw, 1.1rem)",
+                  color: "#666",
+                }}
+              >
                 Loading your applications...
               </div>
             ) : hasApplications ? (
               <div className="applications-container">
                 {showScrollIndicator && (
-                  <div className={`scroll-indicator ${!showScrollIndicator ? 'hidden' : ''}`}>
+                  <div
+                    className={`scroll-indicator ${
+                      !showScrollIndicator ? "hidden" : ""
+                    }`}
+                  >
                     <div className="scroll-arrow"></div>
                     <div className="scroll-text">SCROLL</div>
                   </div>
@@ -309,12 +324,12 @@ export default function ProfilePage() {
         .page-wrapper {
           background: #000;
           min-height: 100vh;
-          height: 100vh;
+          height: 100vh; /* full viewport */
           padding: clamp(0.9rem, 2.7vw, 1.8rem);
           box-sizing: border-box;
           display: flex;
           flex-direction: column;
-          overflow: hidden;
+          overflow: hidden; /* outer black stays fixed */
         }
 
         @media (max-width: 900px) {
@@ -351,7 +366,7 @@ export default function ProfilePage() {
           animation: slideInRight 0.6s ease-out;
         }
         .dashboard-button {
-          background-color: #FFFFFF;
+          background-color: #ffffff;
           color: #000000;
           border: none;
           padding: 8px 20px;
@@ -397,24 +412,21 @@ export default function ProfilePage() {
           border-radius: clamp(18px, 3.6vw, 36px);
           padding: clamp(1.22rem, 3.24vw, 2.43rem);
           box-sizing: border-box;
-          display: flex;
-          flex-direction: column;
           flex: 1;
-          overflow: hidden;
-          min-height: 0;
+          overflow-y: auto; /* scroll inside */
+          min-height: 0; /* required for flex scroll */
           position: relative;
           animation: fadeInUp 0.8s ease-out;
           box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
         }
+
         .card-content {
-          position: relative;
-          z-index: 1;
           display: flex;
           flex-direction: column;
-          flex: 1;
+          gap: 1rem;
           min-height: 0;
-          overflow: hidden;
         }
+
         .applied-heading {
           font-size: clamp(1.08rem, 2.7vw, 1.62rem);
           margin: 0 0 clamp(0.9rem, 1.8vw, 1.35rem) 0;
@@ -429,25 +441,24 @@ export default function ProfilePage() {
           min-height: 0;
           display: flex;
           flex-direction: column;
-          overflow: hidden;
+          overflow: visible;
         }
+
         .applications-grid {
           display: flex;
-          gap: clamp(1.08rem, 1.8vw, 1.8rem);
-          flex: 1;
-          min-height: 0;
-          max-height: 100%;
+          flex-direction: row;
+          gap: clamp(1rem, 1.5vw, 1.8rem);
           overflow-x: auto;
-          overflow-y: auto;
-          scrollbar-width: none;
-          -ms-overflow-style: none;
+          flex-shrink: 0;
+          min-height: 200px;
+          overflow-y: hidden;
+          padding: 0 1.2rem 1rem 1.2rem;
           scroll-behavior: smooth;
           -webkit-overflow-scrolling: touch;
-          align-items: stretch;
-          padding: 0 1.35rem 0.5rem 1.35rem;
-          margin: 0 -1.35rem;
-          flex-wrap: wrap;
-          justify-content: flex-start;
+        }
+
+        .applications-grid::-webkit-scrollbar {
+          display: none;
         }
 
         .scroll-indicator {
@@ -512,7 +523,8 @@ export default function ProfilePage() {
         }
 
         @keyframes bounceDown {
-          0%, 100% {
+          0%,
+          100% {
             transform: translateY(0);
             opacity: 1;
           }
