@@ -9,7 +9,7 @@ import UserDropdown from './UserDropdown';
 
 import styles from '../Dashboard.module.css';
 
-const CLUB_LOGO_PATH = '/whiteLogoViit.svg';
+const CLUB_LOGO_PATH = '/assets/images/vinnovateit_white.svg';
 
 export default function DashboardHeader() {
   const { data: session } = useSession();
@@ -22,12 +22,15 @@ export default function DashboardHeader() {
   const userInitial = userName.charAt(0).toUpperCase();
 
   useEffect(() => {
-    // Function to format time as HH:MM
+    // Format time as 12-hour clock with AM/PM to mirror profile
     const updateTime = () => {
       const now = new Date();
-      const hours = String(now.getHours()).padStart(2, '0');
-      const minutes = String(now.getMinutes()).padStart(2, '0');
-      setCurrentTime(`${hours}:${minutes}`);
+      const hours = now.getHours();
+      const minutes = now.getMinutes();
+      const ampm = hours >= 12 ? 'PM' : 'AM';
+      const displayHours = hours % 12 || 12;
+      const displayMinutes = minutes.toString().padStart(2, '0');
+      setCurrentTime(`${displayHours}:${displayMinutes} ${ampm}`);
     };
 
     updateTime(); // Set time immediately
@@ -52,8 +55,8 @@ export default function DashboardHeader() {
         <Image
           src={CLUB_LOGO_PATH}
           alt="VinnovateIT Logo"
-          width={150}
-          height={40}
+          width={113}
+          height={36}
           priority
         />
       </div>

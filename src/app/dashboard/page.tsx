@@ -11,6 +11,7 @@ import SubdomainSelector from './components/SubdomainSelector';
 import TechDomainContent from './components/TechDomainContent';
 import DesignDomainContent from './components/DesignDomainContent';
 import ManagementDomainContent from './components/ManagementDomainContent';
+import { MobileRestriction } from '@/components/MobileRestriction';
 
 export default function DashboardPage() {
   // --- State for the active tab ---
@@ -22,29 +23,35 @@ export default function DashboardPage() {
   };
 
   return (
-    <div className={styles.pageContainer}>
-      <DashboardHeader />
+    <>
+      {/* Mobile Restriction - Only shows on mobile */}
+      <MobileRestriction />
 
-      <main className={styles.mainContentArea}>
-        <div className={styles.dashboardCard}>
+      {/* Desktop View */}
+      <div className={styles.pageContainer}>
+        <DashboardHeader />
 
-           <UserGreeting />
+        <main className={styles.mainContentArea}>
+          <div className={styles.dashboardCard}>
 
-           {/* --- Pass state and handler to DomainTabs --- */}
+            <UserGreeting />
+
+            {/* --- Pass state and handler to DomainTabs --- */}
             <DomainTabs
-            activeTab={activeTab}
-            onTabChange={handleTabChange}
+              activeTab={activeTab}
+              onTabChange={handleTabChange}
             />
 
             {/* --- Conditional rendering based on activeTab state --- */}
             <div className={styles.domainContentWrapper}>
-                {activeTab === 'Tech' && <TechDomainContent />}
-                {activeTab === 'Design' && <DesignDomainContent />}
-                {activeTab === 'Management' && <ManagementDomainContent />}
+              {activeTab === 'Tech' && <TechDomainContent />}
+              {activeTab === 'Design' && <DesignDomainContent />}
+              {activeTab === 'Management' && <ManagementDomainContent />}
             </div>
-        
-        </div>
-      </main>
-    </div>
+          
+          </div>
+        </main>
+      </div>
+    </>
   );
 }

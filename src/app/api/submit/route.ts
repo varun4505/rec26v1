@@ -160,12 +160,12 @@ export async function POST(req: Request) {
         )
       }
     }
-    // If application exists, add domain/subdomain/round submissions (if not duplicates).
+    // If application exists, add or update domain/subdomain/round submissions
     if (existing) {
-      // For each create item, ensure a submission for the same application+domain+subdomain+round doesn't already exist
+      // For each create item, check if submission exists and update it, or create new
       for (const item of domainCreates) {
-        // find any existing submissions for this applicationId+domain+round, then check subdomain equality in JS
-        type DSRow = { id: string; applicationId: string; domain: string; subdomain?: string; round: string; answers: unknown }
+        // find any existing submissions for this applicationId+domain+subdomain+round
+        type DSRow = { id: string; applicationId: string; domain: string; subdomain?: string | null; round: string; answers: unknown }
         const candidates = await prisma.domainSubmission.findMany({ 
           where: { 
             applicationId: existing.id, 
@@ -173,29 +173,38 @@ export async function POST(req: Request) {
             round: item.round
           } 
         })
-        const existsForSubdomainAndRound = (candidates as unknown as DSRow[]).some(
-          (c) => c.subdomain === item.subdomain && c.round === item.round
+        const existingSubmission = (candidates as unknown as DSRow[]).find(
+          (c) => c.subdomain === (item.subdomain ?? null) && c.round === item.round
         )
-        if (existsForSubdomainAndRound) {
-          return NextResponse.json({ 
-            success: false, 
-            error: `Submission already exists for domain ${item.domain}${item.subdomain ? '/' + item.subdomain : ''}/${item.round}` 
-          }, { status: 409 })
+        
+        if (existingSubmission) {
+          // Update existing submission (allow resubmission)
+          await prisma.domainSubmission.update({
+            where: { id: existingSubmission.id },
+            data: {
+              answers: item.answers as unknown as Prisma.InputJsonValue,
+              submissionUrl: item.submissionUrl ?? undefined,
+              submittedAt: new Date(), // Update submission time
+              // Reset evaluation status on resubmission
+              isPassed: false,
+              feedback: null,
+              evaluatedAt: null,
+              evaluatedBy: null,
+            }
+          })
+        } else {
+          // Create new submission
+          await prisma.domainSubmission.create({ 
+            data: ({ 
+              applicationId: existing.id, 
+              domain: item.domain, 
+              subdomain: item.subdomain ?? undefined, 
+              round: item.round,
+              answers: item.answers as unknown as Prisma.InputJsonValue,
+              submissionUrl: item.submissionUrl ?? undefined
+            } as Prisma.DomainSubmissionUncheckedCreateInput) 
+          })
         }
-      }
-
-      // Create submissions
-      for (const item of domainCreates) {
-        await prisma.domainSubmission.create({ 
-          data: ({ 
-            applicationId: existing.id, 
-            domain: item.domain, 
-            subdomain: item.subdomain ?? undefined, 
-            round: item.round,
-            answers: item.answers as unknown as Prisma.InputJsonValue,
-            submissionUrl: item.submissionUrl ?? undefined
-          } as Prisma.DomainSubmissionUncheckedCreateInput) 
-        })
       }
 
       const fresh = await prisma.application.findUnique({ where: { id: existing.id }, include: { domainSubmissions: true } })

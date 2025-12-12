@@ -6,7 +6,7 @@ import { signIn, useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import styles from './Login.module.css';
 
-const CLUB_LOGO_PATH = '/whiteLogoViit.svg';
+const CLUB_LOGO_PATH = '/assets/images/vinnovateit_white.svg';
 const GOOGLE_LOGO_PATH = '/google-logo.svg';
 
 export default function LoginPage() {
@@ -62,8 +62,9 @@ export default function LoginPage() {
         <Image 
           src={CLUB_LOGO_PATH} 
           alt="Club Logo" 
-          width={150} // Example width
-          height={40} // Example height
+          width={150}
+          height={40}
+          className={styles.logo}
           priority 
         />
         

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import { Khand } from "next/font/google";
 import "./globals.css";
-import Footer from './components/Footer';
+import FooterConditional from './components/FooterConditional';
 import { SessionProvider } from './components/SessionProvider';
 
 const arrayFont = localFont({
@@ -43,7 +43,7 @@ export default function RootLayout({
           <div className="flex-grow">
             {children}
           </div>
-          <Footer />
+          <FooterConditional />
         </SessionProvider>
       </body>
     </html>

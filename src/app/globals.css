@@ -445,8 +445,8 @@ html {
 
 .gallery-container {
   position: relative;
-  width: 320px;
-  height: 220px;
+  width: 380px;
+  height: 260px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -475,7 +475,7 @@ html {
 
 .spread .gallery-card {
   transform: translate(var(--final-x), var(--final-y))
-    rotate(var(--final-rot)) scale(1);
+    rotate(var(--final-rot)) scale(var(--final-scale, 1));
 }
 
 .marquee-wrapper {

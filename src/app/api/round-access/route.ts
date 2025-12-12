@@ -73,17 +73,40 @@ export async function GET(req: Request) {
         sub.round === round
     );
 
+    // Check deadline - allow resubmission before deadline
+    const now = new Date();
+    const deadline = await prisma.deadline.findFirst({
+      where: {
+        domain: domain,
+        OR: [
+          { subdomain: subdomain && subdomain !== 'none' ? subdomain : null },
+          { subdomain: null }, // Fall back to domain-wide deadline
+        ],
+        round: round,
+      },
+      orderBy: {
+        subdomain: 'desc', // Prioritize specific subdomain deadlines
+      },
+    });
+
+    // If there's an existing submission
     if (existingSubmission) {
-      return NextResponse.json({
-        success: true,
-        canAccess: false,
-        reason: "You have already submitted this round",
-        submission: {
-          isPassed: existingSubmission.isPassed,
-          feedback: existingSubmission.feedback,
-          submittedAt: existingSubmission.submittedAt,
-        },
-      });
+      // Check if deadline has passed
+      if (deadline && now > deadline.deadline) {
+        return NextResponse.json({
+          success: true,
+          canAccess: false,
+          reason: "Submission deadline has passed. You cannot edit your submission.",
+          submission: {
+            isPassed: existingSubmission.isPassed,
+            feedback: existingSubmission.feedback,
+            submittedAt: existingSubmission.submittedAt,
+          },
+        });
+      }
+      
+      // If deadline hasn't passed, allow resubmission (user can edit)
+      // Don't block access - just proceed to allow them to resubmit
     }
 
     // For Round 2, check if Round 1 is passed

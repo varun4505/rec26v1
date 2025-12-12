@@ -17,35 +17,40 @@ export const Hero: React.FC = () => {
       alt: "Team Work",
       rotation: -6,
       x: -160,
-      y: 50,
+      y: 80,
+      scale: 0.75,
     },
     {
       src: "/assets/images/gallery/2.png",
       alt: "Lab Life",
       rotation: -3,
       x: -80,
-      y: 20,
+      y: 40,
+      scale: 0.9,
     },
     {
       src: "/assets/images/gallery/3.png",
       alt: "Core Team",
       rotation: 0,
       x: 0,
-      y: -0,
+      y: 10,
+      scale: 1.05,
     },
     {
       src: "/assets/images/gallery/4.png",
       alt: "Tech Talk",
       rotation: 3,
       x: 80,
-      y: 20,
+      y: 40,
+      scale: 0.9,
     },
     {
       src: "/assets/images/gallery/5.png",
       alt: "Fun Time",
       rotation: 6,
       x: 160,
-      y: 50,
+      y: 80,
+      scale: 0.75,
     },
   ];
 
@@ -78,6 +83,7 @@ export const Hero: React.FC = () => {
                   "--final-rot": `${img.rotation}deg`,
                   "--final-x": `${img.x}%`,
                   "--final-y": `${img.y}px`,
+                  "--final-scale": img.scale,
                 } as React.CSSProperties
               }
             >

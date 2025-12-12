@@ -1,26 +1,27 @@
 /* src/app/dashboard/Dashboard.module.css */
 
 .pageContainer {
-  min-height: 100vh;
-  background-color: var(--color-dark-bg);
+  height: 100vh;
+  background-color: #0a0a0a;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  padding: 16px;
+  padding: clamp(0.9rem, 2.7vw, 1.8rem);
+  box-sizing: border-box;
   position: relative;
   overflow: hidden;
 }
 
 .dashboardHeader {
   width: 100%;
-  max-width: 1440px;
+  max-width: 1500px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px 0;
-  margin-bottom: 20px;
+  padding: 8px 0;
+  margin-bottom: clamp(0.9rem, 2.7vw, 1.8rem);
   position: relative;
   z-index: 3;
+  flex-shrink: 0;
 }
 
 .headerLeft {}
@@ -28,7 +29,7 @@
 .headerRight {
   display: flex;
   align-items: center;
-  gap: 24px;
+  gap: 16px;
 }
 
 .goToHomeButton {
@@ -42,6 +43,9 @@
   font-weight: 400;
   cursor: pointer;
   transition: background-color 0.2s ease, color 0.2s ease;
+  text-decoration: none;
+  white-space: nowrap;
+  display: inline-block;
 }
 
 .goToHomeButton:hover {
@@ -49,50 +53,56 @@
 }
 
 .userInitialCircle {
-  width: 32px;
-  height: 32px;
+  width: clamp(28px, 4.8vw, 34px);
+  height: clamp(28px, 4.8vw, 34px);
   border-radius: 50%;
-  background-color: rgba(248, 104, 0, 0.66);
+  background: linear-gradient(135deg, #ff8c42 0%, #f86800 100%);
   color: #FFFFFF;
   display: flex;
   justify-content: center;
   align-items: center;
   font-family: var(--font-khand);
-  font-size: 15px;
-  font-weight: 400;
+  font-size: clamp(0.8rem, 2.2vw, 1rem);
+  font-weight: 600;
   cursor: pointer;
+  box-shadow: 0 4px 12px rgba(248, 104, 0, 0.4);
+  transition: all 0.3s ease;
 }
 
 .headerTime {
   font-family: var(--font-khand);
-  font-weight: 400;
-  font-size: 32px;
-  color: var(--color-text-light);
+  font-weight: 500;
+  font-size: clamp(0.81rem, 1.62vw, 1.22rem);
+  color: #ffffff;
   line-height: 1;
 }
 
 .mainContentArea {
   width: 100%;
-  max-width: 1440px;
-  margin-top: 0px;
+  flex: 1;
   display: flex;
   justify-content: center;
+  align-items: stretch;
   position: relative;
   z-index: 2;
+  min-height: 0;
+  overflow: hidden;
 }
 
 .dashboardCard {
   width: 100%;
-  max-width: 1227px;
-  min-height: 720px;
-  background-color: #FFFFFF;
-  border-radius: 57px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-  padding: 40px 56px;
+  flex: 1;
+  min-height: 0;
+  background: #ffffff;
+  border-radius: clamp(18px, 3.6vw, 36px);
+  padding: clamp(1.22rem, 3.24vw, 2.43rem);
   color: var(--color-text-dark);
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
 }
 
 .domainContentWrapper {
@@ -126,16 +136,16 @@
 }
 
 .domainTabsContainer {
-  width: 471px;
-  height: 58px;
   background-color: #000000;
-  border-radius: 45px;
+  border-radius: 40px;
   display: flex;
   align-items: center;
-  padding: 8px 10px;
-  margin-bottom: 40px;
+  padding: 6px 8px;
+  margin-bottom: clamp(1rem, 2vw, 1.5rem);
   margin-left: auto;
   margin-right: auto;
+  width: clamp(360px, 32vw, 420px);
+  height: clamp(46px, 5vw, 52px);
 }
 
 .tabButton {
@@ -144,13 +154,13 @@
   border: none;
   color: #FFFFFF;
   font-family: var(--font-khand);
-  font-size: 24px;
+  font-size: clamp(0.9rem, 2vw, 1.05rem);
   font-weight: 400;
   line-height: 1;
   letter-spacing: 0.01em;
   cursor: pointer;
-  border-radius: 40px;
-  height: 43px;
+  border-radius: 32px;
+  height: clamp(34px, 4vw, 40px);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -168,11 +178,11 @@
 
 .domainContentContainer {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: flex-start;
-  gap: 40px;
+  gap: 24px;
   margin-bottom: 40px;
-  padding: 0 60px;
+  padding: 0 40px;
 }
 
 .domainContentLeft {
@@ -185,7 +195,7 @@
 
 .domainContentRight {
   flex-shrink: 0;
-  width: 494px;
+  width: 580px;
 }
 
 .techTitle {
@@ -263,20 +273,20 @@
   font-family: var(--font-khand);
   font-weight: 400;
   font-size: 16px;
-  line-height: 1.5;
+  line-height: 1.6;
   letter-spacing: 0.01em;
   color: #000000;
   margin: 0;
-  padding-top: 22px;
+  padding-top: 18px;
 }
 
 .subdomainContainer {
   width: 100%;
   height: auto;
-  min-height: 177px;
+  min-height: 185px;
   background-color: rgba(248, 104, 0, 0.3);
-  border-radius: 29px;
-  padding: 18px 29px;
+  border-radius: 26px;
+  padding: 16px 26px;
   margin-top: auto;
   box-sizing: border-box;
 }
@@ -284,24 +294,27 @@
 .subdomainTitle {
   font-family: var(--font-khand);
   font-weight: 400;
-  font-size: 24px;
+  font-size: 22px;
   line-height: 1.2;
   letter-spacing: 0.01em;
   color: #000000;
-  margin: 0 0 15px 7px;
+  margin: 0 0 13px 6px;
 }
 
 .subdomainBoxes {
   display: flex;
   justify-content: space-between;
-  gap: 19px;
+  gap: 12px;
+  flex-wrap: nowrap;
 }
 
 .subdomainBox {
-  width: 323px;
-  height: 140px;
+  flex: 1;
+  min-width: 230px;
+  max-width: 300px;
+  height: 145px;
   background-color: rgba(248, 104, 0, 0.31);
-  border-radius: 19px;
+  border-radius: 17px;
   cursor: pointer;
   transition: all 0.3s ease;
   display: flex;
@@ -310,7 +323,7 @@
   justify-content: center;
   padding: 15px;
   font-family: var(--font-khand);
-  font-size: 20px;
+  font-size: 19px;
   font-weight: 500;
   color: #000000;
   box-sizing: border-box;
@@ -323,8 +336,8 @@
 .subdomainBox.selected {
   background-color: rgba(255, 179, 122, 0.5);
   border: 2px solid rgba(255, 143, 107, 0.8);
-  height: 140px;
-  padding: 12px;
+  height: 145px;
+  padding: 13px;
 }
 
 .subdomainBox.selected:hover {
@@ -336,10 +349,10 @@
   background: linear-gradient(90deg, #FFB37A 0%, #FF8F6B 100%);
   color: white;
   border: none;
-  border-radius: 8px;
-  padding: 6px 12px;
+  border-radius: 7px;
+  padding: 7px 12px;
   font-family: var(--font-khand);
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -409,4 +422,121 @@
 
 .dropdownLink:hover {
   opacity: 0.7;
+}
+
+/* Responsive Styles for Smaller Laptops */
+@media (max-width: 1400px) {
+  .dashboardCard {
+    padding: clamp(1rem, 2.5vw, 2rem);
+  }
+
+  .domainContentContainer {
+    padding: 0 24px;
+    gap: 20px;
+  }
+
+  .techTitle,
+  .designTitle {
+    font-size: 80px;
+  }
+
+  .managementTitle {
+    font-size: 68px;
+  }
+
+  .domainContentRight {
+    width: 480px;
+  }
+
+  .subdomainBox {
+    width: 300px;
+    height: 155px;
+    padding: 16px;
+  }
+
+  .subdomainBox.selected {
+    height: 155px;
+  }
+}
+
+@media (max-width: 1200px) {
+  .pageContainer {
+    padding: clamp(0.8rem, 2vw, 1.2rem);
+  }
+
+  .dashboardCard {
+    padding: clamp(0.9rem, 2vw, 1.5rem);
+  }
+
+  .greetingTitle {
+    font-size: 32px;
+  }
+
+  .greetingEmail {
+    font-size: 20px;
+  }
+
+  .domainTabsContainer {
+    width: clamp(340px, 30vw, 380px);
+    height: clamp(44px, 4.5vw, 48px);
+  }
+
+  .tabButton {
+    font-size: clamp(0.85rem, 1.8vw, 0.95rem);
+  }
+
+  .techTitle,
+  .designTitle {
+    font-size: 68px;
+  }
+
+  .managementTitle {
+    font-size: 56px;
+  }
+
+  .domainContentContainer {
+    padding: 0 16px;
+    gap: 16px;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .domainContentLeft,
+  .domainContentRight {
+    width: 100%;
+    max-width: 600px;
+    align-items: center;
+    text-align: center;
+  }
+
+  .domainDescription {
+    text-align: center;
+  }
+
+  .subdomainContainer {
+    padding: 16px 20px;
+    min-height: 190px;
+  }
+
+  .subdomainBoxes {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 16px;
+  }
+
+  .subdomainBox {
+    width: 280px;
+    height: 145px;
+  }
+
+  .subdomainBox.selected {
+    height: 145px;
+  }
+}
+
+/* Hide desktop view on mobile */
+@media (max-width: 900px) {
+  .pageContainer {
+    display: none;
+  }
 }

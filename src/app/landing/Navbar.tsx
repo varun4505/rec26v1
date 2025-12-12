@@ -7,6 +7,7 @@ import { gsap } from "gsap";
 import Image from "next/image";
 import Link from "next/link";
 import { Instrument_Sans } from "next/font/google";
+import { useSession } from "next-auth/react";
 
 const instrumentSans = Instrument_Sans({
   subsets: ["latin"],
@@ -31,6 +32,7 @@ interface StyleObject {
 }
 
 const MainNavbar: React.FC = () => {
+  const { data: session } = useSession();
   const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
   const [isMobile, setIsMobile] = useState<boolean>(false);
   // Initial section set to 'home' or equivalent if the user starts at the top
@@ -54,7 +56,7 @@ const MainNavbar: React.FC = () => {
   useEffect(() => {
     // Target relevant sections for active link highlighting
     const sections = document.querySelectorAll(
-      "#home, #about, #domains, #projects"
+      "#home, #about, #domains, #testimonial"
     );
 
     const observer = new IntersectionObserver(
@@ -197,7 +199,7 @@ const MainNavbar: React.FC = () => {
     { href: "#home", text: "Home", sectionId: "home" },
     { href: "#about", text: "About", sectionId: "about" },
     { href: "#domains", text: "Domains", sectionId: "domains" },
-    { href: "#projects", text: "Projects", sectionId: "projects" },
+    { href: "#testimonial", text: "Our Testimonial", sectionId: "testimonial" },
   ];
 
   // Helper to check if the current link should be active (including "Home" at the start)
@@ -312,9 +314,9 @@ const MainNavbar: React.FC = () => {
 
             {/* 3. Sign In Button and Hamburger (Right) */}
             <div className="flex items-center z-20">
-              {/* Sign In Button - Desktop (Right) */}
+              {/* Sign In/Profile Button - Desktop (Right) */}
               <Link
-                href="/login"
+                href={session ? "/profile" : "/login"}
                 className="hidden lg:block"
               >
                 <motion.button
@@ -323,7 +325,7 @@ const MainNavbar: React.FC = () => {
                   style={{ ...SIGN_IN_BUTTON_STYLE, ...BUTTON_FONT_STYLE }}
                   className="px-10 py-3 text-black font-medium rounded-full whitespace-nowrap transition-all duration-300"
                 >
-                  Sign In
+                  {session ? "Profile" : "Sign In"}
                 </motion.button>
               </Link>
 
@@ -466,7 +468,7 @@ const MainNavbar: React.FC = () => {
                       }}
                     >
                       <Link
-                        href="/login"
+                        href={session ? "/profile" : "/login"}
                       >
                         <motion.button
                           whileHover={{ scale: 1.05 }}
@@ -474,7 +476,7 @@ const MainNavbar: React.FC = () => {
                           style={SIGN_IN_BUTTON_STYLE}
                           className="w-full mt-4 px-8 py-4 text-black font-semibold rounded-full text-2xl transition-all duration-300"
                         >
-                          Sign In
+                          {session ? "Profile" : "Sign In"}
                         </motion.button>
                       </Link>
                     </motion.div>
