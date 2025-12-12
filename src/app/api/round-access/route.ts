@@ -102,12 +102,14 @@ export async function GET(req: Request) {
       console.warn("Deadline check failed:", deadlineError);
     }
 
-    // If there's an existing submission
-    if (existingSubmission) {
-      // Check if deadline has passed
-      if (deadline && now > deadline.deadline) {
-        // Allow editing if user has passed, even after deadline
-        if (!existingSubmission.isPassed) {
+    // Check if deadline has passed (applies to both new and existing submissions)
+    if (deadline && now > deadline.deadline) {
+      // If there's an existing submission
+      if (existingSubmission) {
+        // Allow editing only if user has passed
+        if (existingSubmission.isPassed) {
+          // Allow access for passed users even after deadline
+        } else {
           return NextResponse.json({
             success: true,
             canAccess: false,
@@ -118,11 +120,14 @@ export async function GET(req: Request) {
             },
           });
         }
-        // If passed, allow editing even after deadline - fall through to allow access
+      } else {
+        // No submission and deadline passed - block access
+        return NextResponse.json({
+          success: true,
+          canAccess: false,
+          reason: "Submission deadline has passed. You can no longer submit.",
+        });
       }
-      
-      // If deadline hasn't passed or user has passed, allow resubmission (user can edit)
-      // Don't block access - just proceed to allow them to resubmit
     }
 
     // For Round 2, check if Round 1 is passed
