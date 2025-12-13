@@ -294,6 +294,7 @@ export default function QuizPage() {
 	const [tasks, setTasks] = useState<any[]>([]);
 	const [tasksLoading, setTasksLoading] = useState(true);
 	const [taskSubmissionUrl, setTaskSubmissionUrl] = useState<string>('');
+	const [selectedTaskId, setSelectedTaskId] = useState<string>('');
 	const [lastSaved, setLastSaved] = useState<Date | null>(null);
 	const [alertModal, setAlertModal] = useState<{isOpen: boolean; title: string; message: string}>({
 		isOpen: false,
@@ -333,10 +334,16 @@ export default function QuizPage() {
 				if (result.success && result.submission) {
 					console.log('Submission answers raw:', result.submission.answers);
 					
-					// For task submissions, just set the URL
+					// For task submissions, just set the URL and selected task ID
 					if (result.submission.submissionUrl) {
 						setTaskSubmissionUrl(result.submission.submissionUrl);
 						console.log('Loaded task submission URL:', result.submission.submissionUrl);
+					}
+					if (result.submission.selectedTaskId) {
+						setSelectedTaskId(result.submission.selectedTaskId);
+						console.log('Loaded selected task ID:', result.submission.selectedTaskId);
+					}
+					if (result.submission.submissionUrl && !result.submission.answers) {
 						return;
 					}
 					
@@ -358,6 +365,7 @@ export default function QuizPage() {
 							const parsed = JSON.parse(cached);
 							setAnswers(parsed.answers || {});
 							setTaskSubmissionUrl(parsed.taskSubmissionUrl || '');
+							setSelectedTaskId(parsed.selectedTaskId || '');
 							setLastSaved(parsed.savedAt ? new Date(parsed.savedAt) : null);
 							console.log('Loaded from cache:', parsed.answers);
 						} catch (err) {
@@ -391,11 +399,12 @@ export default function QuizPage() {
 
 	// Auto-save answers to localStorage with debouncing
 	useEffect(() => {
-		if (typeof window !== 'undefined' && (Object.keys(answers).length > 0 || taskSubmissionUrl)) {
+		if (typeof window !== 'undefined' && (Object.keys(answers).length > 0 || taskSubmissionUrl || selectedTaskId)) {
 			const timer = setTimeout(() => {
 				const dataToSave = {
 					answers,
 					taskSubmissionUrl,
+					selectedTaskId,
 					savedAt: new Date().toISOString(),
 				};
 				localStorage.setItem(cacheKey, JSON.stringify(dataToSave));
@@ -404,7 +413,7 @@ export default function QuizPage() {
 
 			return () => clearTimeout(timer);
 		}
-	}, [answers, taskSubmissionUrl, cacheKey]);
+	}, [answers, taskSubmissionUrl, selectedTaskId, cacheKey]);
 
 	// Check round access on mount
 	useEffect(() => {
@@ -435,9 +444,10 @@ export default function QuizPage() {
 					? (round as string) 
 					: `round${round}`;
 				
-				// Check if this round is a task round
+				// Check if this round is a task round or mixed
 				const roundInfo = getRoundInfo(fullDomainId as DomainType, roundParam as RoundType);
 				const isTaskRound = roundInfo?.type === 'task';
+				const isMixedRound = roundInfo?.type === 'mixed';
 				
 				const queryParams = new URLSearchParams({
 					domain: fullDomainId,
@@ -446,9 +456,9 @@ export default function QuizPage() {
 				});
 
 				if (isTaskRound) {
-					// Fetch tasks
+					// Fetch only tasks
 					setTasksLoading(true);
-					setQuestionsLoading(false); // Not loading questions
+					setQuestionsLoading(false);
 					const response = await fetch(`/api/tasks?${queryParams}`);
 					const result = await response.json();
 
@@ -458,10 +468,51 @@ export default function QuizPage() {
 						setError(result.error || "Failed to load tasks");
 					}
 					setTasksLoading(false);
-				} else {
-					// Fetch questions
+				} else if (isMixedRound) {
+					// Fetch both questions and tasks
 					setQuestionsLoading(true);
-					setTasksLoading(false); // Not loading tasks
+					setTasksLoading(true);
+					
+					const [questionsResponse, tasksResponse] = await Promise.all([
+						fetch(`/api/questions?${queryParams}`),
+						fetch(`/api/tasks?${queryParams}`)
+					]);
+					
+					const questionsResult = await questionsResponse.json();
+					const tasksResult = await tasksResponse.json();
+
+					if (questionsResult.success) {
+						setQuestions(questionsResult.questions);
+						
+						// Map pending answers to questions if they exist
+						const pendingAnswers = (window as any).__pendingAnswers;
+						if (pendingAnswers && Array.isArray(pendingAnswers)) {
+							const mappedAnswers: Record<string, string> = {};
+							questionsResult.questions.forEach((question: any, index: number) => {
+								if (pendingAnswers[index] && pendingAnswers[index].answer !== undefined) {
+									mappedAnswers[question.id] = String(pendingAnswers[index].answer);
+								}
+							});
+							setAnswers(mappedAnswers);
+							console.log('Mapped answers to questions:', mappedAnswers);
+							delete (window as any).__pendingAnswers;
+						}
+					} else {
+						setError(questionsResult.error || "Failed to load questions");
+					}
+
+					if (tasksResult.success) {
+						setTasks(tasksResult.tasks);
+					} else {
+						setError(tasksResult.error || "Failed to load tasks");
+					}
+
+					setQuestionsLoading(false);
+					setTasksLoading(false);
+				} else {
+					// Fetch only questions
+					setQuestionsLoading(true);
+					setTasksLoading(false);
 					const response = await fetch(`/api/questions?${queryParams}`);
 					const result = await response.json();
 
@@ -479,7 +530,6 @@ export default function QuizPage() {
 							});
 							setAnswers(mappedAnswers);
 							console.log('Mapped answers to questions:', mappedAnswers);
-							// Clear pending answers
 							delete (window as any).__pendingAnswers;
 						}
 					} else {
@@ -650,6 +700,11 @@ export default function QuizPage() {
 		// Auto-save will be triggered by useEffect
 	};
 
+	const handleTaskSelection = (taskId: string) => {
+		setSelectedTaskId(taskId);
+		// Auto-save will be triggered by useEffect
+	};
+
 	const handleSubmit = async () => {
 		setError(null);
 		
@@ -658,9 +713,23 @@ export default function QuizPage() {
 		console.log('Email:', session?.user?.email);
 		console.log('Name:', session?.user?.name);
 		
+		// Determine round type
+		const roundInfo = getRoundInfo(fullDomainId as DomainType, roundParam as RoundType);
+		const isMixedRound = roundInfo?.type === 'mixed';
+		
 		// Validate based on round type
-		if (isTaskRound) {
-			// For task rounds, validate submission URL
+		if (isTaskRound || (isMixedRound && tasks.length > 0)) {
+			// Check if there are any optional tasks
+			const optionalTasks = tasks.filter(t => !t.isRequired);
+			const requiredTasks = tasks.filter(t => t.isRequired);
+			
+			// For optional tasks, check if user selected one
+			if (optionalTasks.length > 0 && !selectedTaskId) {
+				setError('Please select a task to submit.');
+				return;
+			}
+			
+			// Validate submission URL
 			if (!taskSubmissionUrl.trim()) {
 				setError('Please provide a submission URL for the task.');
 				return;
@@ -678,14 +747,14 @@ export default function QuizPage() {
 				setError('Please enter a valid URL (e.g., github.com/username/repo or https://github.com/username/repo)');
 				return;
 			}
-		} else {
-			// For question rounds, validate that all required questions are answered
-			if (questions.length > 0) {
-				const unansweredRequired = questions.filter(q => !q.isOptional && !answers[q.id]);
-				if (unansweredRequired.length > 0) {
-					setError(`Please answer all required questions before submitting.`);
-					return;
-				}
+		}
+		
+		// For question rounds or mixed rounds with questions
+		if (!isTaskRound && questions.length > 0) {
+			const unansweredRequired = questions.filter(q => !q.isOptional && !answers[q.id]);
+			if (unansweredRequired.length > 0) {
+				setError(`Please answer all required questions before submitting.`);
+				return;
 			}
 		}
 
@@ -693,7 +762,7 @@ export default function QuizPage() {
 
 			try {
 			// Prepare submission data
-			const answersList = isTaskRound ? [] : questions.map(q => ({
+			const answersList = (isTaskRound && !isMixedRound) ? [] : questions.map(q => ({
 				id: q.id,
 				question: q.text,
 				answer: answers[q.id] || ''
@@ -736,8 +805,10 @@ export default function QuizPage() {
 					domain: fullDomainId,
 					subdomain: subdomainStr || undefined,
 					round: roundParam,
-					data: isTaskRound ? {
-						submissionUrl: taskSubmissionUrl
+					data: (isTaskRound || (isMixedRound && selectedTaskId)) ? {
+						submissionUrl: taskSubmissionUrl,
+						selectedTaskId: selectedTaskId || undefined,
+						...(answersList.length > 0 ? { answers: answersList } : {})
 					} : {
 						answers: answersList
 					}
@@ -814,63 +885,8 @@ export default function QuizPage() {
 					</header>
 
 				<div className="flex flex-col gap-6 rounded-[28px] bg-[#F7B58D]/40 p-6">
-					{/* Render tasks for task rounds */}
-					{isTaskRound && tasks.length > 0 && (
-						<>
-							{tasks.map((task: any) => (
-								<div key={task.id} className="flex flex-col gap-4 p-6 bg-white rounded-2xl shadow-md">
-									<div>
-										<h3 className="text-2xl font-bold text-gray-900 mb-2">{task.title}</h3>
-										<p className="text-gray-700 whitespace-pre-wrap">{task.description}</p>
-									</div>
-									{task.link && (
-										<div className="flex items-center gap-2">
-											<span className="font-semibold text-gray-700">Task Link:</span>
-											<a 
-												href={task.link} 
-												target="_blank" 
-												rel="noopener noreferrer"
-												className="text-[#FF8F6B] hover:underline break-all"
-											>
-												{task.link}
-											</a>
-										</div>
-									)}
-									{task.deadline && (
-										<div className="flex items-center gap-2 text-gray-600">
-											<span className="font-semibold">Deadline:</span>
-											<span>{new Date(task.deadline).toLocaleString()}</span>
-										</div>
-									)}
-								</div>
-							))}
-							
-							{/* Task submission URL input */}
-							<div className="flex flex-col gap-3 p-6 bg-white rounded-2xl shadow-md">
-								<label className="text-lg font-semibold text-gray-900">
-									Submit Your Work
-								</label>
-								<p className="text-sm text-gray-600 mb-2">
-									Provide a link to your submission (e.g., GitHub repository, Google Drive, portfolio link)
-								</p>
-								<input
-									type="url"
-									value={taskSubmissionUrl}
-									onChange={(e) => handleTaskUrlChange(e.target.value)}
-									placeholder="https://github.com/username/repository"
-									className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-[#FF8F6B] focus:outline-none text-gray-900"
-								/>
-								{lastSaved && (
-									<p className="text-xs text-gray-500">
-										Auto-saved at {lastSaved.toLocaleTimeString()}
-									</p>
-								)}
-							</div>
-						</>
-					)}
-
-					{/* Render questions from database */}
-					{!isTaskRound && questions.length > 0 && (
+					{/* Render questions from database (for questionnaire or mixed rounds) */}
+					{questions.length > 0 && (
 						<>
 							{questions.map((question) => (
 								<SubjectiveQuestion
@@ -884,24 +900,124 @@ export default function QuizPage() {
 									isOptional={question.isOptional}
 								/>
 							))}
-							{lastSaved && (
-								<p className="text-xs text-gray-500 text-center">
-									Auto-saved at {lastSaved.toLocaleTimeString()}
-								</p>
+						</>
+					)}
+
+					{/* Render tasks (for task or mixed rounds) */}
+					{tasks.length > 0 && (
+						<>
+							{tasks.filter(t => !t.isRequired).length > 0 && (
+								<div className="p-6 bg-blue-50 rounded-2xl border-2 border-blue-200">
+									<h3 className="text-xl font-bold text-gray-900 mb-2">Choose a Task</h3>
+									<p className="text-sm text-gray-600 mb-4">
+										Select one task from the options below to work on:
+									</p>
+								</div>
+							)}
+							
+							{tasks.map((task: any) => {
+								const isOptional = !task.isRequired;
+								const isSelected = selectedTaskId === task.id;
+								
+								return (
+									<div 
+										key={task.id} 
+										className={`flex flex-col gap-4 p-6 bg-white rounded-2xl shadow-md border-2 transition-all ${
+											isOptional && isSelected 
+												? 'border-[#FF8F6B] ring-2 ring-[#FF8F6B]/30' 
+												: isOptional 
+												? 'border-gray-300 hover:border-[#FF8F6B]/50 cursor-pointer' 
+												: 'border-green-300'
+										}`}
+										onClick={() => isOptional && handleTaskSelection(task.id)}
+									>
+										<div className="flex items-start justify-between">
+											<div className="flex-1">
+												<div className="flex items-center gap-3 mb-2">
+													<h3 className="text-2xl font-bold text-gray-900">{task.title}</h3>
+													{task.isRequired && (
+														<span className="px-3 py-1 text-xs font-semibold bg-green-100 text-green-800 rounded-full">
+															Required
+														</span>
+													)}
+													{!task.isRequired && (
+														<span className="px-3 py-1 text-xs font-semibold bg-blue-100 text-blue-800 rounded-full">
+															Optional - Choose 1
+														</span>
+													)}
+												</div>
+												<p className="text-gray-700 whitespace-pre-wrap">{task.description}</p>
+											</div>
+											{isOptional && (
+												<input
+													type="radio"
+													checked={isSelected}
+													onChange={() => handleTaskSelection(task.id)}
+													className="mt-2 w-5 h-5 text-[#FF8F6B] focus:ring-[#FF8F6B]"
+												/>
+											)}
+										</div>
+										{task.link && (
+											<div className="flex items-center gap-2">
+												<span className="font-semibold text-gray-700">Task Link:</span>
+												<a 
+													href={task.link} 
+													target="_blank" 
+													rel="noopener noreferrer"
+													className="text-[#FF8F6B] hover:underline break-all"
+													onClick={(e) => e.stopPropagation()}
+												>
+													{task.link}
+												</a>
+											</div>
+										)}
+										{task.deadline && (
+											<div className="flex items-center gap-2 text-gray-600">
+												<span className="font-semibold">Deadline:</span>
+												<span>{new Date(task.deadline).toLocaleString()}</span>
+											</div>
+										)}
+									</div>
+								);
+							})}
+							
+							{/* Task submission URL input - shown if any task selected or required */}
+							{(selectedTaskId || tasks.some((t: any) => t.isRequired)) && (
+								<div className="flex flex-col gap-3 p-6 bg-white rounded-2xl shadow-md">
+									<label className="text-lg font-semibold text-gray-900">
+										Submit Your Work
+									</label>
+									<p className="text-sm text-gray-600 mb-2">
+										Provide a link to your submission (e.g., GitHub repository, Google Drive, portfolio link)
+									</p>
+									<input
+										type="url"
+										value={taskSubmissionUrl}
+										onChange={(e) => handleTaskUrlChange(e.target.value)}
+										placeholder="https://github.com/username/repository"
+										className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-[#FF8F6B] focus:outline-none text-gray-900"
+									/>
+									{lastSaved && (
+										<p className="text-xs text-gray-500">
+											Auto-saved at {lastSaved.toLocaleTimeString()}
+										</p>
+									)}
+								</div>
 							)}
 						</>
 					)}
 
 					{/* Show message when no content available */}
-					{!isTaskRound && questions.length === 0 && (
+					{questions.length === 0 && tasks.length === 0 && (
 						<div className="text-center py-8">
-							<p className="text-xl text-black/60">No questions available for this round yet.</p>
+							<p className="text-xl text-black/60">No content available for this round yet.</p>
 						</div>
 					)}
-					{isTaskRound && tasks.length === 0 && (
-						<div className="text-center py-8">
-							<p className="text-xl text-black/60">No tasks available for this round yet.</p>
-						</div>
+
+					{lastSaved && (questions.length > 0 || tasks.length > 0) && (
+						<p className="text-xs text-gray-500 text-center">
+							Auto-saved at {lastSaved.toLocaleTimeString()}
+						</p>
 					)}						{error && (
 							<div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-xl">
 								{error}

@@ -19,6 +19,7 @@ interface DomainData {
     // Ordered list of Q&A items. Each item: { id?: string, question?: string, answer: string|number|boolean|string[] }
     answers?: AnswersList | unknown
     submissionUrl?: string // For task submissions
+    selectedTaskId?: string // For task selection (when choosing between multiple tasks)
   }
 }
 
@@ -114,7 +115,7 @@ export async function POST(req: Request) {
 
     // Validate domain answers and prepare create payload
     const seenDomains = new Set<string>()
-    const domainCreates: { domain: string; subdomain?: string; round: string; answers: AnswersList; submissionUrl?: string }[] = []
+    const domainCreates: { domain: string; subdomain?: string; round: string; answers: AnswersList; submissionUrl?: string; selectedTaskId?: string }[] = []
     for (const domainItem of domains) {
       if (!domainItem?.domain || !domainItem?.data || !domainItem?.round) {
         return NextResponse.json(
@@ -134,6 +135,7 @@ export async function POST(req: Request) {
       try {
         // For task submissions, use submissionUrl; for question rounds, use answers
         const submissionUrl = domainItem.data.submissionUrl
+        const selectedTaskId = domainItem.data.selectedTaskId
         let validated: AnswersList = []
         
         if (submissionUrl) {
@@ -142,7 +144,14 @@ export async function POST(req: Request) {
         } else if (domainItem.data.answers) {
           // Question submission
           validated = validateAnswersList(domainItem.data.answers)
-        } else {
+        }
+        
+        // For mixed rounds, allow both answers and submissionUrl
+        if (domainItem.data.answers && submissionUrl) {
+          validated = validateAnswersList(domainItem.data.answers)
+        }
+        
+        if (!submissionUrl && (!domainItem.data.answers || validated.length === 0)) {
           throw new Error('Either answers or submissionUrl is required')
         }
         
@@ -151,7 +160,8 @@ export async function POST(req: Request) {
           subdomain: domainItem.subdomain, 
           round: domainItem.round,
           answers: validated,
-          submissionUrl: submissionUrl
+          submissionUrl: submissionUrl,
+          selectedTaskId: selectedTaskId
         })
       } catch (err) {
         return NextResponse.json(
@@ -184,6 +194,7 @@ export async function POST(req: Request) {
             data: {
               answers: item.answers as unknown as Prisma.InputJsonValue,
               submissionUrl: item.submissionUrl ?? undefined,
+              selectedTaskId: item.selectedTaskId ?? undefined,
               submittedAt: new Date(), // Update submission time
               // Reset evaluation status on resubmission
               isPassed: false,
@@ -201,7 +212,8 @@ export async function POST(req: Request) {
               subdomain: item.subdomain ?? undefined, 
               round: item.round,
               answers: item.answers as unknown as Prisma.InputJsonValue,
-              submissionUrl: item.submissionUrl ?? undefined
+              submissionUrl: item.submissionUrl ?? undefined,
+              selectedTaskId: item.selectedTaskId ?? undefined
             } as Prisma.DomainSubmissionUncheckedCreateInput) 
           })
         }

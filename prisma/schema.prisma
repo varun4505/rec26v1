@@ -60,8 +60,9 @@ model DomainSubmission {
     domain        String   // technical, management, design
     subdomain     String?  // only for technical and design
     round         String   // round1, round2
-    answers       Json     // ordered Q&A list stored as JSON
+    answers       Json     // ordered Q&A list stored as JSON for questions
     submissionUrl String?  // for task submissions (round2 for tech, round1 for design)
+    selectedTaskId String? // ID of the selected task if user chose one
     submittedAt   DateTime @default(now()) // when user submitted
     
     // Round pass status - set by admin
@@ -113,6 +114,8 @@ model Task {
   link        String?
   deadline    DateTime?
   active      Boolean @default(true)
+  isRequired  Boolean @default(false) // if true, user must submit this task; if false, it's a choice
+  maxTasks    Int     @default(1) // max tasks user can choose in this round (for optional tasks)
 
   @@index([domain])
   @@index([subdomain])
