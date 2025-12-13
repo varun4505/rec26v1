@@ -30,6 +30,8 @@ export default function HomePage() {
 				<LandingProjects />
 			</section>
 
+			<div className="h-20"></div>
+
 			<style jsx>{`
 				.home-wrapper {
 					min-height: 100vh;

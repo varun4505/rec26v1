@@ -139,6 +139,7 @@ const ProjectShowcase: React.FC<ProjectShowcaseProps> = ({
 					Know More
 				</a>
 			</div>
+			<div className="h-20"></div>
 		</motion.div>
 	);
 };
