@@ -20,11 +20,11 @@ const projects = [
 	},
 	{
 		id: 2,
-		mainImage: "/projects/VinHack_logo.svg",
+		mainImage: "/projects/redLogoLatch.svg",
 		projectNumber: ".02",
-		heading: "Vinhack",
+		heading: "Latch",
 		about:
-			"Once a year, Gravitas hands us the chaos. VinHack is VinnovateIT's flagship 36-hour inter-college hackathon, where the clock is louder than the doubts.\n\nJoin the chaos, we'll handle the clock",
+			"Tired of logging in repeatedly? With Latch, you connect once and forget the hassle. The app automatically signs you in to your hostel WiFi - no typing, no remembering, no friction.",
 		link: "https://vinhack.vinnovateit.com",
 	},
 	{
@@ -33,7 +33,7 @@ const projects = [
 		projectNumber: ".03",
 		heading: "BunkBuddies",
 		about:
-			"Because finding the perfect hostel roommate should be easy, not a lucky draw 🎰Before it became a trend, it was BunkBuddies. Built by VinnovateIT, this roommate-finding app helped students find their people before everyone else decided it was a good idea.\n\nBuilt before it was cool.",
+			"Because finding the perfect hostel roommate should be easy, not a lucky draw. Before it became a trend, it was BunkBuddies. Built by VinnovateIT, this roommate-finding app helped students find their people before everyone else decided it was a good idea.\n\nBuilt before it was cool.",
 		link: "https://bunkbuddies.vinnovateit.com",
 	},
 ];
@@ -176,7 +176,7 @@ export default function LandingProjects() {
 				transition={{ duration: 0.6 }}
 				className="w-full text-center py-6 sm:py-10 about-title font-array text-3xl sm:text-5xl z-20 shrink-0"
 			>
-				Proof of Build
+				Our projects
 			</motion.h2>
 			<section
 				ref={containerRef}

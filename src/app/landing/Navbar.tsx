@@ -190,7 +190,7 @@ const MainNavbar: React.FC = () => {
 		{ href: "#domains", text: "Domains", sectionId: "domains" },
 		{
 			href: "#proof-of-build",
-			text: "Proof of Build",
+			text: "Our Projects",
 			sectionId: "proof-of-build",
 		},
 	];
