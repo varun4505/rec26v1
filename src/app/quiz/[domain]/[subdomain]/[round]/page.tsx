@@ -867,36 +867,34 @@ export default function QuizPage() {
 											</div>
 											<div className="flex-1">
 												<h3 className="text-2xl font-bold text-gray-900 mb-2">{task.title}</h3>
-												<div className="text-gray-700 mb-4 space-y-3">
-													{task.description.split(/(?=🎬|🍭|📝|🎨|💻|🎯)/g).map((part: string, idx: number) => {
-														const trimmedPart = part.trim();
-														if (!trimmedPart) return null;
-														
-														// Check if this part has an emoji at the start
-														const hasEmoji = /^[🎬🍭📝🎨💻🎯]/.test(trimmedPart);
-														
-														if (hasEmoji) {
-															// This is an example section
-															const [emoji, ...rest] = trimmedPart.split(' ');
-															const text = rest.join(' ');
-															return (
-																<div key={idx} className="bg-orange-50 border-l-4 border-orange-400 p-3 rounded">
-																	<p className="text-sm">
-																		<span className="text-lg mr-2">{emoji}</span>
-																		<span className="font-medium">Example:</span> {text.replace('Example:', '').trim()}
-																	</p>
-																</div>
-															);
-														} else {
-															// Regular description text
-															return (
-																<p key={idx} className="leading-relaxed">
-																	{trimmedPart}
-																</p>
-															);
-														}
-													})}
-												</div>
+												   <div className="text-gray-700 mb-4 space-y-3">
+													   {task.description.split(/(?=\p{Emoji_Presentation}|\p{Extended_Pictographic})/gu).map((part: string, idx: number) => {
+														   const trimmedPart = part.trim();
+														   if (!trimmedPart) return null;
+														   // Check if this part has any emoji at the start
+														   const hasEmoji = /^\p{Emoji_Presentation}|^\p{Extended_Pictographic}/u.test(trimmedPart);
+														   if (hasEmoji) {
+															   // This is an example section
+															   const [emoji, ...rest] = trimmedPart.split(' ');
+															   const text = rest.join(' ');
+															   return (
+																   <div key={idx} className="bg-orange-50 p-3 rounded">
+																	   <p className="text-sm">
+																		   <span className="text-lg mr-2">{emoji}</span>
+																		   <span className="font-medium">Example:</span> {text.replace('Example:', '').trim()}
+																	   </p>
+																   </div>
+															   );
+														   } else {
+															   // Regular description text
+															   return (
+																   <p key={idx} className="leading-relaxed">
+																	   {trimmedPart}
+																   </p>
+															   );
+														   }
+													   })}
+												   </div>
 												{task.instructions && task.instructions.length > 0 && (
 													<div className="mb-4">
 														<p className="font-medium mb-2">Instructions:</p>
