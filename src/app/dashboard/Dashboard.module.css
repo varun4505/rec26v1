@@ -238,12 +238,26 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  transition: background-color 0.2s ease, color 0.2s ease;
+  transition: color 0.2s ease;
+  position: relative;
+  z-index: 1;
 }
 
 .tabButton.activeTab {
-  background-color: rgba(248, 104, 0, 0.66);
   color: #FFFFFF;
+}
+
+.activeTabIndicator {
+  position: absolute;
+  inset: 0;
+  background-color: rgba(248, 104, 0, 0.66);
+  border-radius: 32px;
+  z-index: -1;
+}
+
+.tabButton span {
+  position: relative;
+  z-index: 1;
 }
 
 .tabButton:not(.activeTab):hover {

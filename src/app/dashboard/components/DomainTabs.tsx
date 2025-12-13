@@ -1,5 +1,6 @@
 // src/app/dashboard/components/DomainTabs.tsx
 import React from 'react';
+import { motion } from 'framer-motion';
 import styles from '../Dashboard.module.css';
 
 // --- Define props type ---
@@ -9,27 +10,26 @@ interface DomainTabsProps {
 }
 
 export default function DomainTabs({ activeTab, onTabChange }: DomainTabsProps) {
+  const tabs = ['Tech', 'Design', 'Management'];
 
   return (
     <div className={styles.domainTabsContainer}>
-      <button
-        className={`${styles.tabButton} ${activeTab === 'Tech' ? styles.activeTab : ''}`}
-        onClick={() => onTabChange('Tech')} // Call handler on click
-      >
-        Tech
-      </button>
-      <button
-        className={`${styles.tabButton} ${activeTab === 'Design' ? styles.activeTab : ''}`}
-        onClick={() => onTabChange('Design')} // Call handler on click
-      >
-        Design
-      </button>
-      <button
-        className={`${styles.tabButton} ${activeTab === 'Management' ? styles.activeTab : ''}`}
-        onClick={() => onTabChange('Management')} // Call handler on click
-      >
-        Management
-      </button>
+      {tabs.map((tab) => (
+        <button
+          key={tab}
+          className={`${styles.tabButton} ${activeTab === tab ? styles.activeTab : ''}`}
+          onClick={() => onTabChange(tab)}
+        >
+          {activeTab === tab && (
+            <motion.div
+              layoutId="activeTabIndicator"
+              className={styles.activeTabIndicator}
+              transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+            />
+          )}
+          <span>{tab}</span>
+        </button>
+      ))}
     </div>
   );
 }
