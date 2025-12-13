@@ -10,7 +10,7 @@ import {
 
 // Quiz configuration based on domain/subdomain/round
 type QuizConfig = {
-	type: "subjective" | "prompt";
+	type: "subjective" | "prompt" | "mixed";
 	subjectiveQuestions?: Array<{
 		id: string;
 		prompt: string;
@@ -23,6 +23,14 @@ type QuizConfig = {
 		description: string;
 		variant: PromptVariant;
 	};
+	tasks?: Array<{
+		id: string;
+		title: string;
+		description: string;
+		instructions: string[];
+		submissionType: 'link' | 'document' | 'both';
+		helperText?: string;
+	}>;
 };
 
 // Configuration mapping for all quizzes
@@ -118,7 +126,8 @@ const quizConfigs: Record<
 		},
 		"app-development": {
 			"1": {
-				type: "subjective",
+				// Example of mixed type: both questions AND tasks together
+				type: "mixed",
 				subjectiveQuestions: [
 					{
 						id: "app-dev-r1-q1",
@@ -156,27 +165,51 @@ const quizConfigs: Record<
 						placeholder: "Describe offline strategies...",
 						helperText: "Include caching, local storage, and sync mechanisms.",
 					},
+				],
+				// Multiple tasks - user must complete ANY ONE
+				tasks: [
 					{
-						id: "app-dev-r1-q6",
-						prompt: "What are the best practices for mobile app security?",
-						placeholder: "List security best practices...",
-						helperText:
-							"Include data encryption, secure storage, and API security.",
+						id: "app-dev-r1-t1",
+						title: "Build a Cross-Platform Mobile App",
+						description: "Create a mobile application using React Native or Flutter",
+						instructions: [
+							"Choose either React Native or Flutter framework",
+							"Implement at least 3 core features",
+							"Ensure responsive design for different screen sizes",
+							"Add proper error handling and loading states",
+							"Submit your GitHub repository and demo video"
+						],
+						submissionType: "both",
+						helperText: "Provide repository link and live demo URL"
 					},
 					{
-						id: "app-dev-r1-q7",
-						prompt: "Explain the mobile app deployment process.",
-						placeholder: "Describe deployment steps...",
-						helperText: "Include app stores, testing, and release management.",
+						id: "app-dev-r1-t2",
+						title: "Create a Native iOS or Android App",
+						description: "Build a native mobile app using Swift (iOS) or Kotlin (Android)",
+						instructions: [
+							"Use native development tools (Xcode or Android Studio)",
+							"Implement proper architecture (MVVM/MVC)",
+							"Include local data persistence",
+							"Add animations and smooth transitions",
+							"Submit project repository and APK/IPA file"
+						],
+						submissionType: "both",
+						helperText: "Provide repository link and APK/demo link"
 					},
 					{
-						id: "app-dev-r1-q8",
-						prompt:
-							"What is the importance of mobile app performance optimization?",
-						placeholder: "Discuss performance optimization...",
-						helperText:
-							"Include memory management, battery usage, and loading times.",
-					},
+						id: "app-dev-r1-t3",
+						title: "Develop a Progressive Web App (PWA)",
+						description: "Create a mobile-first PWA with offline capabilities",
+						instructions: [
+							"Implement service workers for offline functionality",
+							"Make it installable on mobile devices",
+							"Optimize for mobile performance",
+							"Add push notifications (optional)",
+							"Deploy and submit the live URL"
+						],
+						submissionType: "link",
+						helperText: "Provide the deployed PWA link and repository"
+					}
 				],
 			},
 			"2": {
@@ -723,29 +756,69 @@ export default function FormsDomainQuiz() {
 						</div>
 					</header>
 					{/* Render subjective questions if provided */}
-					{config.type === "subjective" && (
-						<>
-							<div className="flex flex-col gap-6">
-								{config.subjectiveQuestions?.map((question) => (
-									<SubjectiveQuestion
-										key={question.id}
-										id={question.id}
-										prompt={question.prompt}
-										placeholder={question.placeholder}
-										helperText={question.helperText}
-									/>
-								))}
+					{config.subjectiveQuestions && config.subjectiveQuestions.length > 0 && (
+						<div className="flex flex-col gap-6">
+							{config.subjectiveQuestions.map((question) => (
+								<SubjectiveQuestion
+									key={question.id}
+									id={question.id}
+									prompt={question.prompt}
+									placeholder={question.placeholder}
+									helperText={question.helperText}
+								/>
+							))}
+						</div>
+					)}
+
+					{/* Render tasks if provided - user can choose any one */}
+					{config.tasks && config.tasks.length > 0 && (
+						<div className="flex flex-col gap-6">
+							<div className="rounded-[28px] bg-[#F7B58D]/40 p-6">
+								<h3 className="text-2xl font-semibold mb-4">
+									Choose Any One Task
+								</h3>
+								<p className="text-black/70 mb-6">
+									Select and complete one task from the options below:
+								</p>
+								<div className="flex flex-col gap-4">
+									{config.tasks.map((task, index) => (
+										<div
+											key={task.id}
+											className="rounded-[20px] bg-white/60 p-6 border border-black/10"
+										>
+											<div className="flex items-start gap-4">
+												<div className="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-br from-orange-400 to-pink-400 flex items-center justify-center text-white font-bold">
+													{index + 1}
+												</div>
+												<div className="flex-1">
+													<h4 className="text-xl font-semibold mb-2">
+														{task.title}
+													</h4>
+													<p className="text-black/70 mb-4">
+														{task.description}
+													</p>
+													{task.instructions && task.instructions.length > 0 && (
+														<div className="mb-4">
+															<p className="font-medium mb-2">Instructions:</p>
+															<ul className="list-disc list-inside space-y-1 text-black/70">
+																{task.instructions.map((instruction, idx) => (
+																	<li key={idx}>{instruction}</li>
+																))}
+															</ul>
+														</div>
+													)}
+													{task.helperText && (
+														<p className="text-sm text-black/60 italic">
+															{task.helperText}
+														</p>
+													)}
+												</div>
+											</div>
+										</div>
+									))}
+								</div>
 							</div>
-							<div className="flex justify-center pt-2">
-								<button
-									type="button"
-									onClick={handleSubmit}
-									className="rounded-4xl bg-[#FFFFFF80] text-lg px-12 py-3 shadow-[3px_0px_11.9px_2px_rgba(248,104,0,0.3)]"
-								>
-									Submit Form
-								</button>
-							</div>
-						</>
+						</div>
 					)}
 
 					{/* Render prompt question if provided */}
@@ -757,17 +830,19 @@ export default function FormsDomainQuiz() {
 								description={config.promptConfig.description}
 								variant={config.promptConfig.variant}
 							/>
-							<div className="flex justify-center pt-2">
-								<button
-									type="button"
-									onClick={handleSubmit}
-									className="rounded-4xl bg-[#FFFFFF80] text-lg px-12 py-3 shadow-[3px_0px_11.9px_2px_rgba(248,104,0,0.3)]"
-								>
-									Submit
-								</button>
-							</div>
 						</div>
 					)}
+
+					{/* Submit button */}
+					<div className="flex justify-center pt-2">
+						<button
+							type="button"
+							onClick={handleSubmit}
+							className="rounded-4xl bg-[#FFFFFF80] text-lg px-12 py-3 shadow-[3px_0px_11.9px_2px_rgba(248,104,0,0.3)]"
+						>
+							Submit Form
+						</button>
+					</div>
 				</article>
 			</div>
 		</FormsShell>
