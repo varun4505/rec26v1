@@ -1,0 +1,35 @@
+// src/app/dashboard/components/DomainTabs.tsx
+import React from 'react';
+import styles from '../Dashboard.module.css';
+
+// --- Define props type ---
+interface DomainTabsProps {
+  activeTab: string;
+  onTabChange: (tabName: string) => void;
+}
+
+export default function DomainTabs({ activeTab, onTabChange }: DomainTabsProps) {
+
+  return (
+    <div className={styles.domainTabsContainer}>
+      <button
+        className={`${styles.tabButton} ${activeTab === 'Tech' ? styles.activeTab : ''}`}
+        onClick={() => onTabChange('Tech')} // Call handler on click
+      >
+        Tech
+      </button>
+      <button
+        className={`${styles.tabButton} ${activeTab === 'Design' ? styles.activeTab : ''}`}
+        onClick={() => onTabChange('Design')} // Call handler on click
+      >
+        Design
+      </button>
+      <button
+        className={`${styles.tabButton} ${activeTab === 'Management' ? styles.activeTab : ''}`}
+        onClick={() => onTabChange('Management')} // Call handler on click
+      >
+        Management
+      </button>
+    </div>
+  );
+}

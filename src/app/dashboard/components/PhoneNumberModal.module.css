@@ -1,0 +1,233 @@
+/* PhoneNumberModal.module.css */
+
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(8px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.modalContainer {
+  background: #ffffff;
+  border-radius: 24px;
+  padding: 48px 40px;
+  width: 90%;
+  max-width: 480px;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.4);
+  animation: slideUp 0.4s ease-out;
+  position: relative;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.modalContent {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.modalTitle {
+  font-family: var(--font-khand);
+  font-weight: 500;
+  font-size: 36px;
+  line-height: 1.2;
+  color: #000000;
+  margin: 0;
+  text-align: center;
+  letter-spacing: 0.01em;
+}
+
+.modalDescription {
+  font-family: var(--font-khand);
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 1.4;
+  color: rgba(0, 0, 0, 0.65);
+  margin: 0;
+  text-align: center;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  margin-top: 8px;
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.label {
+  font-family: var(--font-khand);
+  font-weight: 500;
+  font-size: 18px;
+  color: #000000;
+  letter-spacing: 0.01em;
+}
+
+.inputWrapper {
+  display: flex;
+  align-items: center;
+  background-color: #f8f8f8;
+  border: 2px solid #e0e0e0;
+  border-radius: 16px;
+  padding: 0 20px;
+  transition: all 0.3s ease;
+  height: 56px;
+}
+
+.inputWrapper:focus-within {
+  border-color: #f86800;
+  background-color: #ffffff;
+  box-shadow: 0 0 0 4px rgba(248, 104, 0, 0.1);
+}
+
+.countryCode {
+  font-family: var(--font-khand);
+  font-weight: 500;
+  font-size: 20px;
+  color: #000000;
+  margin-right: 12px;
+  flex-shrink: 0;
+}
+
+.input {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-family: var(--font-khand);
+  font-weight: 400;
+  font-size: 20px;
+  color: #000000;
+  letter-spacing: 0.5px;
+}
+
+.input::placeholder {
+  color: rgba(0, 0, 0, 0.35);
+}
+
+.input:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.errorText {
+  font-family: var(--font-khand);
+  font-weight: 400;
+  font-size: 15px;
+  color: #e53e3e;
+  margin-top: 4px;
+}
+
+.submitButton {
+  width: 100%;
+  background: linear-gradient(135deg, #ff8c42 0%, #f86800 100%);
+  color: #ffffff;
+  border: none;
+  border-radius: 16px;
+  padding: 16px 32px;
+  font-family: var(--font-khand);
+  font-weight: 500;
+  font-size: 20px;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 16px rgba(248, 104, 0, 0.3);
+  height: 56px;
+}
+
+.submitButton:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 24px rgba(248, 104, 0, 0.4);
+}
+
+.submitButton:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.submitButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.privacyNote {
+  font-family: var(--font-khand);
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 1.5;
+  color: rgba(0, 0, 0, 0.45);
+  margin: 0;
+  text-align: center;
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+  .modalContainer {
+    padding: 32px 24px;
+    border-radius: 20px;
+  }
+
+  .modalTitle {
+    font-size: 28px;
+  }
+
+  .modalDescription {
+    font-size: 18px;
+  }
+
+  .label {
+    font-size: 16px;
+  }
+
+  .inputWrapper {
+    height: 50px;
+  }
+
+  .countryCode {
+    font-size: 18px;
+  }
+
+  .input {
+    font-size: 18px;
+  }
+
+  .submitButton {
+    height: 50px;
+    font-size: 18px;
+  }
+
+  .privacyNote {
+    font-size: 13px;
+  }
+}
