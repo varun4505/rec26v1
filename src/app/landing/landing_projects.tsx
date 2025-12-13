@@ -10,7 +10,7 @@ const projects = [
 		projectNumber: ".01",
 		heading: "MessIT",
 		about:
-			"Your personal menu spoiler so you can decide if breakfast is worth waking up for—or if it's a stay-in-bed-and-snack kind of morning 🍳🍫",
+			"MessIt is more than a mess menu app, it's VinnovateIT's aura on campus. Our direct channel to every student, without WhatsApp groups or email spam Just food, just reach.",
 		link: "https://play.google.com/store/apps/details?id=com.vinnovateit.messit",
 	},
 	{
@@ -21,7 +21,7 @@ const projects = [
 		projectNumber: ".02",
 		heading: "Vinhack",
 		about:
-			"Think of Vinhack as the ultimate creativity marathon where you and your team of four dive into real-world problems to cook up genius solutions and turn caffeine into code.",
+			"Once a year, Gravitas hands us the chaos. VinHack is VinnovateIT's flagship 36-hour inter-college hackathon, where the clock is louder than the doubts.\n\nJoin the chaos, we'll handle the clock",
 		link: "https://vinhack.vinnovateit.com",
 	},
 	{
@@ -32,15 +32,15 @@ const projects = [
 		projectNumber: ".03",
 		heading: "BunkBuddies",
 		about:
-			"Because finding the perfect hostel roommate should be easy, not a lucky draw 🎰",
+			"Because finding the perfect hostel roommate should be easy, not a lucky draw 🎰Before it became a trend, it was BunkBuddies. Built by VinnovateIT, this roommate-finding app helped students find their people before everyone else decided it was a good idea.\n\nBuilt before it was cool.",
 		link: "https://bunkbuddies.vinnovateit.com",
 	},
 ];
 
 export default function LandingProjects() {
 	return (
-		<section className="w-screen bg-[#FFFFFF]">
-			<h2 className="about-title font-array text-center">Our Testimonials</h2>
+		<section className="w-screen bg-[#FFFFFF]" id="proof-of-build">
+			<h2 className="about-title font-array text-center">Proof of Build</h2>
 
 			<div className="w-full">
 				{projects.map((project) => (

@@ -126,7 +126,7 @@ const ProjectShowcase: React.FC<ProjectShowcaseProps> = ({
 			<h3 className="text-lg sm:text-xl lg:text-[2.3rem] mb-6 text-black font-medium font-khand">
 				{heading}
 			</h3>
-			<p className="text-base sm:text-lg lg:text-[1.4rem] leading-relaxed text-[#444] mb-12 font-light font-khand">
+			<p className="text-base sm:text-lg lg:text-[1.4rem] leading-relaxed text-[#444] mb-12 font-light font-khand whitespace-pre-line">
 				{about}
 			</p>
 
