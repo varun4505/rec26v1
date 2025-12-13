@@ -1,5 +1,6 @@
 // src/app/dashboard/components/ManagementDomainContent.tsx
 import React from 'react';
+import Link from 'next/link';
 import styles from '../Dashboard.module.css';
 import SubdomainSelector from './SubdomainSelector';
 
@@ -19,11 +20,11 @@ export default function ManagementDomainContent() {
         <div className={styles.domainContentRight}>
           <p className={styles.domainDescription}>{descriptionText}</p>
           <div style={{ marginTop: '2rem' }}>
-            <a href="/quiz/management/none/1">
+            <Link href="/quiz/management/none/1" passHref legacyBehavior>
               <button className={styles.proceedButton}>
                 Go to Management Questions / Task
               </button>
-            </a>
+            </Link>
           </div>
         </div>
       </div>
