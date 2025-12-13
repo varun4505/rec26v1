@@ -484,7 +484,7 @@ export default function QuizPage() {
 					: `round${round}`;
 
 				// Check if this round is a task round
-				const roundInfo = getRoundInfo(fullDomainId as DomainType, roundParam as RoundType);
+				const roundInfo = getRoundInfo(fullDomainId as DomainType, roundParam as RoundType, canonicalSubdomain);
 				const isTaskRound = roundInfo?.type === 'task';
 
 				const queryParams = new URLSearchParams({
@@ -684,7 +684,7 @@ export default function QuizPage() {
 	const roundParam = (round as string).startsWith('round')
 		? (round as string)
 		: `round${round}`;
-	const roundInfo = getRoundInfo(fullDomainId as DomainType, roundParam as RoundType);
+	const roundInfo = getRoundInfo(fullDomainId as DomainType, roundParam as RoundType, canonicalSubdomain);
 	const isTaskRound = roundInfo?.type === 'task';
 	const isCombinedRound = roundInfo?.type === 'combined';
 
