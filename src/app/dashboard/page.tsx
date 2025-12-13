@@ -15,6 +15,7 @@ import DesignDomainContent from './components/DesignDomainContent';
 import ManagementDomainContent from './components/ManagementDomainContent';
 import { MobileRestriction } from '@/components/MobileRestriction';
 import PhoneNumberModal from './components/PhoneNumberModal';
+import LoadingScreen from '@/components/LoadingScreen';
 
 export default function DashboardPage() {
   // --- State for the active tab ---
@@ -114,6 +115,10 @@ export default function DashboardPage() {
       window.removeEventListener('resize', checkScrollable);
     };
   }, [activeTab]);
+
+  if (status === 'loading' || isCheckingPhone) {
+    return <LoadingScreen />;
+  }
 
   return (
     <>
