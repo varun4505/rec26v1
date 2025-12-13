@@ -42,10 +42,20 @@ export async function createDomainSubmissionFromList(
   prisma: PrismaClient,
   applicationId: string,
   domain: string,
-  answersList: unknown
+  round: string,
+  answersList: unknown,
+  subdomain?: string
 ) {
   const validated = validateAnswersList(answersList)
-  return prisma.domainSubmission.create({ data: { applicationId, domain, answers: validated as unknown as Prisma.InputJsonValue } })
+  return prisma.domainSubmission.create({ 
+    data: { 
+      applicationId, 
+      domain, 
+      subdomain: subdomain ?? undefined,
+      round, 
+      answers: validated as unknown as Prisma.InputJsonValue 
+    } 
+  })
 }
 
 export async function replaceDomainSubmissionAnswersWithList(

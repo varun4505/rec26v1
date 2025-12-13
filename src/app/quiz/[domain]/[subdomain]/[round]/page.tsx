@@ -547,7 +547,7 @@ export default function QuizPage() {
 			});
 		}
 	};
-
+	//push
 	// Show loading while checking session or access
 	if (sessionStatus === "loading" || accessCheck.loading) {
 		return (
