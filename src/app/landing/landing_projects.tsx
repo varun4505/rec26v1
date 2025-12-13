@@ -4,6 +4,7 @@ import React, { useLayoutEffect, useRef } from "react";
 import Image from "next/image";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { motion } from "framer-motion";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -168,9 +169,15 @@ export default function LandingProjects() {
 
 	return (
 		<div className="w-full" id="proof-of-build">
-			<h2 className="w-full text-center py-6 sm:py-10 about-title font-array text-3xl sm:text-5xl z-20 shrink-0">
+			<motion.h2
+				initial={{ opacity: 0, y: -20 }}
+				whileInView={{ opacity: 1, y: 0 }}
+				viewport={{ once: true }}
+				transition={{ duration: 0.6 }}
+				className="w-full text-center py-6 sm:py-10 about-title font-array text-3xl sm:text-5xl z-20 shrink-0"
+			>
 				Proof of Build
-			</h2>
+			</motion.h2>
 			<section
 				ref={containerRef}
 				className="w-screen h-screen flex flex-col items-center overflow-hidden relative pt-32"
