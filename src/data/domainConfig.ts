@@ -12,7 +12,7 @@ export interface SubdomainInfo {
 export interface RoundInfo {
   id: RoundType;
   name: string;
-  type: 'questionnaire' | 'task' | 'mixed'; // mixed = questions + optional task choice
+  type: 'questionnaire' | 'task';
   description: string;
 }
 
