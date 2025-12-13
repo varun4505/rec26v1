@@ -39,7 +39,7 @@ export const authOptions: AuthOptions = {
 
       // Only allow 2024 and 2025 batch
       if (user.email) {
-        const isAllowedBatch = user.email.includes('2024') || user.email.includes('2025');
+        const isAllowedBatch = user.email.includes('2022') || user.email.includes('2025');
         if (!isAllowedBatch) {
           return '/access-denied';
         }

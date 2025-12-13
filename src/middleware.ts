@@ -6,7 +6,7 @@ export default withAuth(
     const token = req.nextauth.token;
     const email = token?.email;
     
-    if (email && !(email.includes('2024') || email.includes('2025'))) {
+    if (email && !(email.includes('2022') || email.includes('2024') || email.includes('2025'))) {
       return NextResponse.redirect(new URL('/access-denied', req.url));
     }
   },
