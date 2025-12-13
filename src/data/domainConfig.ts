@@ -100,7 +100,7 @@ export const DOMAIN_CONFIG: Record<DomainType, DomainConfig> = {
     hasSubdomains: true,
     subdomains: [
       { id: 'uiux', name: 'UI/UX', slug: 'ui-ux' },
-      { id: 'graphics', name: 'Graphics Design', slug: 'graphics-design' },
+      { id: 'graphics', name: 'Graphic Design', slug: 'graphics-design' },
       { id: 'video', name: 'Video Editing', slug: 'video-editing' },
     ],
     rounds: [
