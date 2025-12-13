@@ -52,7 +52,7 @@ const Footer = () => {
         
         <div className="md:max-w-md text-center md:text-right">
           <h2 className={`text-[36px] leading-[100%] tracking-[0.01em] text-center md:text-right text-[#1E1E1E] ${khandFont.className}`}>
-            Be part of what's next on campus
+            Join us and be a part of the next big thing on campus
           </h2>
         </div>
       </div>
