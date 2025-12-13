@@ -168,7 +168,7 @@ export default function LandingProjects() {
 	}, []);
 
 	return (
-		<div className="w-full" id="proof-of-build">
+		<div className="w-full min-h-screen" id="proof-of-build">
 			<motion.h2
 				initial={{ opacity: 0, y: -20 }}
 				whileInView={{ opacity: 1, y: 0 }}

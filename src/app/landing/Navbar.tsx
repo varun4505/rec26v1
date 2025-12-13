@@ -61,26 +61,14 @@ const MainNavbar: React.FC = () => {
 
 		const observer = new IntersectionObserver(
 			(entries) => {
-				let visibleSection = "";
-				let maxRatio = 0;
-
 				entries.forEach((entry) => {
-					if (entry.isIntersecting && entry.intersectionRatio > maxRatio) {
-						maxRatio = entry.intersectionRatio;
-						visibleSection = entry.target.id;
+					if (entry.isIntersecting) {
+						setActiveSection(entry.target.id);
 					}
 				});
-
-				if (visibleSection) {
-					setActiveSection(visibleSection);
-				} else if (window.scrollY < 200) {
-					// Fallback for when no specific section is fully visible (top of page)
-					setActiveSection("home");
-				}
 			},
 			{
-				threshold: [0, 0.25, 0.5, 0.75, 1],
-				rootMargin: "-100px 0px -100px 0px",
+				rootMargin: "-50% 0px -50% 0px",
 			}
 		);
 
