@@ -4,7 +4,9 @@ import ProjectShowcase from "../components/project_showcase";
 const projects = [
 	{
 		id: 1,
-		imageSource: "/temp_project_image.png",
+		leftImage: "/projects/VinHack_logo.svg",
+		middleImage: "/projects/Messit.svg",
+		rightImage: "/projects/BunkBuddiesLogo.svg",
 		projectNumber: ".01",
 		heading: "MessIT",
 		about:
@@ -13,7 +15,9 @@ const projects = [
 	},
 	{
 		id: 2,
-		imageSource: "/temp_project_image.png",
+		leftImage: "/projects/BunkBuddiesLogo.svg",
+		middleImage: "/projects/VinHack_logo.svg",
+		rightImage: "/projects/Messit.svg",
 		projectNumber: ".02",
 		heading: "Vinhack",
 		about:
@@ -22,7 +26,9 @@ const projects = [
 	},
 	{
 		id: 3,
-		imageSource: "/temp_project_image.png",
+		leftImage: "/projects/Messit.svg",
+		middleImage: "/projects/BunkBuddiesLogo.svg",
+		rightImage: "/projects/VinHack_logo.svg",
 		projectNumber: ".03",
 		heading: "BunkBuddies",
 		about:
@@ -34,21 +40,23 @@ const projects = [
 export default function LandingProjects() {
 	return (
 		<section className="w-screen bg-[#FFFFFF]">
-			<h2 className="about-title font-array text-center">PROJECTS</h2>
+			<h2 className="about-title font-array text-center">Our Testimonials</h2>
 
 			<div className="w-full">
 				{projects.map((project) => (
 					<React.Fragment key={project.id}>
 						{/* projects */}
 						<ProjectShowcase
-							imageSource={project.imageSource}
+							leftImage={project.leftImage}
+							middleImage={project.middleImage}
+							rightImage={project.rightImage}
 							heading={project.heading}
 							about={project.about}
 							projectNumber={project.projectNumber}
 							link={project.link}
 						/>
-						{/* spacing between the projects */}
-						<div className="w-full h-[20vh]"></div>
+						{/* spacing between the projects (slightly tighter) */}
+						<div className="w-full h-12 sm:h-16 lg:h-20"></div>
 					</React.Fragment>
 				))}
 			</div>
