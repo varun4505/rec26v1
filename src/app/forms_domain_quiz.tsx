@@ -225,7 +225,7 @@ const quizConfigs: Record<
 		},
 		"ai-ml": {
 			"1": {
-				type: "subjective",
+				type: "mixed",
 				subjectiveQuestions: [
 					{
 						id: "ai-ml-r1-q1",
@@ -282,6 +282,21 @@ const quizConfigs: Record<
 						helperText:
 							"Include architectures, data requirements, and applications.",
 					},
+				],
+				tasks: [
+					{
+						id: "ai-ml-r1-t1",
+						title: "Build a Machine Learning Model",
+						description: "Create and train a machine learning model on a real dataset",
+						instructions: [
+							"Choose a dataset (Kaggle, UCI, or custom)",
+							"Perform data preprocessing and EDA",
+							"Train and evaluate multiple models",
+							"Submit your Jupyter notebook and results"
+						],
+						submissionType: "link",
+						helperText: "Provide GitHub repository with notebook and documentation"
+					}
 				],
 			},
 			"2": {
