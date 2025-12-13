@@ -148,7 +148,7 @@ export default function DashboardPage() {
               {activeTab === 'Design' && <DesignDomainContent />}
               {activeTab === 'Management' && <ManagementDomainContent />}
             </div>
-          
+
           </div>
         </main>
       </div>

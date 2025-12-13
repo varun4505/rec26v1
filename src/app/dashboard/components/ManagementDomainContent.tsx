@@ -20,11 +20,7 @@ export default function ManagementDomainContent() {
         <div className={styles.domainContentRight}>
           <p className={styles.domainDescription}>{descriptionText}</p>
           <div style={{ marginTop: '2rem' }}>
-            <Link href="/quiz/management/none/1" passHref legacyBehavior>
-              <button className={styles.proceedButton}>
-                Go to Management Questions / Task
-              </button>
-            </Link>
+            <SubdomainSelector domain="management" />
           </div>
         </div>
       </div>

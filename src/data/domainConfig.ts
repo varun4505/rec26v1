@@ -12,7 +12,7 @@ export interface SubdomainInfo {
 export interface RoundInfo {
   id: RoundType;
   name: string;
-  type: 'questionnaire' | 'task';
+  type: 'questionnaire' | 'task' | 'combined';
   description: string;
 }
 
@@ -63,14 +63,8 @@ export const DOMAIN_CONFIG: Record<DomainType, DomainConfig> = {
       {
         id: 'round1',
         name: 'Round 1',
-        type: 'questionnaire',
-        description: 'Management questionnaire to assess your skills',
-      },
-      {
-        id: 'round2',
-        name: 'Round 2',
-        type: 'task',
-        description: 'Submit your management task',
+        type: 'combined',
+        description: 'Submit your management task and answer questions',
       },
     ],
   },
@@ -88,8 +82,8 @@ export const DOMAIN_CONFIG: Record<DomainType, DomainConfig> = {
       {
         id: 'round1',
         name: 'Round 1',
-        type: 'task',
-        description: 'Submit your design task',
+        type: 'combined',
+        description: 'Submit your design task and answer questions',
       },
     ],
   },
@@ -116,23 +110,26 @@ export function validateDomainSubmission(
   round: RoundType
 ): { valid: boolean; error?: string } {
   const config = DOMAIN_CONFIG[domain];
-  
+
   if (!config) {
     return { valid: false, error: 'Invalid domain' };
   }
 
+  // Normalize subdomain: treat 'none' or 'general' as null
+  const effectiveSubdomain = (subdomain === 'none' || subdomain === 'general') ? null : subdomain;
+
   // Check if domain requires subdomain
-  if (config.hasSubdomains && !subdomain) {
+  if (config.hasSubdomains && !effectiveSubdomain) {
     return { valid: false, error: 'Subdomain is required for this domain' };
   }
 
-  if (!config.hasSubdomains && subdomain) {
+  if (!config.hasSubdomains && effectiveSubdomain) {
     return { valid: false, error: 'This domain does not have subdomains' };
   }
 
   // Validate subdomain exists
-  if (subdomain && config.hasSubdomains) {
-    const subdomainExists = config.subdomains.some(s => s.slug === subdomain);
+  if (effectiveSubdomain && config.hasSubdomains) {
+    const subdomainExists = config.subdomains.some(s => s.slug === effectiveSubdomain);
     if (!subdomainExists) {
       return { valid: false, error: 'Invalid subdomain' };
     }
@@ -141,6 +138,7 @@ export function validateDomainSubmission(
   // Validate round exists for this domain
   const roundExists = config.rounds.some(r => r.id === round);
   if (!roundExists) {
+    // Special handling for legacy/missing config
     return { valid: false, error: 'Invalid round for this domain' };
   }
 
