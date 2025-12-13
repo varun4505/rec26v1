@@ -293,6 +293,7 @@ export default function QuizPage() {
 	const [questionsLoading, setQuestionsLoading] = useState(true);
 	const [tasks, setTasks] = useState<any[]>([]);
 	const [tasksLoading, setTasksLoading] = useState(true);
+	const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
 	const [taskSubmissionUrl, setTaskSubmissionUrl] = useState<string>('');
 	const [lastSaved, setLastSaved] = useState<Date | null>(null);
 	const [alertModal, setAlertModal] = useState<{isOpen: boolean; title: string; message: string}>({
@@ -831,55 +832,105 @@ export default function QuizPage() {
 					{/* Render tasks for task rounds */}
 					{isTaskRound && tasks.length > 0 && (
 						<>
-							{tasks.map((task: any) => (
-								<div key={task.id} className="flex flex-col gap-4 p-6 bg-white rounded-2xl shadow-md">
-									<div>
-										<h3 className="text-2xl font-bold text-gray-900 mb-2">{task.title}</h3>
-										<p className="text-gray-700 whitespace-pre-wrap">{task.description}</p>
+							<div>
+								<h3 className="text-2xl font-semibold mb-4">
+									Tasks - Choose Any One
+								</h3>
+								<p className="text-black/70 mb-6">
+									<span className="font-semibold">Important:</span> Select and complete <span className="font-semibold underline">any ONE task</span> from the options below. You are not required to complete all tasks.
+								</p>
+							</div>
+							<div className="flex flex-col gap-4">
+								{tasks.map((task: any, index: number) => (
+									<div
+										key={task.id}
+										className={`rounded-[20px] p-6 border-2 transition-all cursor-pointer ${
+											selectedTaskId === task.id
+												? "bg-white border-orange-400 shadow-lg"
+												: "bg-white/60 border-black/10 hover:border-orange-300"
+										}`}
+										onClick={() => setSelectedTaskId(task.id)}
+									>
+										<div className="flex items-start gap-4">
+											<div className="flex-shrink-0">
+												<input
+													type="radio"
+													name="task-selection"
+													value={task.id}
+													checked={selectedTaskId === task.id}
+													onChange={() => setSelectedTaskId(task.id)}
+													className="w-5 h-5 text-orange-500 focus:ring-orange-400"
+												/>
+											</div>
+											<div className="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-br from-orange-400 to-pink-400 flex items-center justify-center text-white font-bold">
+												{index + 1}
+											</div>
+											<div className="flex-1">
+												<h3 className="text-2xl font-bold text-gray-900 mb-2">{task.title}</h3>
+												<p className="text-gray-700 whitespace-pre-wrap mb-4">{task.description}</p>
+												{task.instructions && task.instructions.length > 0 && (
+													<div className="mb-4">
+														<p className="font-medium mb-2">Instructions:</p>
+														<ul className="list-disc list-inside space-y-1 text-black/70">
+															{task.instructions.map((instruction: string, idx: number) => (
+																<li key={idx}>{instruction}</li>
+															))}
+														</ul>
+													</div>
+												)}
+												{task.helperText && (
+													<p className="text-sm text-black/60 italic">
+														{task.helperText}
+													</p>
+												)}
+												{task.link && (
+													<div className="flex items-center gap-2 mt-4">
+														<span className="font-semibold text-gray-700">Task Link:</span>
+														<a 
+															href={task.link} 
+															target="_blank" 
+															rel="noopener noreferrer"
+															className="text-[#FF8F6B] hover:underline break-all"
+														>
+															{task.link}
+														</a>
+													</div>
+												)}
+												{task.deadline && (
+													<div className="flex items-center gap-2 text-gray-600 mt-2">
+														<span className="font-semibold">Deadline:</span>
+														<span>{new Date(task.deadline).toLocaleString()}</span>
+													</div>
+												)}
+											</div>
+										</div>
 									</div>
-									{task.link && (
-										<div className="flex items-center gap-2">
-											<span className="font-semibold text-gray-700">Task Link:</span>
-											<a 
-												href={task.link} 
-												target="_blank" 
-												rel="noopener noreferrer"
-												className="text-[#FF8F6B] hover:underline break-all"
-											>
-												{task.link}
-											</a>
-										</div>
-									)}
-									{task.deadline && (
-										<div className="flex items-center gap-2 text-gray-600">
-											<span className="font-semibold">Deadline:</span>
-											<span>{new Date(task.deadline).toLocaleString()}</span>
-										</div>
+								))}
+							</div>
+							
+							{/* Task submission URL input - only show when task is selected */}
+							{selectedTaskId && (
+								<div className="flex flex-col gap-3 p-6 bg-white rounded-2xl shadow-md">
+									<label className="text-lg font-semibold text-gray-900">
+										Submit Your Work
+									</label>
+									<p className="text-sm text-gray-600 mb-2">
+										Provide a link to your submission (e.g., GitHub repository, Google Drive, portfolio link)
+									</p>
+									<input
+										type="url"
+										value={taskSubmissionUrl}
+										onChange={(e) => handleTaskUrlChange(e.target.value)}
+										placeholder="https://github.com/username/repository"
+										className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-[#FF8F6B] focus:outline-none text-gray-900"
+									/>
+									{lastSaved && (
+										<p className="text-xs text-gray-500">
+											Auto-saved at {lastSaved.toLocaleTimeString()}
+										</p>
 									)}
 								</div>
-							))}
-							
-							{/* Task submission URL input */}
-							<div className="flex flex-col gap-3 p-6 bg-white rounded-2xl shadow-md">
-								<label className="text-lg font-semibold text-gray-900">
-									Submit Your Work
-								</label>
-								<p className="text-sm text-gray-600 mb-2">
-									Provide a link to your submission (e.g., GitHub repository, Google Drive, portfolio link)
-								</p>
-								<input
-									type="url"
-									value={taskSubmissionUrl}
-									onChange={(e) => handleTaskUrlChange(e.target.value)}
-									placeholder="https://github.com/username/repository"
-									className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-[#FF8F6B] focus:outline-none text-gray-900"
-								/>
-								{lastSaved && (
-									<p className="text-xs text-gray-500">
-										Auto-saved at {lastSaved.toLocaleTimeString()}
-									</p>
-								)}
-							</div>
+							)}
 						</>
 					)}
 
