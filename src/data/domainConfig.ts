@@ -66,6 +66,12 @@ export const DOMAIN_CONFIG: Record<DomainType, DomainConfig> = {
         type: 'questionnaire',
         description: 'Management questionnaire to assess your skills',
       },
+      {
+        id: 'round2',
+        name: 'Round 2',
+        type: 'task',
+        description: 'Submit your management task',
+      },
     ],
   },
   design: {

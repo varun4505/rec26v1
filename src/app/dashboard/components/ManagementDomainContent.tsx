@@ -1,5 +1,6 @@
 // src/app/dashboard/components/ManagementDomainContent.tsx
 import React from 'react';
+import Link from 'next/link';
 import styles from '../Dashboard.module.css';
 import SubdomainSelector from './SubdomainSelector';
 
@@ -10,19 +11,23 @@ export default function ManagementDomainContent() {
   return (
     <>
       {/* Use the SAME container and right-side styles */}
-      <div className={styles.domainContentContainer}> 
-
+      <div className={styles.domainContentContainer}>
         {/* Use the NEW left-side styles */}
         <div className={styles.domainContentLeft}>
           <h2 className={styles.managementTitle}>Management</h2>
           <p className={styles.managementSubtitle}>{subtitleText}</p>
         </div>
-
-        <div className={styles.domainContentRight}> 
+        <div className={styles.domainContentRight}>
           <p className={styles.domainDescription}>{descriptionText}</p>
+          <div style={{ marginTop: '2rem' }}>
+            <Link href="/quiz/management/none/1" passHref legacyBehavior>
+              <button className={styles.proceedButton}>
+                Go to Management Questions / Task
+              </button>
+            </Link>
+          </div>
         </div>
       </div>
-      <SubdomainSelector domain="management" />
     </>
   );
 }

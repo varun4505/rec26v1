@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { useSearchParams } from "next/navigation";
 import FormsShell from "./components/FormsShell";
 import {
@@ -10,7 +11,7 @@ import {
 
 // Quiz configuration based on domain/subdomain/round
 type QuizConfig = {
-	type: "subjective" | "prompt";
+	type: "subjective" | "prompt" | "mixed";
 	subjectiveQuestions?: Array<{
 		id: string;
 		prompt: string;
@@ -23,6 +24,14 @@ type QuizConfig = {
 		description: string;
 		variant: PromptVariant;
 	};
+	tasks?: Array<{
+		id: string;
+		title: string;
+		description: string;
+		instructions: string[];
+		submissionType: 'link' | 'document' | 'both';
+		helperText?: string;
+	}>;
 };
 
 // Configuration mapping for all quizzes
@@ -33,7 +42,7 @@ const quizConfigs: Record<
 	tech: {
 		"web-development": {
 			"1": {
-				type: "subjective",
+				type: "mixed",
 				subjectiveQuestions: [
 					{
 						id: "web-dev-r1-q1",
@@ -104,6 +113,21 @@ const quizConfigs: Record<
 							"Include security, certificates, and performance considerations.",
 					},
 				],
+				tasks: [
+					{
+						id: "web-dev-r1-t1",
+						title: "Build a Full-Stack Web Application",
+						description: "Create a complete web application with frontend and backend",
+						instructions: [
+							"Use a modern framework (React, Vue, Angular, Next.js)",
+							"Implement authentication and database integration",
+							"Deploy your application",
+							"Submit GitHub repository and live demo link"
+						],
+						submissionType: "both",
+						helperText: "Provide repository and deployed application URL"
+					}
+				],
 			},
 			"2": {
 				type: "prompt",
@@ -118,7 +142,8 @@ const quizConfigs: Record<
 		},
 		"app-development": {
 			"1": {
-				type: "subjective",
+				// Example of mixed type: both questions AND tasks together
+				type: "mixed",
 				subjectiveQuestions: [
 					{
 						id: "app-dev-r1-q1",
@@ -156,27 +181,51 @@ const quizConfigs: Record<
 						placeholder: "Describe offline strategies...",
 						helperText: "Include caching, local storage, and sync mechanisms.",
 					},
+				],
+				// Multiple tasks - user must complete ANY ONE
+				tasks: [
 					{
-						id: "app-dev-r1-q6",
-						prompt: "What are the best practices for mobile app security?",
-						placeholder: "List security best practices...",
-						helperText:
-							"Include data encryption, secure storage, and API security.",
+						id: "app-dev-r1-t1",
+						title: "Build a Cross-Platform Mobile App",
+						description: "Create a mobile application using React Native or Flutter",
+						instructions: [
+							"Choose either React Native or Flutter framework",
+							"Implement at least 3 core features",
+							"Ensure responsive design for different screen sizes",
+							"Add proper error handling and loading states",
+							"Submit your GitHub repository and demo video"
+						],
+						submissionType: "both",
+						helperText: "Provide repository link and live demo URL"
 					},
 					{
-						id: "app-dev-r1-q7",
-						prompt: "Explain the mobile app deployment process.",
-						placeholder: "Describe deployment steps...",
-						helperText: "Include app stores, testing, and release management.",
+						id: "app-dev-r1-t2",
+						title: "Create a Native iOS or Android App",
+						description: "Build a native mobile app using Swift (iOS) or Kotlin (Android)",
+						instructions: [
+							"Use native development tools (Xcode or Android Studio)",
+							"Implement proper architecture (MVVM/MVC)",
+							"Include local data persistence",
+							"Add animations and smooth transitions",
+							"Submit project repository and APK/IPA file"
+						],
+						submissionType: "both",
+						helperText: "Provide repository link and APK/demo link"
 					},
 					{
-						id: "app-dev-r1-q8",
-						prompt:
-							"What is the importance of mobile app performance optimization?",
-						placeholder: "Discuss performance optimization...",
-						helperText:
-							"Include memory management, battery usage, and loading times.",
-					},
+						id: "app-dev-r1-t3",
+						title: "Develop a Progressive Web App (PWA)",
+						description: "Create a mobile-first PWA with offline capabilities",
+						instructions: [
+							"Implement service workers for offline functionality",
+							"Make it installable on mobile devices",
+							"Optimize for mobile performance",
+							"Add push notifications (optional)",
+							"Deploy and submit the live URL"
+						],
+						submissionType: "link",
+						helperText: "Provide the deployed PWA link and repository"
+					}
 				],
 			},
 			"2": {
@@ -190,9 +239,9 @@ const quizConfigs: Record<
 				},
 			},
 		},
-		"ai-ml": {
+		"aiml": {
 			"1": {
-				type: "subjective",
+				type: "mixed",
 				subjectiveQuestions: [
 					{
 						id: "ai-ml-r1-q1",
@@ -250,6 +299,21 @@ const quizConfigs: Record<
 							"Include architectures, data requirements, and applications.",
 					},
 				],
+				tasks: [
+					{
+						id: "ai-ml-r1-t1",
+						title: "Build a Machine Learning Model",
+						description: "Create and train a machine learning model on a real dataset",
+						instructions: [
+							"Choose a dataset (Kaggle, UCI, or custom)",
+							"Perform data preprocessing and EDA",
+							"Train and evaluate multiple models",
+							"Submit your Jupyter notebook and results"
+						],
+						submissionType: "link",
+						helperText: "Provide GitHub repository with notebook and documentation"
+					}
+				],
 			},
 			"2": {
 				type: "prompt",
@@ -262,18 +326,128 @@ const quizConfigs: Record<
 				},
 			},
 		},
-	},
-	design: {
-		"ui-ux-design": {
+		"competitive-coding": {
 			"1": {
+				type: "mixed",
+				subjectiveQuestions: [
+					{
+						id: "cp-r1-q1",
+						prompt: "Explain the difference between time and space complexity.",
+						placeholder: "Type your explanation here...",
+						helperText: "Include Big O notation and practical examples.",
+					},
+					{
+						id: "cp-r1-q2",
+						prompt: "What are dynamic programming and its key characteristics?",
+						placeholder: "Describe dynamic programming...",
+						helperText: "Include memoization, optimal substructure, and examples.",
+					},
+					{
+						id: "cp-r1-q3",
+						prompt: "Explain different sorting algorithms and their complexities.",
+						placeholder: "Compare sorting algorithms...",
+						helperText: "Include quicksort, mergesort, heapsort, etc.",
+					},
+				],
+				tasks: [
+					{
+						id: "cp-r1-t1",
+						title: "Solve Algorithmic Problems",
+						description: "Solve coding problems on competitive programming platforms",
+						instructions: [
+							"Solve 5-10 medium to hard problems",
+							"Platforms: LeetCode, CodeChef, Codeforces, HackerRank",
+							"Include problem links and your solutions",
+							"Explain your approach for complex problems"
+						],
+						submissionType: "link",
+						helperText: "Share GitHub repository with solutions and explanations"
+					}
+				],
+			},
+			"2": {
 				type: "prompt",
 				promptConfig: {
-					id: "ui-ux-r1-prompt",
-					prompt: "Submit your UI/UX design work",
-					description:
-						"Share your Figma files, design documentation, and any additional resources for Round 1.",
-					variant: "designAssets",
+					id: "cp-r2-prompt",
+					prompt: "Submit your competitive coding profile",
+					description: "Share your coding profile links and problem solutions.",
+					variant: "repoStack",
 				},
+			},
+		},
+		"cyber-security": {
+			"1": {
+				type: "mixed",
+				subjectiveQuestions: [
+					{
+						id: "cyber-r1-q1",
+						prompt: "What are the different types of cyber attacks?",
+						placeholder: "Type your answer here...",
+						helperText: "Include phishing, DDoS, malware, SQL injection, etc.",
+					},
+					{
+						id: "cyber-r1-q2",
+						prompt: "Explain the CIA triad in cybersecurity.",
+						placeholder: "Describe Confidentiality, Integrity, Availability...",
+						helperText: "Include practical examples and importance.",
+					},
+					{
+						id: "cyber-r1-q3",
+						prompt: "What is encryption and how does it work?",
+						placeholder: "Explain encryption mechanisms...",
+						helperText: "Include symmetric vs asymmetric encryption.",
+					},
+				],
+				tasks: [
+					{
+						id: "cyber-r1-t1",
+						title: "Security Analysis or CTF Challenge",
+						description: "Perform security analysis on a system or solve CTF challenges",
+						instructions: [
+							"Option 1: Analyze a website/app for vulnerabilities",
+							"Option 2: Solve 3-5 CTF challenges (HackTheBox, TryHackMe)",
+							"Document your findings and methodology",
+							"Submit report with screenshots and explanations"
+						],
+						submissionType: "link",
+						helperText: "Provide PDF report or GitHub repository with writeups"
+					}
+				],
+			},
+			"2": {
+				type: "prompt",
+				promptConfig: {
+					id: "cyber-r2-prompt",
+					prompt: "Submit your security project",
+					description: "Share your security analysis, tools, or research documentation.",
+					variant: "repoStack",
+				},
+			},
+		},
+	},
+	design: {
+		"ui-ux": {
+			"1": {
+				type: "mixed",
+				subjectiveQuestions: [],
+				tasks: [
+					{
+						id: "uiux-r1-t1",
+						title: "Design for Chaos",
+						description: "Imagine an app that's used in a panic — earthquake, protest, blackout. Design the interface that holds under confusion and fear. Why it works: stress-tests prioritization, clarity under pressure, and UX for emotion, not aesthetics.",
+						instructions: [],
+						submissionType: "link",
+						helperText: ""
+					},
+					{
+						id: "uiux-r1-t2",
+						title: "Button Universe",
+						description: "Create an app that has only one button. What does it do? How does the user understand its logic, feedback, and limits? Goal: distill complex interaction into a single intentional act. Why it's strong: tests clarity, micro-interaction design, and narrative design under extreme constraint.",
+						instructions: [],
+						submissionType: "link",
+						helperText: ""
+					}
+				],
 			},
 			"2": {
 				type: "prompt",
@@ -286,9 +460,9 @@ const quizConfigs: Record<
 				},
 			},
 		},
-		"graphic-design": {
+		"graphics-design": {
 			"1": {
-				type: "subjective",
+				type: "mixed",
 				subjectiveQuestions: [
 					{
 						id: "graphic-r1-q1",
@@ -348,6 +522,21 @@ const quizConfigs: Record<
 							"Include color modes, resolution, and medium constraints.",
 					},
 				],
+				tasks: [
+					{
+						id: "graphic-r1-t1",
+						title: "Create a Brand Identity Package",
+						description: "Design a complete brand identity for a company or product",
+						instructions: [
+							"Create logo variations and brand guidelines",
+							"Design business cards and stationery",
+							"Include color palette and typography system",
+							"Submit portfolio link or PDF"
+						],
+						submissionType: "link",
+						helperText: "Provide Behance/Dribbble link or Google Drive PDF"
+					}
+				],
 			},
 			"2": {
 				type: "prompt",
@@ -361,7 +550,7 @@ const quizConfigs: Record<
 		},
 		"motion-graphics": {
 			"1": {
-				type: "subjective",
+				type: "mixed",
 				subjectiveQuestions: [
 					{
 						id: "motion-r1-q1",
@@ -421,6 +610,21 @@ const quizConfigs: Record<
 							"Include social media, web, and broadcast considerations.",
 					},
 				],
+				tasks: [
+					{
+						id: "motion-r1-t1",
+						title: "Create a Motion Graphics Video",
+						description: "Produce a 30-60 second motion graphics animation",
+						instructions: [
+							"Choose a concept (explainer, logo animation, title sequence)",
+							"Create storyboard and animatic",
+							"Add sound design and music",
+							"Submit video link (YouTube, Vimeo, Drive)"
+						],
+						submissionType: "link",
+						helperText: "Upload to YouTube/Vimeo or share Drive link"
+					}
+				],
 			},
 			"2": {
 				type: "prompt",
@@ -433,11 +637,45 @@ const quizConfigs: Record<
 				},
 			},
 		},
+		"video-editing": {
+			"1": {
+				type: "mixed",
+				subjectiveQuestions: [],
+				tasks: [
+					{
+						id: "video-r1-t1",
+						title: "Storytelling Reel (Shoot & Edit)",
+						description: "Shoot and edit a short reel (under 60 seconds) that: Captures real footage shot by you, Tells a clear and meaningful story — for example, showing the energy and highlights of an event, a day in the club, or behind-the-scenes moments, Focuses on good pacing, smooth cuts, and emotional or energetic flow 🎬 Example: Make an aftermovie-style reel from the recent VinHack hackathon — show the crowd, coding sessions, judging, and final celebrations to tell the event's story in under a minute. (You can also choose any other story or theme you can shoot yourself — just make sure it has a beginning, middle, and end.)",
+						instructions: [],
+						submissionType: "link",
+						helperText: ""
+					},
+					{
+						id: "video-r1-t2",
+						title: "Motion Graphics Product Video",
+						description: "Create a short motion graphics product video (30-60 seconds) that: Showcases a tech product, feature, or concept (real or imaginary), Includes clean typography, smooth transitions, and appealing motion design, Maintains a professional and engaging visual flow 🍭 Example: Create a motion graphics promo video for VinnovateIT's \"Messit\" app — highlight its purpose, key features, and appeal through animation and transitions. (You can choose any product or concept, Messit is just an example.)",
+						instructions: [],
+						submissionType: "link",
+						helperText: ""
+					}
+				],
+			},
+			"2": {
+				type: "prompt",
+				promptConfig: {
+					id: "video-r2-prompt",
+					prompt: "Submit your video editing work",
+					description:
+						"Share your video files, project files, and documentation.",
+					variant: "driveAssets",
+				},
+			},
+		},
 	},
 	management: {
 		"event-management": {
 			"1": {
-				type: "subjective",
+				type: "mixed",
 				subjectiveQuestions: [
 					{
 						id: "event-r1-q1",
@@ -497,6 +735,21 @@ const quizConfigs: Record<
 							"Include venue setup, transportation, and coordination.",
 					},
 				],
+				tasks: [
+					{
+						id: "event-r1-t1",
+						title: "Plan a Complete Event",
+						description: "Create a comprehensive event plan from concept to execution",
+						instructions: [
+							"Define event concept, objectives, and target audience",
+							"Create detailed budget and timeline",
+							"Develop marketing and promotion strategy",
+							"Submit event plan document or presentation"
+						],
+						submissionType: "link",
+						helperText: "Share Google Doc, PDF, or presentation link"
+					}
+				],
 			},
 			"2": {
 				type: "prompt",
@@ -511,7 +764,7 @@ const quizConfigs: Record<
 		},
 		marketing: {
 			"1": {
-				type: "subjective",
+				type: "mixed",
 				subjectiveQuestions: [
 					{
 						id: "marketing-r1-q1",
@@ -570,6 +823,21 @@ const quizConfigs: Record<
 							"Include platform selection, content strategy, and community management.",
 					},
 				],
+				tasks: [
+					{
+						id: "marketing-r1-t1",
+						title: "Create a Marketing Campaign",
+						description: "Develop a complete digital marketing campaign for a product/service",
+						instructions: [
+							"Define target audience and campaign objectives",
+							"Create content strategy across multiple channels",
+							"Design sample creatives and copy",
+							"Submit campaign plan document"
+						],
+						submissionType: "link",
+						helperText: "Share Google Doc, Canva, or PDF link"
+					}
+				],
 			},
 			"2": {
 				type: "prompt",
@@ -584,7 +852,7 @@ const quizConfigs: Record<
 		},
 		"content-writing": {
 			"1": {
-				type: "subjective",
+				type: "mixed",
 				subjectiveQuestions: [
 					{
 						id: "content-r1-q1",
@@ -646,8 +914,21 @@ const quizConfigs: Record<
 						placeholder: "Describe content analytics...",
 						helperText: "Include metrics, tools, and optimization strategies.",
 					},
-				],
-			},
+				],				tasks: [
+					{
+						id: "content-r1-t1",
+						title: "Write Content Pieces",
+						description: "Create a portfolio of diverse content pieces",
+						instructions: [
+							"Write 3-5 different content pieces (blog, social, email, etc.)",
+							"Demonstrate different writing styles and tones",
+							"Include SEO optimization where applicable",
+							"Submit portfolio link or document"
+						],
+						submissionType: "link",
+						helperText: "Share Medium, Notion, Google Doc, or portfolio link"
+					}
+				],			},
 			"2": {
 				type: "prompt",
 				promptConfig: {
@@ -675,6 +956,10 @@ export default function FormsDomainQuiz() {
 	const subdomain = searchParams.get("subdomain") || "web-development";
 	const round = searchParams.get("round") || "1";
 
+	// State for task selection
+	const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
+	const [taskSubmissionLink, setTaskSubmissionLink] = useState("");
+
 	// Mock candidate data - in real app, this would come from auth/session
 	const candidateData = {
 		id: "24BCE2370",
@@ -701,6 +986,8 @@ export default function FormsDomainQuiz() {
 
 	const handleSubmit = () => {
 		console.log(`Submitting ${domain}/${subdomain}/round-${round}`);
+		console.log("Selected task:", selectedTaskId);
+		console.log("Task submission:", taskSubmissionLink);
 		// Add submission logic here
 	};
 
@@ -723,29 +1010,101 @@ export default function FormsDomainQuiz() {
 						</div>
 					</header>
 					{/* Render subjective questions if provided */}
-					{config.type === "subjective" && (
-						<>
-							<div className="flex flex-col gap-6">
-								{config.subjectiveQuestions?.map((question) => (
-									<SubjectiveQuestion
-										key={question.id}
-										id={question.id}
-										prompt={question.prompt}
-										placeholder={question.placeholder}
-										helperText={question.helperText}
-									/>
-								))}
+					{config.subjectiveQuestions && config.subjectiveQuestions.length > 0 && (
+						<div className="flex flex-col gap-6">
+							{config.subjectiveQuestions.map((question) => (
+								<SubjectiveQuestion
+									key={question.id}
+									id={question.id}
+									prompt={question.prompt}
+									placeholder={question.placeholder}
+									helperText={question.helperText}
+								/>
+							))}
+						</div>
+					)}
+
+					{/* Render tasks if provided - user can choose any one */}
+					{config.tasks && config.tasks.length > 0 && (
+						<div className="flex flex-col gap-6">
+							<div className="rounded-[28px] bg-[#F7B58D]/40 p-6">
+								<h3 className="text-2xl font-semibold mb-4">
+									Tasks - Choose Any One
+								</h3>
+								<p className="text-black/70 mb-6">
+									<span className="font-semibold">Important:</span> Select and complete <span className="font-semibold underline">any ONE task</span> from the options below. You are not required to complete all tasks.
+								</p>
+								<div className="flex flex-col gap-4">
+									{config.tasks.map((task, index) => (
+										<div
+											key={task.id}
+											className={`rounded-[20px] p-6 border-2 transition-all cursor-pointer ${
+												selectedTaskId === task.id
+													? "bg-white border-orange-400 shadow-lg"
+													: "bg-white/60 border-black/10 hover:border-orange-300"
+											}`}
+											onClick={() => setSelectedTaskId(task.id)}
+										>
+											<div className="flex items-start gap-4">
+												<div className="flex-shrink-0">
+													<input
+														type="radio"
+														name="task-selection"
+														value={task.id}
+														checked={selectedTaskId === task.id}
+														onChange={() => setSelectedTaskId(task.id)}
+														className="w-5 h-5 text-orange-500 focus:ring-orange-400"
+													/>
+												</div>
+												<div className="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-br from-orange-400 to-pink-400 flex items-center justify-center text-white font-bold">
+													{index + 1}
+												</div>
+												<div className="flex-1">
+													<h4 className="text-xl font-semibold mb-2">
+														{task.title}
+													</h4>
+													<p className="text-black/70 mb-4">
+														{task.description}
+													</p>
+													{task.instructions && task.instructions.length > 0 && (
+														<div className="mb-4">
+															<p className="font-medium mb-2">Instructions:</p>
+															<ul className="list-disc list-inside space-y-1 text-black/70">
+																{task.instructions.map((instruction, idx) => (
+																	<li key={idx}>{instruction}</li>
+																))}
+															</ul>
+														</div>
+													)}
+													{task.helperText && (
+														<p className="text-sm text-black/60 italic">
+															{task.helperText}
+														</p>
+													)}
+												</div>
+											</div>
+										</div>
+									))}
+								</div>
+								
+								{/* Submission field for selected task */}
+								{selectedTaskId && (
+									<div className="mt-6 rounded-[20px] bg-white p-6">
+										<h4 className="text-lg font-semibold mb-4">Submit Your Work</h4>
+										<p className="text-black/70 mb-4">
+											Provide a link to your submission (e.g., GitHub repository, Google Drive, portfolio link)
+										</p>
+										<input
+											type="url"
+											value={taskSubmissionLink}
+											onChange={(e) => setTaskSubmissionLink(e.target.value)}
+											placeholder="https://..."
+											className="w-full px-4 py-3 rounded-xl border border-black/20 focus:outline-none focus:ring-2 focus:ring-orange-400"
+										/>
+									</div>
+								)}
 							</div>
-							<div className="flex justify-center pt-2">
-								<button
-									type="button"
-									onClick={handleSubmit}
-									className="rounded-4xl bg-[#FFFFFF80] text-lg px-12 py-3 shadow-[3px_0px_11.9px_2px_rgba(248,104,0,0.3)]"
-								>
-									Submit Form
-								</button>
-							</div>
-						</>
+						</div>
 					)}
 
 					{/* Render prompt question if provided */}
@@ -757,17 +1116,19 @@ export default function FormsDomainQuiz() {
 								description={config.promptConfig.description}
 								variant={config.promptConfig.variant}
 							/>
-							<div className="flex justify-center pt-2">
-								<button
-									type="button"
-									onClick={handleSubmit}
-									className="rounded-4xl bg-[#FFFFFF80] text-lg px-12 py-3 shadow-[3px_0px_11.9px_2px_rgba(248,104,0,0.3)]"
-								>
-									Submit
-								</button>
-							</div>
 						</div>
 					)}
+
+					{/* Submit button */}
+					<div className="flex justify-center pt-2">
+						<button
+							type="button"
+							onClick={handleSubmit}
+							className="rounded-4xl bg-[#FFFFFF80] text-lg px-12 py-3 shadow-[3px_0px_11.9px_2px_rgba(248,104,0,0.3)]"
+						>
+							Submit Form
+						</button>
+					</div>
 				</article>
 			</div>
 		</FormsShell>

@@ -41,11 +41,16 @@ export async function POST(req: Request) {
 
     if (!application) {
       // Create application if doesn't exist
+      // Extract registration number from name (e.g., "Aditya Madan 24BCE2370")
+      const userName = session.user.name || "";
+      const regNoMatch = userName.match(/\b(\d{2}[A-Z]{3,4}\d{4})\b/);
+      const regNo = regNoMatch ? regNoMatch[1] : session.user.email.split("@")[0].toUpperCase();
+      
       application = await prisma.application.create({
         data: {
           name: session.user.name || "",
           email: session.user.email,
-          regNo: session.user.email.split("@")[0].toUpperCase(),
+          regNo: regNo,
           phone: phoneNumber,
         },
       });

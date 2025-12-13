@@ -24,6 +24,9 @@ const formatDomainName = (domain: string): string => {
 
 const formatSubdomainName = (subdomain: string | null): string => {
   if (!subdomain) return "";
+  // Special cases for AIML and UIUX
+  if (subdomain.toLowerCase() === "aiml") return "AIML";
+  if (subdomain.toLowerCase().replace(/[-\s]/g, "") === "uiux") return "UIUX";
   return subdomain
     .split("-")
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
