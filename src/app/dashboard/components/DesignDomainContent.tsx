@@ -5,7 +5,7 @@ import SubdomainSelector from './SubdomainSelector';
 
 export default function DesignDomainContent() {
   const subtitleText = "Crafting experiences that speak for themselves.";
-  const descriptionText = "Join our design team to create stunning visuals and user experiences. Choose from UI/UX, Graphics Design, or Video Editing. Submit your creative task (Round 1) to showcase your design skills and portfolio.";
+  const descriptionText = "Join our design team to create stunning visuals and user experiences. Choose from UI/UX, Graphic Design, or Video Editing. Submit your creative task (Round 1) to showcase your design skills and portfolio.";
 
   return (
     <>
