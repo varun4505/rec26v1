@@ -239,7 +239,7 @@ const quizConfigs: Record<
 				},
 			},
 		},
-		"ai-ml": {
+		"aiml": {
 			"1": {
 				type: "mixed",
 				subjectiveQuestions: [
@@ -326,6 +326,104 @@ const quizConfigs: Record<
 				},
 			},
 		},
+		"competitive-coding": {
+			"1": {
+				type: "mixed",
+				subjectiveQuestions: [
+					{
+						id: "cp-r1-q1",
+						prompt: "Explain the difference between time and space complexity.",
+						placeholder: "Type your explanation here...",
+						helperText: "Include Big O notation and practical examples.",
+					},
+					{
+						id: "cp-r1-q2",
+						prompt: "What are dynamic programming and its key characteristics?",
+						placeholder: "Describe dynamic programming...",
+						helperText: "Include memoization, optimal substructure, and examples.",
+					},
+					{
+						id: "cp-r1-q3",
+						prompt: "Explain different sorting algorithms and their complexities.",
+						placeholder: "Compare sorting algorithms...",
+						helperText: "Include quicksort, mergesort, heapsort, etc.",
+					},
+				],
+				tasks: [
+					{
+						id: "cp-r1-t1",
+						title: "Solve Algorithmic Problems",
+						description: "Solve coding problems on competitive programming platforms",
+						instructions: [
+							"Solve 5-10 medium to hard problems",
+							"Platforms: LeetCode, CodeChef, Codeforces, HackerRank",
+							"Include problem links and your solutions",
+							"Explain your approach for complex problems"
+						],
+						submissionType: "link",
+						helperText: "Share GitHub repository with solutions and explanations"
+					}
+				],
+			},
+			"2": {
+				type: "prompt",
+				promptConfig: {
+					id: "cp-r2-prompt",
+					prompt: "Submit your competitive coding profile",
+					description: "Share your coding profile links and problem solutions.",
+					variant: "repoStack",
+				},
+			},
+		},
+		"cyber-security": {
+			"1": {
+				type: "mixed",
+				subjectiveQuestions: [
+					{
+						id: "cyber-r1-q1",
+						prompt: "What are the different types of cyber attacks?",
+						placeholder: "Type your answer here...",
+						helperText: "Include phishing, DDoS, malware, SQL injection, etc.",
+					},
+					{
+						id: "cyber-r1-q2",
+						prompt: "Explain the CIA triad in cybersecurity.",
+						placeholder: "Describe Confidentiality, Integrity, Availability...",
+						helperText: "Include practical examples and importance.",
+					},
+					{
+						id: "cyber-r1-q3",
+						prompt: "What is encryption and how does it work?",
+						placeholder: "Explain encryption mechanisms...",
+						helperText: "Include symmetric vs asymmetric encryption.",
+					},
+				],
+				tasks: [
+					{
+						id: "cyber-r1-t1",
+						title: "Security Analysis or CTF Challenge",
+						description: "Perform security analysis on a system or solve CTF challenges",
+						instructions: [
+							"Option 1: Analyze a website/app for vulnerabilities",
+							"Option 2: Solve 3-5 CTF challenges (HackTheBox, TryHackMe)",
+							"Document your findings and methodology",
+							"Submit report with screenshots and explanations"
+						],
+						submissionType: "link",
+						helperText: "Provide PDF report or GitHub repository with writeups"
+					}
+				],
+			},
+			"2": {
+				type: "prompt",
+				promptConfig: {
+					id: "cyber-r2-prompt",
+					prompt: "Submit your security project",
+					description: "Share your security analysis, tools, or research documentation.",
+					variant: "repoStack",
+				},
+			},
+		},
 	},
 	design: {
 		"ui-ux": {
@@ -362,7 +460,7 @@ const quizConfigs: Record<
 				},
 			},
 		},
-		"graphic-design": {
+		"graphics-design": {
 			"1": {
 				type: "mixed",
 				subjectiveQuestions: [
