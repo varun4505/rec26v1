@@ -36,6 +36,15 @@ export const authOptions: AuthOptions = {
       if (user.email && !user.email.endsWith('@vitstudent.ac.in')) {
         return false;
       }
+
+      // Only allow 2024 and 2025 batch
+      if (user.email) {
+        const isAllowedBatch = user.email.includes('2024') || user.email.includes('2025');
+        if (!isAllowedBatch) {
+          return '/access-denied';
+        }
+      }
+
       return true;
     },
     async jwt({ token, user, account }) {
