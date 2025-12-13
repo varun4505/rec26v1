@@ -3,6 +3,10 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/authOptions";
 import prisma from "@/lib/prisma";
 
+// Disable caching for this route to ensure fresh data
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 // GET - Fetch user's current selections
 export async function GET() {
   try {
@@ -40,9 +44,11 @@ export async function GET() {
     });
 
     const now = new Date();
-    const canModifySelections = config 
+    // Check if selection deadline has passed
+    // If no config or no deadline set, allow modifications
+    const canModifySelections = config?.selectionDeadline
       ? now < new Date(config.selectionDeadline)
-      : true; // Allow if no config exists
+      : true;
 
     return NextResponse.json({
       success: true,
@@ -200,13 +206,14 @@ export async function DELETE(req: Request) {
       );
     }
 
-    // Check if selection deadline has passed
+    // Check if selection deadline has passed (only if config exists)
     const config = await prisma.recruitmentConfig.findFirst({
       where: { isActive: true },
       orderBy: { updatedAt: "desc" },
     });
 
-    if (config && new Date() > new Date(config.selectionDeadline)) {
+    // Only block if config exists AND deadline has passed
+    if (config?.selectionDeadline && new Date() > new Date(config.selectionDeadline)) {
       return NextResponse.json(
         { success: false, error: "Selection deadline has passed" },
         { status: 403 }
@@ -225,35 +232,6 @@ export async function DELETE(req: Request) {
       return NextResponse.json(
         { success: false, error: "Application not found" },
         { status: 404 }
-      );
-    }
-
-    // Users can modify selections before the deadline, even after submission
-    // Check deadline instead of submission status
-    const now = new Date();
-    
-    // Check if there's a specific deadline for this domain/subdomain
-    const deadline = await prisma.deadline.findFirst({
-      where: {
-        domain: domain === 'tech' ? 'technical' : domain,
-        OR: [
-          { subdomain: subdomain && subdomain !== 'none' ? subdomain : null },
-          { subdomain: null }, // Fall back to domain-wide deadline
-        ],
-        round: 'round1', // Selection changes affect round1
-      },
-      orderBy: {
-        subdomain: 'desc', // Prioritize specific subdomain deadlines
-      },
-    });
-
-    if (deadline && now > deadline.deadline) {
-      return NextResponse.json(
-        {
-          success: false,
-          error: "Selection deadline has passed. Contact admin to make changes.",
-        },
-        { status: 400 }
       );
     }
 

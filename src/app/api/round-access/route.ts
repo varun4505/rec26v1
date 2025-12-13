@@ -75,41 +75,57 @@ export async function GET(req: Request) {
 
     // Check deadline - allow resubmission before deadline
     const now = new Date();
-    const deadline = await prisma.deadline.findFirst({
-      where: {
-        domain: domain,
-        OR: [
-          { subdomain: subdomain && subdomain !== 'none' ? subdomain : null },
-          { subdomain: null }, // Fall back to domain-wide deadline
-        ],
-        round: round,
-      },
-      orderBy: {
-        subdomain: 'desc', // Prioritize specific subdomain deadlines
-      },
-    });
+    let deadline = null;
+    
+    try {
+      const subdomainValue = subdomain && subdomain !== 'none' ? subdomain : null;
+      // First try to find specific subdomain deadline
+      deadline = await prisma.deadline.findFirst({
+        where: {
+          domain: domain,
+          subdomain: subdomainValue,
+          round: round,
+        },
+      });
 
-    // If there's an existing submission
-    if (existingSubmission) {
-      // Check if deadline has passed
-      if (deadline && now > deadline.deadline) {
-        // Allow editing if user has passed, even after deadline
-        if (!existingSubmission.isPassed) {
-          return NextResponse.json({
-            success: true,
-            canAccess: false,
-            reason: "Submission deadline has passed. You cannot edit your submission.",
-            submission: {
-              isPassed: existingSubmission.isPassed,
-              submittedAt: existingSubmission.submittedAt,
-            },
-          });
-        }
-        // If passed, allow editing even after deadline - fall through to allow access
+      // If no specific deadline, try domain-wide deadline
+      if (!deadline) {
+        deadline = await prisma.deadline.findFirst({
+          where: {
+            domain: domain,
+            subdomain: null,
+            round: round,
+          },
+        });
       }
-      
-      // If deadline hasn't passed or user has passed, allow resubmission (user can edit)
-      // Don't block access - just proceed to allow them to resubmit
+    } catch (deadlineError) {
+      console.warn("Deadline check failed:", deadlineError);
+    }
+
+    // Check if deadline has passed (applies to both new and existing submissions)
+    if (deadline && now > deadline.deadline) {
+      // If there's an existing submission - allow read-only access
+      if (existingSubmission) {
+        // Allow access to view their submission (will be read-only on frontend)
+        return NextResponse.json({
+          success: true,
+          canAccess: true,
+          readOnly: true,
+          reason: "Submission deadline has passed. Your submission is under review.",
+          submission: {
+            submitted: true,
+            isPassed: existingSubmission.isPassed,
+            submittedAt: existingSubmission.submittedAt,
+          },
+        });
+      } else {
+        // No submission and deadline passed - block access
+        return NextResponse.json({
+          success: true,
+          canAccess: false,
+          reason: "Submission deadline has passed. You can no longer submit.",
+        });
+      }
     }
 
     // For Round 2, check if Round 1 is passed
