@@ -21,6 +21,9 @@ model Application {
     email     String
     phone     String
 
+    // Domain/Subdomain Selections (max 3 total)
+    selections DomainSelection[]
+
     // Domain Submissions
     domainSubmissions DomainSubmission[]
 
@@ -28,17 +31,106 @@ model Application {
     @@unique([email])
 }
 
-model DomainSubmission {
+model DomainSelection {
     id            String   @id @default(auto()) @map("_id") @db.ObjectId
     applicationId String   @db.ObjectId
-    domain        String
-    subdomain     String?
-    answers       Json // ordered Q&A list stored as JSON
-
+    domain        String   // technical, management, design
+    subdomain     String?  // null for management
+    selectedAt    DateTime @default(now())
+    
     application   Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
 
     @@unique([applicationId, domain, subdomain])
     @@index([applicationId])
+}
+
+model RecruitmentConfig {
+    id                String   @id @default(auto()) @map("_id") @db.ObjectId
+    selectionDeadline DateTime // Deadline to select/change domains
+    round1Deadline    DateTime // Deadline for round 1 submissions
+    round2Deadline    DateTime // Deadline for round 2 submissions
+    isActive          Boolean  @default(true)
+    maxSelections     Int      @default(3) // Maximum domain/subdomain selections allowed
+    updatedAt         DateTime @updatedAt
+}
+
+model DomainSubmission {
+    id            String   @id @default(auto()) @map("_id") @db.ObjectId
+    applicationId String   @db.ObjectId
+    domain        String   // technical, management, design
+    subdomain     String?  // only for technical and design
+    round         String   // round1, round2
+    answers       Json     // ordered Q&A list stored as JSON
+    submissionUrl String?  // for task submissions (round2 for tech, round1 for design)
+    submittedAt   DateTime @default(now()) // when user submitted
+    
+    // Round pass status - set by admin
+    isPassed      Boolean  @default(false) // whether admin approved this submission
+    feedback      String?  // optional feedback from admin
+    evaluatedAt   DateTime? // when admin evaluated
+    evaluatedBy   String?  // admin who evaluated
+
+    application   Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+
+    @@unique([applicationId, domain, subdomain, round])
+    @@index([applicationId])
     @@index([domain])
     @@index([subdomain])
+    @@index([round])
+    @@index([isPassed])
 }
+
+model Question {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  domain     String
+  subdomain  String?  // for technical and design
+  round      String   // round1, round2
+  text       String
+  type       String   @default("subjective") // subjective, mcq, task-submission
+  options    Json?    // for MCQ questions
+  meta       Json?
+  active     Boolean  @default(true)
+  isOptional Boolean  @default(false) // whether the question is optional
+
+  @@index([domain])
+  @@index([subdomain])
+  @@index([round])
+}
+
+model Task {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  domain      String
+  subdomain   String?  // for technical and design
+  round       String   // round1, round2
+  title       String
+  description String
+  link        String?
+  deadline    DateTime?
+  active      Boolean @default(true)
+
+  @@index([domain])
+  @@index([subdomain])
+  @@index([round])
+}
+
+model Deadline {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  domain    String
+  subdomain String?  // null means applies to all subdomains
+  round     String   // round1, round2
+  deadline  DateTime
+
+  @@unique([domain, subdomain, round])
+  @@index([domain])
+  @@index([round])
+}
+
