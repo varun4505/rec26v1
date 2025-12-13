@@ -4,6 +4,7 @@ import React, { useLayoutEffect, useRef } from "react";
 import Image from "next/image";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { motion } from "framer-motion";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -167,79 +168,85 @@ export default function LandingProjects() {
 	}, []);
 
 	return (
-		<section
-			ref={containerRef}
-			className="w-screen h-screen flex flex-col items-center overflow-hidden relative"
-			id="proof-of-build"
-		>
-			<h2 className="w-full text-center py-6 sm:py-10 about-title font-array text-3xl sm:text-5xl z-20 shrink-0">
+		<div className="w-full min-h-screen" id="proof-of-build">
+			<motion.h2
+				initial={{ opacity: 0, y: -20 }}
+				whileInView={{ opacity: 1, y: 0 }}
+				viewport={{ once: true }}
+				transition={{ duration: 0.6 }}
+				className="w-full text-center py-6 sm:py-10 about-title font-array text-3xl sm:text-5xl z-20 shrink-0"
+			>
 				Proof of Build
-			</h2>
-
-			<div className="flex-1 w-full max-w-[1000px] flex flex-col items-center justify-center min-h-0 pb-4">
-				{/* Images Container */}
-				<div className="relative w-full h-[180px] sm:h-[260px] mb-2 sm:mb-4 shrink-0">
-					{projects.map((project, i) => (
-						<div
-							key={project.id}
-							ref={(el) => {
-								imagesRef.current[i] = el;
-							}}
-							className="absolute left-1/2 top-1/2 w-28 h-28 sm:w-44 sm:h-44 md:w-56 md:h-56 rounded-full border-4 border-black overflow-hidden bg-white shadow-[0_25px_50px_rgba(0,0,0,0.25)] flex items-center justify-center"
-						>
-							{isSvg(project.mainImage) ? (
-								<div className="w-full h-full bg-white flex items-center justify-center">
+			</motion.h2>
+			<section
+				ref={containerRef}
+				className="w-screen h-screen flex flex-col items-center overflow-hidden relative pt-32"
+			>
+				<div className="flex-1 w-full max-w-[1000px] flex flex-col items-center justify-center min-h-0 pb-4">
+					{/* Images Container */}
+					<div className="relative w-full h-[180px] sm:h-[260px] mb-2 sm:mb-4 shrink-0">
+						{projects.map((project, i) => (
+							<div
+								key={project.id}
+								ref={(el) => {
+									imagesRef.current[i] = el;
+								}}
+								className="absolute left-1/2 top-1/2 w-28 h-28 sm:w-44 sm:h-44 md:w-56 md:h-56 rounded-full border-4 border-black overflow-hidden bg-white shadow-[0_25px_50px_rgba(0,0,0,0.25)] flex items-center justify-center"
+							>
+								{isSvg(project.mainImage) ? (
+									<div className="w-full h-full bg-white flex items-center justify-center">
+										<Image
+											src={project.mainImage}
+											alt={project.heading}
+											width={150}
+											height={150}
+											className="w-3/4 h-3/4 object-contain"
+										/>
+									</div>
+								) : (
 									<Image
 										src={project.mainImage}
 										alt={project.heading}
-										width={150}
-										height={150}
-										className="w-3/4 h-3/4 object-contain"
+										fill
+										className="object-cover"
 									/>
-								</div>
-							) : (
-								<Image
-									src={project.mainImage}
-									alt={project.heading}
-									fill
-									className="object-cover"
-								/>
-							)}
-						</div>
-					))}
-				</div>
+								)}
+							</div>
+						))}
+					</div>
 
-				{/* Text Container */}
-				<div className="relative w-full grid grid-cols-1">
-					{projects.map((project, i) => (
-						<div
-							key={project.id}
-							ref={(el) => {
-								textsRef.current[i] = el;
-							}}
-							className="col-start-1 row-start-1 flex flex-col items-center text-center px-4 sm:px-6"
-						>
-							<div className="text-xl sm:text-3xl lg:text-[2.5rem] mb-1 sm:mb-2 text-black font-normal font-khand">
-								{project.projectNumber}
+					{/* Text Container */}
+					<div className="relative w-full grid grid-cols-1">
+						{projects.map((project, i) => (
+							<div
+								key={project.id}
+								ref={(el) => {
+									textsRef.current[i] = el;
+								}}
+								className="col-start-1 row-start-1 flex flex-col items-center text-center px-4 sm:px-6"
+							>
+								<div className="text-xl sm:text-3xl lg:text-[2.5rem] mb-1 sm:mb-2 text-black font-normal font-khand">
+									{project.projectNumber}
+								</div>
+								<h3 className="text-lg sm:text-xl lg:text-[2.3rem] mb-2 sm:mb-4 text-black font-medium font-khand">
+									{project.heading}
+								</h3>
+								<p className="text-sm sm:text-lg lg:text-[1.4rem] leading-relaxed text-[#444] mb-4 sm:mb-6 font-light font-khand whitespace-pre-line max-w-[800px]">
+									{project.about}
+								</p>
+								<div className="flex justify-center pb-4">
+									<a
+										href={project.link}
+										className="inline-flex items-center justify-center gap-2 sm:gap-3 rounded-full font-khand leading-none transition-all duration-200 opacity-80 cursor-pointer border-none relative z-5 no-underline capitalize bg-linear-to-r from-[#ff9a5e] to-[#f86800] text-black font-semibold px-6 sm:px-12 py-2 sm:py-3 text-base sm:text-2xl shadow-[0_4px_15px_rgba(248,104,0,0.2)] hover:scale-[1.03] active:scale-[0.98]"
+									>
+										Know More
+									</a>
+								</div>
 							</div>
-							<h3 className="text-lg sm:text-xl lg:text-[2.3rem] mb-2 sm:mb-4 text-black font-medium font-khand">
-								{project.heading}
-							</h3>
-							<p className="text-sm sm:text-lg lg:text-[1.4rem] leading-relaxed text-[#444] mb-4 sm:mb-6 font-light font-khand whitespace-pre-line max-w-[800px]">
-								{project.about}
-							</p>
-							<div className="flex justify-center pb-4">
-								<a
-									href={project.link}
-									className="inline-flex items-center justify-center gap-2 sm:gap-3 rounded-full font-khand leading-none transition-all duration-200 opacity-80 cursor-pointer border-none relative z-5 no-underline capitalize bg-linear-to-r from-[#ff9a5e] to-[#f86800] text-black font-semibold px-6 sm:px-12 py-2 sm:py-3 text-base sm:text-2xl shadow-[0_4px_15px_rgba(248,104,0,0.2)] hover:scale-[1.03] active:scale-[0.98]"
-								>
-									Know More
-								</a>
-							</div>
-						</div>
-					))}
+						))}
+					</div>
 				</div>
-			</div>
-		</section>
+			</section>
+		</div>
 	);
 }
