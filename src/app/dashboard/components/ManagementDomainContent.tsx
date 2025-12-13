@@ -22,7 +22,7 @@ export default function ManagementDomainContent() {
           <p className={styles.domainDescription}>{descriptionText}</p>
         </div>
       </div>
-      <SubdomainSelector domain="management" />
+      {/* No subdomains for Management domain */}
     </>
   );
 }

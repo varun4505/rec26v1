@@ -57,12 +57,8 @@ export const DOMAIN_CONFIG: Record<DomainType, DomainConfig> = {
     id: 'management',
     name: 'Management',
     slug: 'management',
-    hasSubdomains: true,
-    subdomains: [
-      { id: 'event', name: 'Event Management', slug: 'event-management' },
-      { id: 'marketing', name: 'Marketing', slug: 'marketing' },
-      { id: 'content', name: 'Content Writing', slug: 'content-writing' },
-    ],
+    hasSubdomains: false,
+    subdomains: [],
     rounds: [
       {
         id: 'round1',

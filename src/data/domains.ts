@@ -31,13 +31,6 @@ export const applications: SubdomainItem[] = [
     showNextButton: false,
   },
   {
-    subdomain: "Marketing and PR",
-    domain: "Management Domain",
-    round: "Round 1",
-    status: "Form Submitted",
-    showNextButton: true,
-  },
-  {
     subdomain: "UI/UX Design",
     domain: "Design Domain",
     round: "Round 2",
