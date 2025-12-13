@@ -328,16 +328,28 @@ const quizConfigs: Record<
 		},
 	},
 	design: {
-		"ui-ux-design": {
+		"ui-ux": {
 			"1": {
-				type: "prompt",
-				promptConfig: {
-					id: "ui-ux-r1-prompt",
-					prompt: "Submit your UI/UX design work",
-					description:
-						"Share your Figma files, design documentation, and any additional resources for Round 1.",
-					variant: "designAssets",
-				},
+				type: "mixed",
+				subjectiveQuestions: [],
+				tasks: [
+					{
+						id: "uiux-r1-t1",
+						title: "Design for Chaos",
+						description: "Imagine an app that's used in a panic — earthquake, protest, blackout. Design the interface that holds under confusion and fear. Why it works: stress-tests prioritization, clarity under pressure, and UX for emotion, not aesthetics.",
+						instructions: [],
+						submissionType: "link",
+						helperText: ""
+					},
+					{
+						id: "uiux-r1-t2",
+						title: "Button Universe",
+						description: "Create an app that has only one button. What does it do? How does the user understand its logic, feedback, and limits? Goal: distill complex interaction into a single intentional act. Why it's strong: tests clarity, micro-interaction design, and narrative design under extreme constraint.",
+						instructions: [],
+						submissionType: "link",
+						helperText: ""
+					}
+				],
 			},
 			"2": {
 				type: "prompt",
@@ -521,6 +533,40 @@ const quizConfigs: Record<
 				promptConfig: {
 					id: "motion-r2-prompt",
 					prompt: "Submit your motion graphics work",
+					description:
+						"Share your video files, project files, and documentation.",
+					variant: "driveAssets",
+				},
+			},
+		},
+		"video-editing": {
+			"1": {
+				type: "mixed",
+				subjectiveQuestions: [],
+				tasks: [
+					{
+						id: "video-r1-t1",
+						title: "Storytelling Reel (Shoot & Edit)",
+						description: "Shoot and edit a short reel (under 60 seconds) that: Captures real footage shot by you, Tells a clear and meaningful story — for example, showing the energy and highlights of an event, a day in the club, or behind-the-scenes moments, Focuses on good pacing, smooth cuts, and emotional or energetic flow 🎬 Example: Make an aftermovie-style reel from the recent VinHack hackathon — show the crowd, coding sessions, judging, and final celebrations to tell the event's story in under a minute. (You can also choose any other story or theme you can shoot yourself — just make sure it has a beginning, middle, and end.)",
+						instructions: [],
+						submissionType: "link",
+						helperText: ""
+					},
+					{
+						id: "video-r1-t2",
+						title: "Motion Graphics Product Video",
+						description: "Create a short motion graphics product video (30-60 seconds) that: Showcases a tech product, feature, or concept (real or imaginary), Includes clean typography, smooth transitions, and appealing motion design, Maintains a professional and engaging visual flow 🍭 Example: Create a motion graphics promo video for VinnovateIT's \"Messit\" app — highlight its purpose, key features, and appeal through animation and transitions. (You can choose any product or concept, Messit is just an example.)",
+						instructions: [],
+						submissionType: "link",
+						helperText: ""
+					}
+				],
+			},
+			"2": {
+				type: "prompt",
+				promptConfig: {
+					id: "video-r2-prompt",
+					prompt: "Submit your video editing work",
 					description:
 						"Share your video files, project files, and documentation.",
 					variant: "driveAssets",
