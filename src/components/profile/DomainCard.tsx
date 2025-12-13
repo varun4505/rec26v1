@@ -4,6 +4,7 @@
 
 import React from "react";
 import { useRouter } from "next/navigation";
+import { getDomainConfig } from "@/data/domainConfig";
 
 interface UserApplication {
   domain: string;
@@ -43,11 +44,13 @@ export const ApplicationCard: React.FC<ApplicationCardProps> = ({
     ? formatSubdomainName(application.subdomain)
     : domainName;
 
+  const config = getDomainConfig(application.domain.toLowerCase() as any);
+  const isSingleRound = config?.rounds.length === 1;
+
   const handleRoundClick = (round: string) => {
     const roundPath = round === "Round 1" ? "round1" : "round2";
-    const url = `/quiz/${application.domain}/${
-      application.subdomain || "general"
-    }/${roundPath}`;
+    const url = `/quiz/${application.domain}/${application.subdomain || "none"
+      }/${roundPath}`;
     router.push(url);
   };
 
@@ -123,8 +126,8 @@ export const ApplicationCard: React.FC<ApplicationCardProps> = ({
                 )}
               </div>
 
-              {/* Round 2 Status (if applicable) */}
-              {application.round2Status && !isRejected && (
+              {/* Round 2 Status (Only for multi-round domains) */}
+              {!isSingleRound && application.round2Status && !isRejected && (
                 <div className="status-item" style={{ marginTop: "12px" }}>
                   <div className="status-info">
                     <div className="round-label">Round 2</div>
@@ -160,8 +163,43 @@ export const ApplicationCard: React.FC<ApplicationCardProps> = ({
                       </svg>
                     </button>
                   )}
+                  {/* Removed duplicate Schedule Interview icon button since we have Next Step block now */}
                 </div>
               )}
+
+              {/* Schedule Interview Block (For both Single and Multi round domains) */}
+              {((isSingleRound && application.round1Status === "Passed") ||
+                (!isSingleRound && application.round2Status === "Passed")) && (
+                  <div className="status-item" style={{ marginTop: "12px" }}>
+                    <div className="status-info">
+                      <div className="round-label">Next Step</div>
+                      <div className="status-label">Interview</div>
+                    </div>
+                    <button
+                      className="glass-icon-button"
+                      style={{
+                        width: "clamp(30px, 5vw, 36px)",
+                        height: "clamp(30px, 5vw, 36px)",
+                      }}
+                      aria-label="Schedule Interview"
+                      onClick={() => alert("Redirecting to interview scheduler...")}
+                    >
+                      <svg
+                        width="20"
+                        height="20"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                        style={{
+                          width: "clamp(14px, 2.5vw, 17px)",
+                          height: "clamp(14px, 2.5vw, 17px)",
+                        }}
+                      >
+                        <path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20a2 2 0 0 0 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zM9 14H7v-2h2v2zm4 0h-2v-2h2v2zm4 0h-2v-2h2v2zm-8 4H7v-2h2v2zm4 0h-2v-2h2v2zm4 0h-2v-2h2v2z" fill="currentColor" />
+                      </svg>
+                    </button>
+                  </div>
+                )}
             </>
           )}
         </div>
@@ -178,21 +216,27 @@ export const ApplicationCard: React.FC<ApplicationCardProps> = ({
                 fontSize: "clamp(0.75rem, 1.6vw, 0.88rem)",
               }}
               onClick={() => {
-                handleRoundClick(
-                  application.round2Status ? "Round 2" : "Round 1"
-                );
+                if (application.round2Status === "Passed" || (isSingleRound && application.round1Status === "Passed")) {
+                  alert("Redirecting to interview scheduler...");
+                } else {
+                  handleRoundClick(
+                    application.round2Status ? "Round 2" : "Round 1"
+                  );
+                }
               }}
             >
-              {application.round2Status === "Pending" ||
-              application.round2Status === "Not Started"
+              {(!isSingleRound && (application.round2Status === "Pending" ||
+                application.round2Status === "Not Started"))
                 ? "MOVE TO NEXT STEP"
                 : application.round1Status === "Pending"
-                ? "MOVE TO NEXT STEP"
-                : application.round1Status === "Submitted" ||
-                  application.round1Status === "Under Review" ||
-                  application.round1Status === "Passed"
-                ? "EDIT FORM"
-                : "VIEW STATUS"}
+                  ? "MOVE TO NEXT STEP"
+                  : (application.round2Status === "Passed" || (isSingleRound && application.round1Status === "Passed"))
+                    ? "SCHEDULE INTERVIEW"
+                    : application.round1Status === "Submitted" ||
+                      application.round1Status === "Under Review" ||
+                      application.round1Status === "Passed"
+                      ? "EDIT FORM"
+                      : "VIEW STATUS"}
             </button>
           )}
         </div>

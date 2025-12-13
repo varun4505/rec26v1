@@ -30,7 +30,7 @@ interface SubmissionRequest {
 // Quick check to see if already submitted
 export async function GET() {
   try {
-  const session = await getServerSession(authOptions)
+    const session = await getServerSession(authOptions)
 
     if (!session?.user?.email) {
       return NextResponse.json(
@@ -57,7 +57,7 @@ export async function GET() {
 export async function POST(req: Request) {
   try {
     // Check authentication
-  const session = await getServerSession(authOptions)
+    const session = await getServerSession(authOptions)
     if (!session?.user?.email?.endsWith("@vitstudent.ac.in")) {
       return NextResponse.json(
         {
@@ -83,8 +83,8 @@ export async function POST(req: Request) {
       );
     }
 
-  // Validate registration number format
-  const regNoRegex = /^2[2-5][A-Z]{3}\d{4}$/;
+    // Validate registration number format
+    const regNoRegex = /^2[2-5][A-Z]{3}\d{4}$/;
     if (!regNoRegex.test(basicInfo.registrationNumber)) {
       return NextResponse.json(
         { success: false, error: "Invalid registration number format" },
@@ -135,20 +135,20 @@ export async function POST(req: Request) {
         // For task submissions, use submissionUrl; for question rounds, use answers
         const submissionUrl = domainItem.data.submissionUrl
         let validated: AnswersList = []
-        
-        if (submissionUrl) {
-          // Task submission - create a single answer entry with the URL
-          validated = [{ answer: submissionUrl }]
-        } else if (domainItem.data.answers) {
-          // Question submission
+
+        // Prioritize actual answers if present (for Question or Combined rounds)
+        if (domainItem.data.answers && Array.isArray(domainItem.data.answers) && domainItem.data.answers.length > 0) {
           validated = validateAnswersList(domainItem.data.answers)
+        } else if (submissionUrl) {
+          // Task-only submission fallback: create a single answer entry with the URL
+          validated = [{ answer: submissionUrl }]
         } else {
           throw new Error('Either answers or submissionUrl is required')
         }
-        
-        domainCreates.push({ 
-          domain: domainItem.domain, 
-          subdomain: domainItem.subdomain, 
+
+        domainCreates.push({
+          domain: domainItem.domain,
+          subdomain: domainItem.subdomain,
           round: domainItem.round,
           answers: validated,
           submissionUrl: submissionUrl
@@ -166,17 +166,17 @@ export async function POST(req: Request) {
       for (const item of domainCreates) {
         // find any existing submissions for this applicationId+domain+subdomain+round
         type DSRow = { id: string; applicationId: string; domain: string; subdomain?: string | null; round: string; answers: unknown }
-        const candidates = await prisma.domainSubmission.findMany({ 
-          where: { 
-            applicationId: existing.id, 
+        const candidates = await prisma.domainSubmission.findMany({
+          where: {
+            applicationId: existing.id,
             domain: item.domain,
             round: item.round
-          } 
+          }
         })
         const existingSubmission = (candidates as unknown as DSRow[]).find(
           (c) => c.subdomain === (item.subdomain ?? null) && c.round === item.round
         )
-        
+
         if (existingSubmission) {
           // Update existing submission (allow resubmission)
           await prisma.domainSubmission.update({
@@ -194,15 +194,15 @@ export async function POST(req: Request) {
           })
         } else {
           // Create new submission
-          await prisma.domainSubmission.create({ 
-            data: ({ 
-              applicationId: existing.id, 
-              domain: item.domain, 
-              subdomain: item.subdomain ?? undefined, 
+          await prisma.domainSubmission.create({
+            data: ({
+              applicationId: existing.id,
+              domain: item.domain,
+              subdomain: item.subdomain ?? undefined,
               round: item.round,
               answers: item.answers as unknown as Prisma.InputJsonValue,
               submissionUrl: item.submissionUrl ?? undefined
-            } as Prisma.DomainSubmissionUncheckedCreateInput) 
+            } as Prisma.DomainSubmissionUncheckedCreateInput)
           })
         }
       }

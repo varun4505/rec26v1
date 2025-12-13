@@ -14,15 +14,22 @@ function getFormattedTime(): string {
 }
 
 export default function Clock() {
-	const [time, setTime] = useState<string>(() => getFormattedTime());
-	useEffect(() => {
+	const [time, setTime] = useState<string>("");
+	const [mounted, setMounted] = useState(false);
 
+	useEffect(() => {
+		setMounted(true);
+		setTime(getFormattedTime());
 		const interval = setInterval(() => {
 			setTime(getFormattedTime());
-		}, 60000);
+		}, 1000); // Check every second for closer sync
 
 		return () => clearInterval(interval);
 	}, []);
+
+	if (!mounted) {
+		return <div className="flex items-center gap-2"><div className="w-20 h-8"></div></div>; // Placeholder
+	}
 
 	return (
 		<div className="flex items-center gap-2">
