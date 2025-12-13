@@ -41,7 +41,7 @@ const quizConfigs: Record<
 	tech: {
 		"web-development": {
 			"1": {
-				type: "subjective",
+				type: "mixed",
 				subjectiveQuestions: [
 					{
 						id: "web-dev-r1-q1",
@@ -111,6 +111,21 @@ const quizConfigs: Record<
 						helperText:
 							"Include security, certificates, and performance considerations.",
 					},
+				],
+				tasks: [
+					{
+						id: "web-dev-r1-t1",
+						title: "Build a Full-Stack Web Application",
+						description: "Create a complete web application with frontend and backend",
+						instructions: [
+							"Use a modern framework (React, Vue, Angular, Next.js)",
+							"Implement authentication and database integration",
+							"Deploy your application",
+							"Submit GitHub repository and live demo link"
+						],
+						submissionType: "both",
+						helperText: "Provide repository and deployed application URL"
+					}
 				],
 			},
 			"2": {
@@ -336,7 +351,7 @@ const quizConfigs: Record<
 		},
 		"graphic-design": {
 			"1": {
-				type: "subjective",
+				type: "mixed",
 				subjectiveQuestions: [
 					{
 						id: "graphic-r1-q1",
@@ -396,6 +411,21 @@ const quizConfigs: Record<
 							"Include color modes, resolution, and medium constraints.",
 					},
 				],
+				tasks: [
+					{
+						id: "graphic-r1-t1",
+						title: "Create a Brand Identity Package",
+						description: "Design a complete brand identity for a company or product",
+						instructions: [
+							"Create logo variations and brand guidelines",
+							"Design business cards and stationery",
+							"Include color palette and typography system",
+							"Submit portfolio link or PDF"
+						],
+						submissionType: "link",
+						helperText: "Provide Behance/Dribbble link or Google Drive PDF"
+					}
+				],
 			},
 			"2": {
 				type: "prompt",
@@ -409,7 +439,7 @@ const quizConfigs: Record<
 		},
 		"motion-graphics": {
 			"1": {
-				type: "subjective",
+				type: "mixed",
 				subjectiveQuestions: [
 					{
 						id: "motion-r1-q1",
@@ -469,6 +499,21 @@ const quizConfigs: Record<
 							"Include social media, web, and broadcast considerations.",
 					},
 				],
+				tasks: [
+					{
+						id: "motion-r1-t1",
+						title: "Create a Motion Graphics Video",
+						description: "Produce a 30-60 second motion graphics animation",
+						instructions: [
+							"Choose a concept (explainer, logo animation, title sequence)",
+							"Create storyboard and animatic",
+							"Add sound design and music",
+							"Submit video link (YouTube, Vimeo, Drive)"
+						],
+						submissionType: "link",
+						helperText: "Upload to YouTube/Vimeo or share Drive link"
+					}
+				],
 			},
 			"2": {
 				type: "prompt",
@@ -485,7 +530,7 @@ const quizConfigs: Record<
 	management: {
 		"event-management": {
 			"1": {
-				type: "subjective",
+				type: "mixed",
 				subjectiveQuestions: [
 					{
 						id: "event-r1-q1",
@@ -545,6 +590,21 @@ const quizConfigs: Record<
 							"Include venue setup, transportation, and coordination.",
 					},
 				],
+				tasks: [
+					{
+						id: "event-r1-t1",
+						title: "Plan a Complete Event",
+						description: "Create a comprehensive event plan from concept to execution",
+						instructions: [
+							"Define event concept, objectives, and target audience",
+							"Create detailed budget and timeline",
+							"Develop marketing and promotion strategy",
+							"Submit event plan document or presentation"
+						],
+						submissionType: "link",
+						helperText: "Share Google Doc, PDF, or presentation link"
+					}
+				],
 			},
 			"2": {
 				type: "prompt",
@@ -559,7 +619,7 @@ const quizConfigs: Record<
 		},
 		marketing: {
 			"1": {
-				type: "subjective",
+				type: "mixed",
 				subjectiveQuestions: [
 					{
 						id: "marketing-r1-q1",
@@ -618,6 +678,21 @@ const quizConfigs: Record<
 							"Include platform selection, content strategy, and community management.",
 					},
 				],
+				tasks: [
+					{
+						id: "marketing-r1-t1",
+						title: "Create a Marketing Campaign",
+						description: "Develop a complete digital marketing campaign for a product/service",
+						instructions: [
+							"Define target audience and campaign objectives",
+							"Create content strategy across multiple channels",
+							"Design sample creatives and copy",
+							"Submit campaign plan document"
+						],
+						submissionType: "link",
+						helperText: "Share Google Doc, Canva, or PDF link"
+					}
+				],
 			},
 			"2": {
 				type: "prompt",
@@ -632,7 +707,7 @@ const quizConfigs: Record<
 		},
 		"content-writing": {
 			"1": {
-				type: "subjective",
+				type: "mixed",
 				subjectiveQuestions: [
 					{
 						id: "content-r1-q1",
@@ -694,8 +769,21 @@ const quizConfigs: Record<
 						placeholder: "Describe content analytics...",
 						helperText: "Include metrics, tools, and optimization strategies.",
 					},
-				],
-			},
+				],				tasks: [
+					{
+						id: "content-r1-t1",
+						title: "Write Content Pieces",
+						description: "Create a portfolio of diverse content pieces",
+						instructions: [
+							"Write 3-5 different content pieces (blog, social, email, etc.)",
+							"Demonstrate different writing styles and tones",
+							"Include SEO optimization where applicable",
+							"Submit portfolio link or document"
+						],
+						submissionType: "link",
+						helperText: "Share Medium, Notion, Google Doc, or portfolio link"
+					}
+				],			},
 			"2": {
 				type: "prompt",
 				promptConfig: {
