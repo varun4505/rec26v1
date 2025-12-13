@@ -19,11 +19,9 @@ export default function ManagementDomainContent() {
         </div>
         <div className={styles.domainContentRight}>
           <p className={styles.domainDescription}>{descriptionText}</p>
-          <div style={{ marginTop: '2rem' }}>
-            <SubdomainSelector domain="management" />
-          </div>
         </div>
       </div>
+      <SubdomainSelector domain="management" />
     </>
   );
 }
