@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { useSearchParams } from "next/navigation";
 import FormsShell from "./components/FormsShell";
 import {
@@ -811,6 +812,10 @@ export default function FormsDomainQuiz() {
 	const subdomain = searchParams.get("subdomain") || "web-development";
 	const round = searchParams.get("round") || "1";
 
+	// State for task selection
+	const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
+	const [taskSubmissionLink, setTaskSubmissionLink] = useState("");
+
 	// Mock candidate data - in real app, this would come from auth/session
 	const candidateData = {
 		id: "24BCE2370",
@@ -837,6 +842,8 @@ export default function FormsDomainQuiz() {
 
 	const handleSubmit = () => {
 		console.log(`Submitting ${domain}/${subdomain}/round-${round}`);
+		console.log("Selected task:", selectedTaskId);
+		console.log("Task submission:", taskSubmissionLink);
 		// Add submission logic here
 	};
 
@@ -878,18 +885,33 @@ export default function FormsDomainQuiz() {
 						<div className="flex flex-col gap-6">
 							<div className="rounded-[28px] bg-[#F7B58D]/40 p-6">
 								<h3 className="text-2xl font-semibold mb-4">
-									Choose Any One Task
+									Tasks - Choose Any One
 								</h3>
 								<p className="text-black/70 mb-6">
-									Select and complete one task from the options below:
+									<span className="font-semibold">Important:</span> Select and complete <span className="font-semibold underline">any ONE task</span> from the options below. You are not required to complete all tasks.
 								</p>
 								<div className="flex flex-col gap-4">
 									{config.tasks.map((task, index) => (
 										<div
 											key={task.id}
-											className="rounded-[20px] bg-white/60 p-6 border border-black/10"
+											className={`rounded-[20px] p-6 border-2 transition-all cursor-pointer ${
+												selectedTaskId === task.id
+													? "bg-white border-orange-400 shadow-lg"
+													: "bg-white/60 border-black/10 hover:border-orange-300"
+											}`}
+											onClick={() => setSelectedTaskId(task.id)}
 										>
 											<div className="flex items-start gap-4">
+												<div className="flex-shrink-0">
+													<input
+														type="radio"
+														name="task-selection"
+														value={task.id}
+														checked={selectedTaskId === task.id}
+														onChange={() => setSelectedTaskId(task.id)}
+														className="w-5 h-5 text-orange-500 focus:ring-orange-400"
+													/>
+												</div>
 												<div className="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-br from-orange-400 to-pink-400 flex items-center justify-center text-white font-bold">
 													{index + 1}
 												</div>
@@ -920,6 +942,23 @@ export default function FormsDomainQuiz() {
 										</div>
 									))}
 								</div>
+								
+								{/* Submission field for selected task */}
+								{selectedTaskId && (
+									<div className="mt-6 rounded-[20px] bg-white p-6">
+										<h4 className="text-lg font-semibold mb-4">Submit Your Work</h4>
+										<p className="text-black/70 mb-4">
+											Provide a link to your submission (e.g., GitHub repository, Google Drive, portfolio link)
+										</p>
+										<input
+											type="url"
+											value={taskSubmissionLink}
+											onChange={(e) => setTaskSubmissionLink(e.target.value)}
+											placeholder="https://..."
+											className="w-full px-4 py-3 rounded-xl border border-black/20 focus:outline-none focus:ring-2 focus:ring-orange-400"
+										/>
+									</div>
+								)}
 							</div>
 						</div>
 					)}
