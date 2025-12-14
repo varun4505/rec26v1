@@ -1009,7 +1009,7 @@ export default function QuizPage() {
 																const text = rest.join(' ');
 																return (
 																	<div key={idx} className="bg-orange-50 p-3 rounded">
-																		<p className="text-sm">
+																		<p className="text-sm whitespace-pre-wrap">
 																			<span className="text-lg mr-2">{emoji}</span>
 																			<span className="font-medium">Example:</span> {text.replace('Example:', '').trim()}
 																		</p>
@@ -1018,7 +1018,7 @@ export default function QuizPage() {
 															} else {
 																// Regular description text
 																return (
-																	<p key={idx} className="leading-relaxed">
+																	<p key={idx} className="leading-relaxed whitespace-pre-wrap">
 																		{trimmedPart}
 																	</p>
 																);
@@ -1030,13 +1030,13 @@ export default function QuizPage() {
 															<p className="font-medium mb-2">Instructions:</p>
 															<ul className="list-disc list-inside space-y-1 text-black/70">
 																{task.instructions.map((instruction: string, idx: number) => (
-																	<li key={idx}>{instruction}</li>
+																	<li key={idx} className="whitespace-pre-wrap">{instruction}</li>
 																))}
 															</ul>
 														</div>
 													)}
 													{task.helperText && (
-														<p className="text-sm text-black/60 italic">
+														<p className="text-sm text-black/60 italic whitespace-pre-wrap">
 															{task.helperText}
 														</p>
 													)}
