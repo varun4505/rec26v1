@@ -176,7 +176,7 @@ export default function LandingProjects() {
 				transition={{ duration: 0.6 }}
 				className="w-full text-center py-6 sm:py-10 about-title font-array text-3xl sm:text-5xl z-20 shrink-0"
 			>
-				Our projects
+				Our Projects
 			</motion.h2>
 			<section
 				ref={containerRef}
