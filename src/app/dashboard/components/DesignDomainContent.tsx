@@ -14,7 +14,7 @@ export default function DesignDomainContent() {
         
         {/* --- Use the NEW Design-specific styles --- */}
         <div className={styles.domainContentLeft}>
-          <h2 className={styles.designTitle}>Design</h2>
+          <h2 className={styles.designTitle}>DESIGN</h2>
           <p className={styles.designSubtitle}>{subtitleText}</p>
         </div>
 
