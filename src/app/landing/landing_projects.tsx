@@ -25,7 +25,7 @@ const projects = [
 		heading: "Latch",
 		about:
 			"Tired of logging in repeatedly? With Latch, you connect once and forget the hassle. The app automatically signs you in to your hostel WiFi - no typing, no remembering, no friction.",
-		link: "https://vinhack.vinnovateit.com",
+		link: "https://play.google.com/store/apps/details?id=com.vinnovateit.latch",
 	},
 	{
 		id: 3,
