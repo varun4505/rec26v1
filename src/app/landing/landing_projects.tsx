@@ -191,10 +191,10 @@ export default function LandingProjects() {
 								ref={(el) => {
 									imagesRef.current[i] = el;
 								}}
-								className="absolute left-1/2 top-1/2 w-28 h-28 sm:w-44 sm:h-44 md:w-56 md:h-56 rounded-full border-4 border-black overflow-hidden bg-white shadow-[0_25px_50px_rgba(0,0,0,0.25)] flex items-center justify-center"
+								className="absolute left-1/2 top-1/2 w-28 h-28 sm:w-44 sm:h-44 md:w-56 md:h-56 rounded-full overflow-hidden flex items-center justify-center"
 							>
 								{isSvg(project.mainImage) ? (
-									<div className="w-full h-full bg-white flex items-center justify-center">
+									<div className="w-full h-full flex items-center justify-center">
 										<Image
 											src={project.mainImage}
 											alt={project.heading}
