@@ -33,7 +33,7 @@ const projects = [
 		projectNumber: ".03",
 		heading: "BunkBuddies",
 		about:
-			"Because finding the perfect hostel roommate should be easy, not a lucky draw. Before it became a trend, it was BunkBuddies. Built by VinnovateIT, this roommate-finding app helped students find their people before everyone else decided it was a good idea.\n\nBuilt before it was cool.",
+			"Because finding the perfect hostel roommate should be easy, not a lucky draw. Before it became a trend, it was BunkBuddies. Built by VinnovateIT, this roommate-finding app helped students find their people before everyone else decided it was a good idea.\nBuilt before it was cool.",
 		link: "https://bunkbuddies.vinnovateit.com",
 	},
 ];
