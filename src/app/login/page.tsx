@@ -4,6 +4,9 @@ import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { signIn, useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
+// --- UPDATED ICONS: Using Material Design Rounded for a smoother look ---
+import { MdNote , MdOutlineSearch } from 'react-icons/md';
+import { PiWarningCircleFill } from 'react-icons/pi';
 import styles from './Login.module.css';
 
 const CLUB_LOGO_PATH = '/assets/images/vinnovateit_white.svg';
@@ -15,7 +18,6 @@ export default function LoginPage() {
   const router = useRouter();
 
   useEffect(() => {
-    // Redirect to dashboard if already logged in
     if (status === 'authenticated') {
       router.push('/dashboard');
     }
@@ -31,7 +33,6 @@ export default function LoginPage() {
 
     updateTime();
     const intervalId = setInterval(updateTime, 1000);
-
     return () => clearInterval(intervalId);
   }, []);
 
@@ -39,18 +40,16 @@ export default function LoginPage() {
     signIn('google', { callbackUrl: '/dashboard' });
   };
 
-  // Show loading state while checking authentication
   if (status === 'loading') {
     return (
       <div className={styles.pageContainer}>
-        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', color: 'white' }}>
           <p>Loading...</p>
         </div>
       </div>
     );
   }
 
-  // Don't render login form if already authenticated
   if (status === 'authenticated') {
     return null;
   }
@@ -58,7 +57,6 @@ export default function LoginPage() {
   return (
     <div className={styles.pageContainer}>
       <header className={styles.header}>
-        {/* Logo (from summary) */}
         <Image 
           src={CLUB_LOGO_PATH} 
           alt="Club Logo" 
@@ -67,15 +65,12 @@ export default function LoginPage() {
           className={styles.logo}
           priority 
         />
-        
-        {/* 4. Display the time using the new style */}
         <span className={styles.time}>
           {currentTime || '00:00'}
         </span>
       </header>
       
       <main className={styles.mainCard}>
-        
         <h1 className={styles.welcomeTitle}>
           Welcome To VinnovateIT Recruitments
         </h1>
@@ -94,54 +89,93 @@ export default function LoginPage() {
               width={24}
               height={24}
             />
-            <span>Log in with Google</span>
+            <span>Login with Google</span>
           </button>
         </div>
 
-        <h2 className={styles.instructionsTitle}>
-          Important Instructions :
-        </h2>
-        
+        {/* The Orange Div Container */}
         <div className={styles.instructionsBox}>
           
-          <div className={styles.instructionSection}>
-            <p style={{ marginBottom: '16px' }}>
-              <strong>📋 Please Note:</strong> Read all guidelines carefully before filling out the application form. Your understanding of these principles will reflect in your application process.
-            </p>
+          {/* HEADER SECTION: Please Note */}
+          <div className={styles.noteHeader}>
+            {/* The Label Group (Icon + Title) */}
+            <div className={styles.noteLabel}>
+                {/* Icon: Blue Clipboard */}
+                <MdNote className="rounded-icon icon-blue" size={28} /> 
+                <strong>Please Note:</strong> 
+            </div>
+            {/* The Text Content */}
+            <div className={styles.noteContent}>
+                Read all guidelines carefully before filling out the application form.
+            </div>
           </div>
 
-          <div className={styles.instructionSection}>
-            <h3>Guidelines</h3>
-            <ul>
-              <li>Perfect for freshers and sophomores looking to kickstart their innovation journey</li>
-              <li>Open to all branches - because great ideas know no boundaries</li>
-              <li>Choose your path: Technical, Management, or Design - where would you shine?</li>
-              <li>Show us your creativity and passion - perfection isn&apos;t required, enthusiasm is!</li>
-            </ul>
-            
-            {/* Horizontal Line 1 */}
-            <hr className={styles.divider} />
-            
-            <p style={{ fontStyle: 'italic' }}>
-              Take the first step into becoming part of the <strong>VinnovateIT family</strong> - where innovation never sleeps!
-            </p>
+          {/* STACKED CARD */}
+          <div className={styles.stackedCard}>
+            <div className={styles.splitContainer}>
+              
+              {/* LEFT COLUMN: Guidelines */}
+              <div className={styles.column + ' ' + styles.leftColumn}>
+                <div className={styles.instructionSection}>
+                  <h3>Guidelines</h3>
+                  <ul>
+                    <li>Perfect for freshers and sophomores looking to kickstart their innovation journey</li>
+                    <li>Open to all branches - because great ideas know no boundaries</li>
+                    <li>Choose your path: Technical, Management, or Design - where would you shine?</li>
+                    <li>Show us your creativity and passion - perfection isn&apos;t required, enthusiasm is!</li>
+                  </ul>
+                  <hr className={styles.divider} />
+                  <p style={{ fontStyle: 'italic' }}>
+                    Take the first step into becoming part of the <strong>VinnovateIT family</strong> - where innovation never sleeps!
+                  </p>
+                </div>
+              </div>
 
-            {/* Horizontal Line 2 */}
-            <hr className={styles.divider} />
+              {/* RIGHT COLUMN: Important & Insider Tip (Now in boxes) */}
+              <div className={styles.column + ' ' + styles.rightColumn + ' ' + styles.centeredColumn}>
+                
+                {/* Box 1: Important */}
+                <div className={styles.highlightBox + ' ' + styles.warningBox}>
+                  <div className={styles.boxHeader}>
+                        {/* Icon: Amber Warning */}
+                        <PiWarningCircleFill className="rounded-icon icon-amber" size={26} />
+                        <strong>Important</strong>
+                  </div>
+                  <p>
+                    You can only fill this form once. Make sure all information is accurate before submitting.
+                  </p>
+                </div>
+                  
+                {/* Box 2: Insider Tip */}
+                <div className={styles.highlightBox + ' ' + styles.tipBox}>
+                  <div className={styles.boxHeader}>
+                        {/* Icon: Teal Tips/Lightbulb */}
+                        <MdOutlineSearch className="rounded-icon icon-teal" size={26} />
+                        <strong>Insider Tip</strong>
+                  </div>
+                  <p>
+                    Explore the website to discover hidden surprises that could help you in future interviews! The curious ones always find the treasures.
+                  </p>
+                </div>
+
+              </div>
+
+            </div>
           </div>
-
-          <div className={styles.instructionSection}>
-            <p style={{ marginBottom: '12px' }}>
-              <strong>⚠️ Important:</strong> You can only fill this form once. Make sure all information is accurate before submitting.
-            </p>
-            <p>
-              <strong>🔍 Insider tip:</strong> Explore the website to discover hidden surprises that could help you in future interviews! The curious ones always find the treasures.
-            </p>
-          </div>
-
+          
         </div>
-
-      </main>   
+      </main> 
+      
+      {/* Keeping global styles here for the icon colors as they rely on global scope */}
+      <style jsx global>{`
+        /* --- Icon Styling --- */
+        .rounded-icon {
+            flex-shrink: 0; 
+        }
+        .icon-blue { color: #3b82f6; }
+        .icon-amber { color: #f59e0b; }
+        .icon-teal { color: #14b8a6; }
+      `}</style>
     </div>
   );
 }

@@ -5,38 +5,36 @@
 /* ----------------------------------------------------- */
 
 .pageContainer {
-	min-height: 100vh;
-	background-color: #0a0a0a;
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	padding: 16px;
+    /* DESKTOP: Fixed height to fit screen, no window scrollbar */
+    height: 100vh; 
+    width: 100vw;
+    background-color: #0a0a0a;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 16px;
+    box-sizing: border-box;
+    overflow: hidden; 
 }
 
 .header {
-	width: 100%;
-	max-width: 1440px;
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	padding: 16px 0;
-	/* Use auto margins to center the header content */
-	margin-left: auto;
-	margin-right: auto;
-}
-
-.logo {
-	/* Style for the Image component className */
-	/* Logo is already white, no filter needed */
+    width: 100%;
+    max-width: 1440px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 10px 10px 10px;
+    margin: 0 auto;
+    flex-shrink: 0;
 }
 
 .time {
-	font-family: var(--font-khand); /* Use Khand font */
-	font-weight: 400; /* 400 */
-	font-size: 32px; /* 32px */
-	line-height: 100%; /* 100% */
-	letter-spacing: 0.01em; /* 1% */
-	color: #ffffff; /* White text */
+    font-family: var(--font-khand); /* Use Khand font */
+    font-weight: 400; /* 400 */
+    font-size: 32px; /* 32px */
+    line-height: 100%; /* 100% */
+    letter-spacing: 0.01em; /* 1% */
+    color: #ffffff; /* White text */
 }
 
 /* ----------------------------------------------------- */
@@ -44,290 +42,367 @@
 /* ----------------------------------------------------- */
 
 .mainCard {
-	width: 100%;
-	max-width: 1440px; /* Adjusted to match your header max-width */
-	min-height: 650px;
-	margin-top: 28px;
-	border-radius: 40px;
-	box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-	padding: 40px 56px;
-	margin-left: auto;
-	margin-right: auto;
-	padding-bottom: 56px;
+    width: 100%;
+    max-width: 1440px; 
+    /* FLEX MAGIC: Makes the card fill the remaining height */
+    flex: 1; 
+    display: flex;
+    flex-direction: column;
+    
+    border-radius: 40px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    
+    padding: 30px 40px 30px 40px; 
+    
+    margin: 0 auto;
 
-	/* Set text color for content inside the card */
-	color: #212121;
+    /* Set text color for content inside the card */
+    color: #212121;
 
-	/* Background - light gray similar to the image */
-	background-color: #e8e8e8;
+    /* Background - light gray similar to the image */
+    background-color: #e8e8e8;
+    overflow: hidden;
 }
 
 .welcomeTitle {
-	font-family: var(--font-khand); /* <-- Added Khand font */
-	font-size: 36px; /* 36px (already correct) */
-	font-weight: 400; /* <-- Changed from 600 to 400 */
-	line-height: 100%; /* <-- Added */
-	letter-spacing: 0.01em; /* <-- Added (1%) */
+    font-family: var(--font-khand); /* <-- Added Khand font */
+    font-size: 36px; /* 36px (already correct) */
+    font-weight: 400; /* <-- Changed from 600 to 400 */
+    line-height: 100%; /* <-- Added */
+    letter-spacing: 0.01em; /* <-- Added (1%) */
 
-	color: #212121; /* Use dark text color */
-	margin-bottom: 32px;
+    color: #212121; /* Use dark text color */
+    margin-bottom: 24px;
+    flex-shrink: 0;
 }
 
 .loginBar {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	background-color: #f5a97a;
-	padding: 20px 32px;
-	margin-bottom: 40px;
-	border-radius: 28px;
-}
-
-@media (max-width: 768px) {
-	/* --- 1. Force Vertical Stack for the Orange Card --- */
-	.loginBar {
-		flex-direction: column; /* Force vertical stacking */
-		justify-content: center;
-		align-items: center;
-		text-align: center;
-		gap: 20px; /* Space between text and button */
-		padding: 30px 20px; /* Adjust padding */
-	}
-
-	/* --- 2. Fix the Button Text & Size --- */
-	.googleButton {
-		width: 100%; /* Let it adapt to screen width */
-		max-width: 259px; /* But don't get wider than desktop */
-		height: 48px; /* Slightly shorter height for mobile */
-		gap: 8px; /* Tighter gap between G-logo and text */
-		font-size: 14px; /* Force smaller text size */
-	}
-
-	/* --- 3. Target the text span directly to be sure --- */
-	.googleButton > span {
-		font-size: 14px;
-		line-height: 1.2;
-		top: 0; /* Reset the pixel nudge for mobile */
-	}
-
-	/* --- 4. Adjust the "Login with..." text size if needed --- */
-	.loginBarText {
-		font-size: 20px; /* Slightly smaller than desktop's 24px */
-		margin-bottom: 0;
-	}
-
-	/* --- Mobile formatting for the instructions/guidelines card --- */
-	.time {
-		font-size: 24px;
-	}
-
-	.mainCard {
-		min-height: auto;
-		margin-top: 16px;
-		border-radius: 24px;
-		padding: 24px 16px;
-		padding-bottom: 28px;
-	}
-
-	.welcomeTitle {
-		font-size: 28px;
-		margin-bottom: 20px;
-		text-align: center;
-	}
-
-	.instructionsTitle {
-		font-size: 20px;
-		margin-bottom: 12px;
-	}
-
-	.instructionsBox {
-		padding: 20px;
-		border-radius: 24px;
-		padding-bottom: 12px;
-		height: auto;
-		max-height: 55vh;
-	}
-
-	.instructionsBox::-webkit-scrollbar-track {
-		margin-top: 20px;
-		margin-bottom: 20px;
-	}
-
-	.instructionSection {
-		margin-bottom: 16px;
-	}
-
-	.instructionsBox ul {
-		padding-left: 18px;
-	}
-
-	.instructionsBox li {
-		font-size: 15px;
-	}
-
-	.divider {
-		margin: 14px 0;
-	}
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #f5a97a;
+    padding: 16px 32px;
+    margin-bottom: 24px;
+    border-radius: 28px;
+    flex-shrink: 0;
 }
 
 .loginBarText {
-	font-family: var(--font-khand); /* <-- Added */
-	font-weight: 400; /* <-- Changed from 500 */
-	font-size: 24px; /* <-- Changed from 18px */
-	line-height: 100%; /* <-- Added */
-	letter-spacing: 0.01em; /* <-- Added (1%) */
-	color: #212121; /* Dark text */
+    font-family: var(--font-khand); /* <-- Added */
+    font-weight: 400; /* <-- Changed from 500 */
+    font-size: 24px; /* <-- Changed from 18px */
+    line-height: 100%; /* <-- Added */
+    letter-spacing: 0.01em; /* <-- Added (1%) */
+    color: #212121; /* Dark text */
 }
 
 .googleButton {
-	display: inline-flex;
-	align-items: center;
-	justify-content: center;
-	gap: 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
 
-	/* --- THIS IS THE FIX --- */
-	/* #FFFFFF at 50% opacity */
-	background-color: rgba(255, 255, 255, 0.5);
-	color: #212121; /* Dark black text */
+    /* #FFFFFF at 50% opacity */
+    background-color: rgba(255, 255, 255, 0.5);
+    color: #212121; /* Dark black text */
 
-	font-size: 20px;
-	font-weight: 400; /* You may want to adjust this based on font */
-	border: none;
-	cursor: pointer;
+    font-size: 20px;
+    font-weight: 400; /* You may want to adjust this based on font */
+    border: none;
+    cursor: pointer;
 
-	/* --- Layout Specs --- */
-	width: 259px;
-	height: 55px;
-	border-radius: 59px; /* Fully rounded */
+    /* --- Layout Specs --- */
+    width: 259px;
+    height: 55px;
+    border-radius: 59px; /* Fully rounded */
 
-	/* --- Responsive Fix --- */
-	max-width: 100%; /* Prevents button from overflowing small screens */
+    /* --- Responsive Fix --- */
+    max-width: 100%; /* Prevents button from overflowing small screens */
 
-	/* --- Shadow Spec --- */
-	box-shadow: 3px 0px 11.9px 2px rgba(248, 104, 0, 0.3);
+    /* --- Shadow Spec --- */
+    box-shadow: 3px 0px 11.9px 2px rgba(248, 104, 0, 0.3);
 
-	transition: all 0.3s ease;
+    transition: all 0.3s ease;
 }
 
 .googleButton:hover {
-	transform: translateY(-2px);
-	box-shadow: 3px 2px 14px 3px rgba(248, 104, 0, 0.4);
-	/* Make the background slightly more opaque on hover */
-	background-color: rgba(255, 255, 255, 0.7);
+    transform: translateY(-2px);
+    box-shadow: 3px 2px 14px 3px rgba(248, 104, 0, 0.4);
+    /* Make the background slightly more opaque on hover */
+    background-color: rgba(255, 255, 255, 0.7);
 }
 
 .googleButton > span {
-	line-height: 1; /* Helps with alignment */
-	position: relative; /* Allows you to "nudge" the text */
-	top: 1.5px; /* Moves the text down by 1 pixel */
+    line-height: 1; /* Helps with alignment */
+    position: relative; /* Allows you to "nudge" the text */
+    top: 1.5px; /* Moves the text down by 1 pixel */
 }
 
-.instructionsTitle {
-	font-size: 24px;
-	font-weight: 400;
-	color: #212121;
-	margin-bottom: 20px;
-}
+/* ----------------------------------------------------- */
+/* 3. Instructions Box (The "Orange Div") */
+/* ----------------------------------------------------- */
 
 .instructionsBox {
-	background-color: #f5d5c3; /* Light peach color */
-	border-radius: 12px;
-	padding: 32px;
-	border-radius: 32px; /* Radius (32px) = Padding (32px) + Inner (0px) */
-	padding-bottom: 2px;
+    background-color: whitesmoke; /* Slightly darker/transparent to show depth */
+    border-radius: 32px;
+    padding: 24px 32px;
+    
+    /* SCROLLING MAGIC */
+    flex: 1; 
+    min-height: 0; 
+    overflow-y: auto; 
+    scroll-behavior: smooth;
 
-	/* --- SCROLLING MAGIC STARTS HERE --- */
-
-	/* 1. Define a fixed height so content overflows */
-	height: 350px; /* Adjust this value if you want it taller/shorter */
-
-	/* 2. Enable vertical scrolling */
-	overflow-y: auto;
-
-	/* 3. Smooth scrolling behavior */
-	scroll-behavior: smooth;
-
-	/* --- SCROLLING MAGIC ENDS HERE --- */
-
-	/* Text styling */
-	font-family: var(--font-khand), sans-serif;
-	color: #212121;
+    /* Text styling */
+    font-family: var(--font-khand), sans-serif;
+    color: #212121;
+    
+    display: flex;
+    flex-direction: column;
 }
 
 /* --- CUSTOM SCROLLBAR STYLING (Optional but recommended) --- */
 
 /* Width of the scrollbar */
 .instructionsBox::-webkit-scrollbar {
-	width: 8px;
+    width: 8px;
 }
 
 /* Track (background of the scrollbar) */
 .instructionsBox::-webkit-scrollbar-track {
-	background: rgba(0, 0, 0, 0.05);
-	border-radius: 12px;
-	margin-top: 32px;
-	margin-bottom: 32px;
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 12px;
+    margin: 20px 0;
 }
 
 /* Handle (the moving part) */
 .instructionsBox::-webkit-scrollbar-thumb {
-	background-color: rgba(33, 33, 33, 0.2); /* Dark gray, semi-transparent */
-	border-radius: 20px;
-	border: 2px solid #f5d5c3; /* Creates padding effect around the handle */
+    background-color: rgba(33, 33, 33, 0.2); /* Dark gray, semi-transparent */
+    border-radius: 20px;
+    border: 2px solid #f5d5c3; /* Creates padding effect around the handle */
 }
 
 /* Handle on hover */
 .instructionsBox::-webkit-scrollbar-thumb:hover {
-	background-color: rgba(33, 33, 33, 0.4);
+    background-color: rgba(33, 33, 33, 0.4);
 }
 
 .instructionSection {
-	margin-bottom: 24px;
+    margin-bottom: 24px;
 }
 
 .instructionSection h3 {
-	font-size: 20px;
-	font-weight: 600;
-	margin-bottom: 12px;
-	border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-	padding-bottom: 4px;
-}
-
-.subDomain {
-	margin-top: 16px;
-	margin-bottom: 16px;
-	padding-left: 10px;
-}
-
-.subDomain h4 {
-	font-size: 18px;
-	font-weight: 600;
-	margin-bottom: 8px;
-	color: #333;
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    padding-bottom: 4px;
 }
 
 .instructionsBox ul {
-	list-style-type: disc;
-	padding-left: 24px;
-	margin-bottom: 12px;
+    list-style-type: disc;
+    padding-left: 24px;
+    margin-bottom: 12px;
 }
 
 .instructionsBox li {
-	font-size: 16px;
-	line-height: 1.5;
-	margin-bottom: 6px;
+    font-size: 16px;
+    line-height: 1.5;
+    margin-bottom: 6px;
 }
 
 /* Nested lists (for Design domain) */
 .instructionsBox ul ul {
-	list-style-type: circle;
-	margin-top: 6px;
-	margin-bottom: 6px;
+    list-style-type: circle;
+    margin-top: 6px;
+    margin-bottom: 6px;
 }
 
 .divider {
-	border: 0;
-	height: 1px;
-	background-color: rgba(33, 33, 33, 0.2); /* Subtle dark line */
-	margin: 20px 0; /* Spacing above and below the line */
+    border: 0;
+    height: 1px;
+    background-color: rgba(33, 33, 33, 0.2); /* Subtle dark line */
+    margin: 20px 0; /* Spacing above and below the line */
+}
+
+/* ----------------------------------------------------- */
+/* 5. Instructions Box Inner Elements (Moved from JSX) */
+/* ----------------------------------------------------- */
+
+.noteHeader {
+    /* DESKTOP DEFAULT: Row layout */
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1.1rem;
+    padding-bottom: 20px;
+    text-align: left;
+    flex-shrink: 0;
+}
+
+.noteLabel {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap; /* Ensures "Please Note" stays on one line */
+}
+
+.stackedCard {
+    background-color: #f5d5c3; 
+    border-top-left-radius: 24px;
+    border-top-right-radius: 24px;
+    padding: 24px; 
+    flex: 1; 
+    
+    /* Compensate for parent padding (32px) */
+    margin-left: -32px; 
+    margin-right: -32px;
+    margin-bottom: -24px; /* Sticks to bottom of container */
+    
+    box-shadow: 0 -4px 12px rgba(0,0,0,0.06); 
+}
+
+.splitContainer {
+    display: flex;
+    gap: 3rem; 
+    width: 100%;
+    text-align: left;
+    height: 100%; 
+}
+
+.column {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.centeredColumn {
+    justify-content: flex-start;
+    gap: 1.5rem; 
+    padding-top: 10px;
+}
+
+.highlightBox {
+    background-color: rgba(255, 255, 255, 0.5); 
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+    transition: transform 0.2s ease;
+}
+
+.highlightBox:hover {
+    transform: translateY(-2px);
+}
+
+.boxHeader {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+    font-size: 1.05rem;
+}
+
+/* ----------------------------------------------------- */
+/* 4. Mobile Responsiveness */
+/* ----------------------------------------------------- */
+
+@media (max-width: 850px) {
+    /* Allow body scroll on mobile */
+    .pageContainer {
+        height: auto; 
+        min-height: 100vh;
+        overflow-y: auto; 
+        padding: 10px;
+    }
+
+    .header {
+        padding: 10px 5px;
+    }
+    
+    .time {
+        font-size: 24px;
+    }
+
+    .mainCard {
+        min-height: auto;
+        height: auto;
+        border-radius: 24px;
+        
+        /* Adjusted Padding: Top reduced, Side tight */
+        padding: 20px 16px;
+        padding-top: 10px; 
+        
+        display: block; 
+        overflow: visible;
+    }
+
+    /* FIX: Welcome text left aligned + top padding */
+    .welcomeTitle {
+        font-size: 28px;
+        margin-bottom: 24px;
+        text-align: center; 
+        padding-top: 15px; 
+    }
+
+    /* Stack Login Bar */
+    .loginBar {
+        flex-direction: column;
+        gap: 16px;
+        padding: 20px;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+    
+    .loginBarText {
+        font-size: 20px;
+    }
+
+    .googleButton {
+        width: 100%;
+        height: 48px;
+        font-size: 16px;
+    }
+
+    /* Adjust Instructions Box for Mobile */
+    .instructionsBox {
+        height: auto; 
+        max-height: none;
+        overflow-y: visible; 
+        padding: 20px;
+        border-radius: 24px;
+    }
+    
+    .instructionsBox ul {
+        padding-left: 18px;
+    }
+
+    /* FIX: Break "Please Note" onto its own line */
+    .noteHeader {
+        flex-direction: column; /* Stack vertically */
+        align-items: flex-start; /* Align left */
+        gap: 4px; /* Space between "Please Note" and the sentence */
+    }
+
+    .stackedCard {
+        /* Reset margins for mobile so it fits inside the instructionsBox (which has 20px padding) */
+        margin-left: -20px;
+        margin-right: -20px;
+        margin-bottom: -20px;
+        padding: 20px;
+        border-radius: 24px;
+    }
+
+    .splitContainer {
+        flex-direction: column; 
+        gap: 2rem;
+        height: auto;
+    }
+
+    .column {
+        width: 100%;
+    }
+
+    .centeredColumn {
+        gap: 1rem;
+    }
 }
