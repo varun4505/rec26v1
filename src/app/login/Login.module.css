@@ -5,38 +5,38 @@
 /* ----------------------------------------------------- */
 
 .pageContainer {
-  min-height: 100vh;
-  background-color: #0a0a0a;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 16px;
+	min-height: 100vh;
+	background-color: #0a0a0a;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	padding: 16px;
 }
 
 .header {
-  width: 100%;
-  max-width: 1440px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 16px 0;
-  /* Use auto margins to center the header content */
-  margin-left: auto;
-  margin-right: auto;
+	width: 100%;
+	max-width: 1440px;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 16px 0;
+	/* Use auto margins to center the header content */
+	margin-left: auto;
+	margin-right: auto;
 }
 
 .logo {
-    /* Style for the Image component className */
-    /* Logo is already white, no filter needed */
+	/* Style for the Image component className */
+	/* Logo is already white, no filter needed */
 }
 
 .time {
-  font-family: var(--font-khand); /* Use Khand font */
-  font-weight: 400;               /* 400 */
-  font-size: 32px;                /* 32px */
-  line-height: 100%;              /* 100% */
-  letter-spacing: 0.01em;         /* 1% */
-  color: #ffffff;                 /* White text */
+	font-family: var(--font-khand); /* Use Khand font */
+	font-weight: 400; /* 400 */
+	font-size: 32px; /* 32px */
+	line-height: 100%; /* 100% */
+	letter-spacing: 0.01em; /* 1% */
+	color: #ffffff; /* White text */
 }
 
 /* ----------------------------------------------------- */
@@ -44,238 +44,290 @@
 /* ----------------------------------------------------- */
 
 .mainCard {
-  width: 100%;
-  max-width: 1440px; /* Adjusted to match your header max-width */
-  min-height: 650px;
-  margin-top: 28px;
-  border-radius: 40px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-  padding: 40px 56px;
-  margin-left: auto;
-  margin-right: auto;
-  padding-bottom: 56px;
-  
-  /* Set text color for content inside the card */
-  color: #212121;
-  
-  /* Background - light gray similar to the image */
-  background-color: #e8e8e8;
+	width: 100%;
+	max-width: 1440px; /* Adjusted to match your header max-width */
+	min-height: 650px;
+	margin-top: 28px;
+	border-radius: 40px;
+	box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+	padding: 40px 56px;
+	margin-left: auto;
+	margin-right: auto;
+	padding-bottom: 56px;
+
+	/* Set text color for content inside the card */
+	color: #212121;
+
+	/* Background - light gray similar to the image */
+	background-color: #e8e8e8;
 }
 
 .welcomeTitle {
-  font-family: var(--font-khand); /* <-- Added Khand font */
-  font-size: 36px;                /* 36px (already correct) */
-  font-weight: 400;               /* <-- Changed from 600 to 400 */
-  line-height: 100%;              /* <-- Added */
-  letter-spacing: 0.01em;         /* <-- Added (1%) */
-  
-  color: #212121;                 /* Use dark text color */
-  margin-bottom: 32px;
+	font-family: var(--font-khand); /* <-- Added Khand font */
+	font-size: 36px; /* 36px (already correct) */
+	font-weight: 400; /* <-- Changed from 600 to 400 */
+	line-height: 100%; /* <-- Added */
+	letter-spacing: 0.01em; /* <-- Added (1%) */
+
+	color: #212121; /* Use dark text color */
+	margin-bottom: 32px;
 }
 
 .loginBar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background-color: #f5a97a;
-  padding: 20px 32px;
-  margin-bottom: 40px;
-  border-radius: 28px;
-
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	background-color: #f5a97a;
+	padding: 20px 32px;
+	margin-bottom: 40px;
+	border-radius: 28px;
 }
 
 @media (max-width: 768px) {
-  /* --- 1. Force Vertical Stack for the Orange Card --- */
-  .loginBar {
-    flex-direction: column; /* Force vertical stacking */
-    justify-content: center;
-    align-items: center ;
-    text-align: center ;
-    gap: 20px ; /* Space between text and button */
-    padding: 30px 20px ; /* Adjust padding */
-  }
+	/* --- 1. Force Vertical Stack for the Orange Card --- */
+	.loginBar {
+		flex-direction: column; /* Force vertical stacking */
+		justify-content: center;
+		align-items: center;
+		text-align: center;
+		gap: 20px; /* Space between text and button */
+		padding: 30px 20px; /* Adjust padding */
+	}
 
-  /* --- 2. Fix the Button Text & Size --- */
-  .googleButton {
-    width: 100% ;   /* Let it adapt to screen width */
-    max-width: 259px ; /* But don't get wider than desktop */
-    height: 48px ;  /* Slightly shorter height for mobile */
-    gap: 8px ;      /* Tighter gap between G-logo and text */
-    font-size: 14px ; /* Force smaller text size */
-  }
+	/* --- 2. Fix the Button Text & Size --- */
+	.googleButton {
+		width: 100%; /* Let it adapt to screen width */
+		max-width: 259px; /* But don't get wider than desktop */
+		height: 48px; /* Slightly shorter height for mobile */
+		gap: 8px; /* Tighter gap between G-logo and text */
+		font-size: 14px; /* Force smaller text size */
+	}
 
-  /* --- 3. Target the text span directly to be sure --- */
-  .googleButton > span {
-    font-size: 14px ;
-    line-height: 1.2 ;
-    top: 0 ; /* Reset the pixel nudge for mobile */
-  }
-  
-  /* --- 4. Adjust the "Login with..." text size if needed --- */
-  .loginBarText {
-    font-size: 20px ; /* Slightly smaller than desktop's 24px */
-    margin-bottom: 0 ;
-  }
+	/* --- 3. Target the text span directly to be sure --- */
+	.googleButton > span {
+		font-size: 14px;
+		line-height: 1.2;
+		top: 0; /* Reset the pixel nudge for mobile */
+	}
+
+	/* --- 4. Adjust the "Login with..." text size if needed --- */
+	.loginBarText {
+		font-size: 20px; /* Slightly smaller than desktop's 24px */
+		margin-bottom: 0;
+	}
+
+	/* --- Mobile formatting for the instructions/guidelines card --- */
+	.time {
+		font-size: 24px;
+	}
+
+	.mainCard {
+		min-height: auto;
+		margin-top: 16px;
+		border-radius: 24px;
+		padding: 24px 16px;
+		padding-bottom: 28px;
+	}
+
+	.welcomeTitle {
+		font-size: 28px;
+		margin-bottom: 20px;
+		text-align: center;
+	}
+
+	.instructionsTitle {
+		font-size: 20px;
+		margin-bottom: 12px;
+	}
+
+	.instructionsBox {
+		padding: 20px;
+		border-radius: 24px;
+		padding-bottom: 12px;
+		height: auto;
+		max-height: 55vh;
+	}
+
+	.instructionsBox::-webkit-scrollbar-track {
+		margin-top: 20px;
+		margin-bottom: 20px;
+	}
+
+	.instructionSection {
+		margin-bottom: 16px;
+	}
+
+	.instructionsBox ul {
+		padding-left: 18px;
+	}
+
+	.instructionsBox li {
+		font-size: 15px;
+	}
+
+	.divider {
+		margin: 14px 0;
+	}
 }
 
 .loginBarText {
-  font-family: var(--font-khand); /* <-- Added */
-  font-weight: 400;               /* <-- Changed from 500 */
-  font-size: 24px;                /* <-- Changed from 18px */
-  line-height: 100%;              /* <-- Added */
-  letter-spacing: 0.01em;         /* <-- Added (1%) */
-  color: #212121;               /* Dark text */
+	font-family: var(--font-khand); /* <-- Added */
+	font-weight: 400; /* <-- Changed from 500 */
+	font-size: 24px; /* <-- Changed from 18px */
+	line-height: 100%; /* <-- Added */
+	letter-spacing: 0.01em; /* <-- Added (1%) */
+	color: #212121; /* Dark text */
 }
 
 .googleButton {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  
-  /* --- THIS IS THE FIX --- */
-  /* #FFFFFF at 50% opacity */
-  background-color: rgba(255, 255, 255, 0.5); 
-  color: #212121; /* Dark black text */
-  
-  font-size: 20px;
-  font-weight: 400; /* You may want to adjust this based on font */
-  border: none;
-  cursor: pointer;
-  
-  /* --- Layout Specs --- */
-  width: 259px;
-  height: 55px;
-  border-radius: 59px; /* Fully rounded */
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 12px;
 
-  /* --- Responsive Fix --- */
-  max-width: 100%; /* Prevents button from overflowing small screens */
+	/* --- THIS IS THE FIX --- */
+	/* #FFFFFF at 50% opacity */
+	background-color: rgba(255, 255, 255, 0.5);
+	color: #212121; /* Dark black text */
 
-  /* --- Shadow Spec --- */
-  box-shadow: 3px 0px 11.9px 2px rgba(248, 104, 0, 0.3);
-  
-  transition: all 0.3s ease;
+	font-size: 20px;
+	font-weight: 400; /* You may want to adjust this based on font */
+	border: none;
+	cursor: pointer;
+
+	/* --- Layout Specs --- */
+	width: 259px;
+	height: 55px;
+	border-radius: 59px; /* Fully rounded */
+
+	/* --- Responsive Fix --- */
+	max-width: 100%; /* Prevents button from overflowing small screens */
+
+	/* --- Shadow Spec --- */
+	box-shadow: 3px 0px 11.9px 2px rgba(248, 104, 0, 0.3);
+
+	transition: all 0.3s ease;
 }
 
 .googleButton:hover {
-  transform: translateY(-2px);
-  box-shadow: 3px 2px 14px 3px rgba(248, 104, 0, 0.4);
-  /* Make the background slightly more opaque on hover */
-  background-color: rgba(255, 255, 255, 0.7); 
+	transform: translateY(-2px);
+	box-shadow: 3px 2px 14px 3px rgba(248, 104, 0, 0.4);
+	/* Make the background slightly more opaque on hover */
+	background-color: rgba(255, 255, 255, 0.7);
 }
 
 .googleButton > span {
-  line-height: 1; /* Helps with alignment */
-  position: relative; /* Allows you to "nudge" the text */
-  top: 1.5px;           /* Moves the text down by 1 pixel */
+	line-height: 1; /* Helps with alignment */
+	position: relative; /* Allows you to "nudge" the text */
+	top: 1.5px; /* Moves the text down by 1 pixel */
 }
 
 .instructionsTitle {
-  font-size: 24px;
-  font-weight: 400;
-  color: #212121;
-  margin-bottom: 20px;
+	font-size: 24px;
+	font-weight: 400;
+	color: #212121;
+	margin-bottom: 20px;
 }
 
 .instructionsBox {
-  background-color: #f5d5c3; /* Light peach color */
-  border-radius: 12px;
-  padding: 32px;
-  border-radius: 32px; /* Radius (32px) = Padding (32px) + Inner (0px) */
-  padding-bottom: 2px;
-  
-  /* --- SCROLLING MAGIC STARTS HERE --- */
-  
-  /* 1. Define a fixed height so content overflows */
-  height: 350px; /* Adjust this value if you want it taller/shorter */
-  
-  /* 2. Enable vertical scrolling */
-  overflow-y: auto; 
-  
-  /* 3. Smooth scrolling behavior */
-  scroll-behavior: smooth;
-  
-  /* --- SCROLLING MAGIC ENDS HERE --- */
+	background-color: #f5d5c3; /* Light peach color */
+	border-radius: 12px;
+	padding: 32px;
+	border-radius: 32px; /* Radius (32px) = Padding (32px) + Inner (0px) */
+	padding-bottom: 2px;
 
-  /* Text styling */
-  font-family: var(--font-khand), sans-serif;
-  color: #212121;
+	/* --- SCROLLING MAGIC STARTS HERE --- */
+
+	/* 1. Define a fixed height so content overflows */
+	height: 350px; /* Adjust this value if you want it taller/shorter */
+
+	/* 2. Enable vertical scrolling */
+	overflow-y: auto;
+
+	/* 3. Smooth scrolling behavior */
+	scroll-behavior: smooth;
+
+	/* --- SCROLLING MAGIC ENDS HERE --- */
+
+	/* Text styling */
+	font-family: var(--font-khand), sans-serif;
+	color: #212121;
 }
 
 /* --- CUSTOM SCROLLBAR STYLING (Optional but recommended) --- */
 
 /* Width of the scrollbar */
 .instructionsBox::-webkit-scrollbar {
-  width: 8px;
+	width: 8px;
 }
 
 /* Track (background of the scrollbar) */
 .instructionsBox::-webkit-scrollbar-track {
-  background: rgba(0, 0, 0, 0.05);
-  border-radius: 12px;
-  margin-top: 32px;    
-  margin-bottom: 32px;
+	background: rgba(0, 0, 0, 0.05);
+	border-radius: 12px;
+	margin-top: 32px;
+	margin-bottom: 32px;
 }
 
 /* Handle (the moving part) */
 .instructionsBox::-webkit-scrollbar-thumb {
-  background-color: rgba(33, 33, 33, 0.2); /* Dark gray, semi-transparent */
-  border-radius: 20px;
-  border: 2px solid #f5d5c3; /* Creates padding effect around the handle */
+	background-color: rgba(33, 33, 33, 0.2); /* Dark gray, semi-transparent */
+	border-radius: 20px;
+	border: 2px solid #f5d5c3; /* Creates padding effect around the handle */
 }
 
 /* Handle on hover */
 .instructionsBox::-webkit-scrollbar-thumb:hover {
-  background-color: rgba(33, 33, 33, 0.4);
+	background-color: rgba(33, 33, 33, 0.4);
 }
 
 .instructionSection {
-  margin-bottom: 24px;
+	margin-bottom: 24px;
 }
 
 .instructionSection h3 {
-  font-size: 20px;
-  font-weight: 600;
-  margin-bottom: 12px;
-  border-bottom: 1px solid rgba(0,0,0,0.1);
-  padding-bottom: 4px;
+	font-size: 20px;
+	font-weight: 600;
+	margin-bottom: 12px;
+	border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+	padding-bottom: 4px;
 }
 
 .subDomain {
-  margin-top: 16px;
-  margin-bottom: 16px;
-  padding-left: 10px;
+	margin-top: 16px;
+	margin-bottom: 16px;
+	padding-left: 10px;
 }
 
 .subDomain h4 {
-  font-size: 18px;
-  font-weight: 600;
-  margin-bottom: 8px;
-  color: #333;
+	font-size: 18px;
+	font-weight: 600;
+	margin-bottom: 8px;
+	color: #333;
 }
 
 .instructionsBox ul {
-  list-style-type: disc;
-  padding-left: 24px;
-  margin-bottom: 12px;
+	list-style-type: disc;
+	padding-left: 24px;
+	margin-bottom: 12px;
 }
 
 .instructionsBox li {
-  font-size: 16px;
-  line-height: 1.5;
-  margin-bottom: 6px;
+	font-size: 16px;
+	line-height: 1.5;
+	margin-bottom: 6px;
 }
 
 /* Nested lists (for Design domain) */
 .instructionsBox ul ul {
-  list-style-type: circle;
-  margin-top: 6px;
-  margin-bottom: 6px;
+	list-style-type: circle;
+	margin-top: 6px;
+	margin-bottom: 6px;
 }
 
 .divider {
-  border: 0;
-  height: 1px;
-  background-color: rgba(33, 33, 33, 0.2); /* Subtle dark line */
-  margin: 20px 0; /* Spacing above and below the line */
+	border: 0;
+	height: 1px;
+	background-color: rgba(33, 33, 33, 0.2); /* Subtle dark line */
+	margin: 20px 0; /* Spacing above and below the line */
 }
