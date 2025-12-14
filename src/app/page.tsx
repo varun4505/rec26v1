@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import Link from "next/link";
 import MainNavbar from "./landing/Navbar";
 import { Hero } from "./landing/Hero";
 import { BackgroundElements } from "./landing/BackgroundElements";
@@ -26,8 +27,18 @@ export default function HomePage() {
 			{/* Domains Section */}
 			<DomainsSection />
 
-			<section id="testimonial">
+			<section id="testimonial" className="w-full flex flex-col items-center">
 				<LandingProjects />
+				<div className="w-full flex justify-center py-10">
+					<Link
+						href="https://vinnovateit.com/"
+						target="_blank"
+						rel="noopener noreferrer"
+						className="explore-btn"
+					>
+						See more things we do
+					</Link>
+				</div>
 			</section>
 
 			<div className="h-20"></div>

@@ -33,7 +33,7 @@ const projects = [
 		projectNumber: ".03",
 		heading: "BunkBuddies",
 		about:
-			"Because finding the perfect hostel roommate should be easy, not a lucky draw. Before it became a trend, it was BunkBuddies. Built by VinnovateIT, this roommate-finding app helped students find their people before everyone else decided it was a good idea.\n\nBuilt before it was cool.",
+			"Because finding the perfect hostel roommate should be easy, not a lucky draw. Before it became a trend, it was BunkBuddies. Built by VinnovateIT, this roommate-finding app helped students find their people before everyone else decided it was a good idea.\nBuilt before it was cool.",
 		link: "https://bunkbuddies.vinnovateit.com",
 	},
 ];
@@ -176,7 +176,7 @@ export default function LandingProjects() {
 				transition={{ duration: 0.6 }}
 				className="w-full text-center py-6 sm:py-10 about-title font-array text-3xl sm:text-5xl z-20 shrink-0"
 			>
-				Our projects
+				Our Projects
 			</motion.h2>
 			<section
 				ref={containerRef}

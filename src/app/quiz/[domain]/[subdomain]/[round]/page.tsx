@@ -13,6 +13,8 @@ import AlertModal from "@/components/AlertModal";
 // Helper function to format subdomain names
 function formatSubdomainName(subdomain: string | null): string {
 	if (!subdomain) return '';
+	// Keep URL slugs stable, but fix display names where needed.
+	if (subdomain === "graphics-design") return "Graphic Design";
 	return subdomain
 		.split("-")
 		.map((word) => word.charAt(0).toUpperCase() + word.slice(1))
