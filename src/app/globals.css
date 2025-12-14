@@ -837,3 +837,48 @@ html {
 		--responsive-scale-factor: 0.78;
 	}
 }
+
+/* === EXPLORE BUTTON === */
+.explore-btn {
+	position: relative;
+	padding: 1rem 3rem;
+	font-size: 1.5rem;
+	font-weight: 600;
+	color: #f86800;
+	background: transparent;
+	border: 2px solid #f86800;
+	border-radius: 50px;
+	cursor: pointer;
+	overflow: hidden;
+	transition: all 0.4s ease;
+	text-transform: uppercase;
+	letter-spacing: 1px;
+	z-index: 50;
+	text-decoration: none;
+	display: inline-flex;
+	align-items: center;
+	gap: 10px;
+}
+
+.explore-btn::before {
+	content: "";
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 0%;
+	height: 100%;
+	background: #f86800;
+	transition: all 0.4s ease;
+	z-index: -1;
+}
+
+.explore-btn:hover {
+	color: #fff;
+	box-shadow: 0 10px 25px rgba(248, 104, 0, 0.3);
+	transform: translateY(-3px);
+	letter-spacing: 2px;
+}
+
+.explore-btn:hover::before {
+	width: 100%;
+}
