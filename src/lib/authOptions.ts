@@ -37,10 +37,20 @@ export const authOptions: AuthOptions = {
         return false;
       }
 
-      // Only allow 2024 and 2025 batch
+      // Only allow 2024 and 2025 batch or whitelisted emails
+      const allowedEmails = [
+        'lakshya.gupta2023b@vitstudent.ac.in',
+        'varun.b2023@vitstudent.ac.in',
+        'ayush.kumar2022a@vitstudent.ac.in',
+        'ayush.kumar2022d@vitstudent.ac.in',
+        'ajaythomas.k2023@vitstudent.ac.in'
+      ];
+
       if (user.email) {
         const isAllowedBatch = user.email.includes('2024') || user.email.includes('2025');
-        if (!isAllowedBatch) {
+        const isWhitelisted = allowedEmails.includes(user.email);
+
+        if (!isAllowedBatch && !isWhitelisted) {
           return '/access-denied';
         }
       }
