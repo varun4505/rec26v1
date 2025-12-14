@@ -809,11 +809,29 @@ export default function QuizPage() {
 
 		try {
 			// Prepare submission data
-			const answersList = isTaskRound ? [] : questions.map(q => ({
-				id: q.id,
-				question: q.text,
-				answer: answers[q.id] || ''
-			}));
+			let answersList: any[] = [];
+
+			// Add selected task info if applicable
+			if ((isTaskRound || isCombinedRound) && selectedTaskId) {
+				const selectedTask = tasks.find((t: any) => t.id === selectedTaskId);
+				if (selectedTask) {
+					answersList.push({
+						id: 'selected-task',
+						question: 'Selected Task',
+						answer: `${selectedTask.title} (${selectedTask.id})`
+					});
+				}
+			}
+
+			// Add question answers if applicable
+			if (!isTaskRound && questions.length > 0) {
+				const questionAnswers = questions.map(q => ({
+					id: q.id,
+					question: q.text,
+					answer: answers[q.id] || ''
+				}));
+				answersList = [...answersList, ...questionAnswers];
+			}
 
 			// Convert domain slug to full domain ID
 			const domainSlugMap: Record<string, string> = {
@@ -1028,11 +1046,11 @@ export default function QuizPage() {
 													{task.instructions && task.instructions.length > 0 && (
 														<div className="mb-4">
 															<p className="font-medium mb-2">Instructions:</p>
-															<ul className="list-disc list-inside space-y-1 text-black/70">
+															<ol className="list-decimal list-inside space-y-1 text-black/70">
 																{task.instructions.map((instruction: string, idx: number) => (
 																	<li key={idx} className="whitespace-pre-wrap">{instruction}</li>
 																))}
-															</ul>
+															</ol>
 														</div>
 													)}
 													{task.helperText && (
@@ -1066,28 +1084,47 @@ export default function QuizPage() {
 								</div>
 
 								{/* Task submission URL input - only show when task is selected */}
-								{selectedTaskId && (
-									<div className="flex flex-col gap-3 p-6 bg-white rounded-2xl shadow-md">
-										<label className="text-lg font-semibold text-gray-900">
-											Submit Your Work
-										</label>
-										<p className="text-sm text-gray-600 mb-2">
-											Provide a link to your submission (e.g., GitHub repository, Google Drive, portfolio link)
-										</p>
-										<input
-											type="url"
-											value={taskSubmissionUrl}
-											onChange={(e) => handleTaskUrlChange(e.target.value)}
-											placeholder="https://github.com/username/repository"
-											className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-[#FF8F6B] focus:outline-none text-gray-900"
-										/>
-										{lastSaved && (
-											<p className="text-xs text-gray-500">
-												Auto-saved at {lastSaved.toLocaleTimeString()}
+								{selectedTaskId && (() => {
+									const selectedTask = tasks.find((t: any) => t.id === selectedTaskId);
+									const submissionType = selectedTask?.submissionType || 'link';
+									
+									let label = "Submit Your Work";
+									let placeholder = "https://github.com/username/repository";
+									let helpText = "Provide a link to your submission (e.g., GitHub repository, Google Drive, portfolio link)";
+
+									if (submissionType === 'document') {
+										label = "Submit Document Link";
+										placeholder = "https://drive.google.com/file/d/...";
+										helpText = "Upload your document to Google Drive (or similar) and paste the shareable link here.";
+									} else if (submissionType === 'both') {
+										label = "Submit Link";
+										placeholder = "https://...";
+										helpText = "Provide a link to your submission (document or repository).";
+									}
+
+									return (
+										<div className="flex flex-col gap-3 p-6 bg-white rounded-2xl shadow-md">
+											<label className="text-lg font-semibold text-gray-900">
+												{label}
+											</label>
+											<p className="text-sm text-gray-600 mb-2">
+												{helpText}
 											</p>
-										)}
-									</div>
-								)}
+											<input
+												type="url"
+												value={taskSubmissionUrl}
+												onChange={(e) => handleTaskUrlChange(e.target.value)}
+												placeholder={placeholder}
+												className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-[#FF8F6B] focus:outline-none text-gray-900"
+											/>
+											{lastSaved && (
+												<p className="text-xs text-gray-500">
+													Auto-saved at {lastSaved.toLocaleTimeString()}
+												</p>
+											)}
+										</div>
+									);
+								})()}
 							</>
 						)}
 
