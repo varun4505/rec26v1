@@ -25,13 +25,16 @@ export const AboutSection = () => {
 							problem solvers.
 						</p>
 					</div>
-					<motion.button
+					<motion.a
 						whileHover={{ scale: 1.05 }}
 						whileTap={{ scale: 0.95 }}
+						href="https://vinnovateit.com"
+						target="_blank"
+						rel="noopener noreferrer"
 						className="cta-button secondary"
 					>
 						Explore More
-					</motion.button>
+					</motion.a>
 				</motion.div>
 			</section>
 		</>
