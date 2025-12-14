@@ -6,6 +6,8 @@ import { signOut } from "next-auth/react";
 import Image from "next/image";
 import Clock from "./clock";
 import { MobileRestriction } from "@/components/MobileRestriction";
+import { useSession } from "next-auth/react";
+import { ProfileHeader } from "@/components/profile/ProfileHeader";
 
 interface FormsShellProps {
 	children: React.ReactNode;
@@ -15,6 +17,16 @@ export default function FormsShell({ children }: FormsShellProps) {
 	const router = useRouter();
 	const [isProfileOpen, setIsProfileOpen] = useState(false);
 	const menuRef = useRef<HTMLDivElement>(null);
+	const { data: session, status } = useSession();
+	
+  const rawName = session?.user?.name || "User";
+  const userName = rawName
+    .replace(/\b(21|22|23|24|25|26)[A-Za-z0-9]*$/, "")
+    .trim();
+
+  const userEmail = session?.user?.email || "";
+  const userImage = session?.user?.image;
+  const userInitial = userName.charAt(0).toUpperCase();
 
 	return (
 		<>
@@ -43,9 +55,19 @@ export default function FormsShell({ children }: FormsShellProps) {
 							aria-expanded={isProfileOpen}
 							aria-haspopup="true"
 						>
-							<svg className="w-8 h-8" viewBox="0 0 24 24" fill="currentColor">
-								<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z" />
-							</svg>
+							<div className="avatar-monogram" style={{ overflow: "hidden" }}>
+										  {userImage ? (
+											<Image
+											  src={userImage}
+											  alt={userName}
+											  width={34}
+											  height={34}
+											  style={{ borderRadius: "50%", objectFit: "cover" }}
+											/>
+										  ) : (
+											userInitial
+										  )}
+										</div>
 						</button>
 
 						{isProfileOpen && (
