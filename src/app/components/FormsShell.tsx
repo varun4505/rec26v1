@@ -2,12 +2,12 @@
 
 import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { signOut } from "next-auth/react";
 import Image from "next/image";
 import Clock from "./clock";
 import { MobileRestriction } from "@/components/MobileRestriction";
 import { useSession } from "next-auth/react";
-import { ProfileHeader } from "@/components/profile/ProfileHeader";
+import UserDropdown from '@/app/dashboard/components/UserDropdown';
+import styles from '@/app/dashboard/Dashboard.module.css';
 
 interface FormsShellProps {
 	children: React.ReactNode;
@@ -47,52 +47,30 @@ export default function FormsShell({ children }: FormsShellProps) {
 					>
 						Go To Home
 					</button>
-					<div className="relative" ref={menuRef}>
-						<button
-							onClick={() => setIsProfileOpen(!isProfileOpen)}
-							className="text-white hover:text-amber-500 transition-colors rounded-full bg-neutral-800 p-1"
-							aria-label="Profile Menu"
-							aria-expanded={isProfileOpen}
-							aria-haspopup="true"
-						>
-							<div className="avatar-monogram" style={{ overflow: "hidden" }}>
-										  {userImage ? (
-											<Image
-											  src={userImage}
-											  alt={userName}
-											  width={34}
-											  height={34}
-											  style={{ borderRadius: "50%", objectFit: "cover" }}
-											/>
-										  ) : (
-											userInitial
-										  )}
-										</div>
-						</button>
+					
+        {/* --- Wrapper for menu and button --- */}
+        <div className={styles.userMenuWrapper} ref={menuRef}>
+          <div
+            className={styles.userInitialCircle}
+            onClick={() => setIsProfileOpen(!isProfileOpen)}
+            style={{ overflow: 'hidden' }}
+          >
+            {userImage ? (
+              <Image
+                src={userImage}
+                alt={userName}
+                width={34}
+                height={34}
+                style={{ borderRadius: '50%', objectFit: 'cover' }}
+              />
+            ) : (
+              userInitial
+            )}
+          </div>
 
-						{isProfileOpen && (
-							<div className="absolute left-0 mt-2 w-40 py-1 bg-[#FFFFFF99] rounded-lg shadow-xl z-50 text-black font-khand text-lg">
-								<button 
-									onClick={() => {
-										setIsProfileOpen(false);
-										router.push("/profile");
-									}}
-									className="w-full text-left px-3 py-1.5 hover:bg-gray-100"
-								>
-									Update Details
-								</button>
-								<button 
-									onClick={() => {
-										setIsProfileOpen(false);
-										signOut({ callbackUrl: "/login" });
-									}}
-									className="w-full text-left px-3 py-1.5 hover:bg-gray-100"
-								>
-									Logout
-								</button>
-							</div>
-						)}
-					</div>
+          {/* --- Conditionally render the dropdown --- */}
+          {isProfileOpen && <UserDropdown />}
+        </div>
 					<div className="h-full flex items-center">
 						<Clock />
 					</div>
@@ -119,11 +97,6 @@ export default function FormsShell({ children }: FormsShellProps) {
 					padding: 0 1.5rem;
 				}
 
-				header img {
-					width: 130px !important;
-					height: auto !important;
-				}
-
 				header button {
 					padding: 0.5rem 1rem;
 					font-size: 1rem;
@@ -140,10 +113,6 @@ export default function FormsShell({ children }: FormsShellProps) {
 					padding: 0 1rem;
 					height: auto;
 					min-height: 60px;
-				}
-
-				header img {
-					width: 110px !important;
 				}
 
 				header button {
