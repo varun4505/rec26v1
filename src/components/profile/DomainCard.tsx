@@ -4,7 +4,7 @@
 
 import React from "react";
 import { useRouter } from "next/navigation";
-import { getDomainConfig } from "@/data/domainConfig";
+import { getDomainConfig, getSubdomainInfo } from "@/data/domainConfig";
 
 interface UserApplication {
   domain: string;
@@ -45,7 +45,16 @@ export const ApplicationCard: React.FC<ApplicationCardProps> = ({
     : domainName;
 
   const config = getDomainConfig(application.domain.toLowerCase() as any);
-  const isSingleRound = config?.rounds.length === 1;
+  
+  // Check for subdomain-specific rounds (e.g., cyber-security, competitive-coding have only 1 round)
+  let rounds = config?.rounds || [];
+  if (application.subdomain && config?.hasSubdomains) {
+    const subConfig = getSubdomainInfo(application.domain.toLowerCase() as any, application.subdomain);
+    if (subConfig?.rounds) {
+      rounds = subConfig.rounds;
+    }
+  }
+  const isSingleRound = rounds.length === 1;
 
   const handleRoundClick = (round: string) => {
     const roundPath = round === "Round 1" ? "round1" : "round2";
