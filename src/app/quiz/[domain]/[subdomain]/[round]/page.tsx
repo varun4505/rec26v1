@@ -529,15 +529,29 @@ export default function QuizPage() {
 
 					if (questionsResult.success) {
 						setQuestions(questionsResult.questions);
-						// Map pending answers to questions if they exist
+						// Map pending answers to questions by `id` (not by index). This preserves
+						// special entries (e.g., selected-task) and avoids mismatches when order differs.
 						const pendingAnswers = (window as any).__pendingAnswers;
 						if (pendingAnswers && Array.isArray(pendingAnswers)) {
 							const mappedAnswers: Record<string, string> = {};
+							const byId = new Map<string, any>();
+							pendingAnswers.forEach((pa: any, idx: number) => {
+								if (pa && typeof pa === 'object' && pa.id) byId.set(String(pa.id), pa.answer);
+							});
+
+							// First try id-based mapping
 							questionsResult.questions.forEach((question: any, index: number) => {
-								if (pendingAnswers[index] && pendingAnswers[index].answer !== undefined) {
-									mappedAnswers[question.id] = String(pendingAnswers[index].answer);
+								if (byId.has(question.id)) {
+									mappedAnswers[question.id] = String(byId.get(question.id));
+								} else {
+									// Fallback to index-based mapping for anonymous answers
+									const anon = pendingAnswers[index];
+									if (anon && anon.answer !== undefined && (!anon.id || anon.id === '')) {
+										mappedAnswers[question.id] = String(anon.answer);
+									}
 								}
 							});
+
 							setAnswers(mappedAnswers);
 							console.log('Mapped answers to questions:', mappedAnswers);
 							// Clear pending answers
@@ -559,15 +573,29 @@ export default function QuizPage() {
 					if (result.success) {
 						setQuestions(result.questions);
 
-						// Map pending answers to questions if they exist
+						// Map pending answers to questions by `id` (not by index). This preserves
+						// special entries (e.g., selected-task) and avoids mismatches when order differs.
 						const pendingAnswers = (window as any).__pendingAnswers;
 						if (pendingAnswers && Array.isArray(pendingAnswers)) {
 							const mappedAnswers: Record<string, string> = {};
+							const byId = new Map<string, any>();
+							pendingAnswers.forEach((pa: any, idx: number) => {
+								if (pa && typeof pa === 'object' && pa.id) byId.set(String(pa.id), pa.answer);
+							});
+
+							// First try id-based mapping
 							result.questions.forEach((question: any, index: number) => {
-								if (pendingAnswers[index] && pendingAnswers[index].answer !== undefined) {
-									mappedAnswers[question.id] = String(pendingAnswers[index].answer);
+								if (byId.has(question.id)) {
+									mappedAnswers[question.id] = String(byId.get(question.id));
+								} else {
+									// Fallback to index-based mapping for anonymous answers
+									const anon = pendingAnswers[index];
+									if (anon && anon.answer !== undefined && (!anon.id || anon.id === '')) {
+										mappedAnswers[question.id] = String(anon.answer);
+									}
 								}
 							});
+
 							setAnswers(mappedAnswers);
 							console.log('Mapped answers to questions:', mappedAnswers);
 							// Clear pending answers
