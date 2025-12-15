@@ -5,30 +5,6 @@ import Image from "next/image";
 import { motion, easeOut } from "framer-motion";
 
 export default function DomainsSection() {
-	const domainData = [
-		{
-			title: "Tech",
-			subheading: "We compile Ideas into reality ",
-			desc: "From apps to AI, we turn wild ideas into working tech. Less theory, more shipping. If debugging feels like therapy, welcome home.",
-			bg: "#FFD4B2", // Peach
-			img: "/assets/images/computer.png",
-		},
-		{
-			title: "Design",
-			subheading: "We make Tech Look Hot.",
-			desc: "We design the wow behind the work, clean UI, smooth UX, and visuals that slap. If pixels spark joy, this is your zone.",
-			bg: "#FFB6C1", // Pink
-			img: "/assets/images/palette.png",
-		},
-		{
-			title: "Management",
-			subheading: "We run the show ",
-			desc: "We plan, manage, and make things happen from VinHack to MessIT and everything in between. If you love strategy, people, and execution, you’ll fit right in.",
-			bg: "#FFD4B2", // Peach
-			img: "/assets/images/glasses.png",
-		},
-	];
-
 	const containerVariants = {
 		hidden: { opacity: 0 },
 		visible: {
@@ -70,30 +46,79 @@ export default function DomainsSection() {
 				whileInView="visible"
 				viewport={{ once: true, margin: "-50px" }}
 			>
-				{domainData.map((domain, index) => (
-					<motion.div
-						key={index}
-						className="domain-card"
-						style={{ backgroundColor: domain.bg }}
-						variants={cardVariants}
-						whileHover={{ y: -10, transition: { duration: 0.3 } }}
-					>
-						<h3 className="card-title font-array">{domain.title}</h3>
-						<span className="card-subtitle font-khand">
-							{domain.subheading}
-						</span>
-						<p className="card-desc font-khand">{domain.desc}</p>
-						<div className="card-img-container">
-							<Image
-								src={domain.img}
-								alt={domain.title}
-								width={200}
-								height={200}
-								className="domain-icon"
-							/>
-						</div>
-					</motion.div>
-				))}
+				{/* Tech Domain */}
+				<motion.div
+					className="domain-card"
+					style={{ backgroundColor: "#FFD4B2" }}
+					variants={cardVariants}
+					whileHover={{ y: -10, transition: { duration: 0.3 } }}
+				>
+					<h3 className="card-title font-array">Tech</h3>
+					<span className="card-subtitle font-khand">
+						We compile Ideas into reality{" "}
+					</span>
+					<p className="card-desc font-khand">
+						From apps to AI, we turn wild ideas into working tech. Less theory,
+						more shipping. If debugging feels like therapy, welcome home.
+					</p>
+					<div className="card-img-container">
+						<Image
+							src="/assets/images/computer.png"
+							alt="Tech"
+							fill
+							className="domain-icon tech-icon"
+						/>
+					</div>
+				</motion.div>
+
+				{/* Design Domain */}
+				<motion.div
+					className="domain-card"
+					style={{ backgroundColor: "#FFB6C1" }}
+					variants={cardVariants}
+					whileHover={{ y: -10, transition: { duration: 0.3 } }}
+				>
+					<h3 className="card-title font-array">Design</h3>
+					<span className="card-subtitle font-khand">
+						We make Tech Look Hot.
+					</span>
+					<p className="card-desc font-khand">
+						We design the wow behind the work, clean UI, smooth UX, and visuals
+						that slap. If pixels spark joy, this is your zone.
+					</p>
+					<div className="card-img-container">
+						<Image
+							src="/assets/images/palette.png"
+							alt="Design"
+							fill
+							className="domain-icon design-icon"
+						/>
+					</div>
+				</motion.div>
+
+				{/* Management Domain */}
+				<motion.div
+					className="domain-card"
+					style={{ backgroundColor: "#FFD4B2" }}
+					variants={cardVariants}
+					whileHover={{ y: -10, transition: { duration: 0.3 } }}
+				>
+					<h3 className="card-title font-array">Management</h3>
+					<span className="card-subtitle font-khand">We run the show </span>
+					<p className="card-desc font-khand">
+						We plan, manage, and make things happen from VinHack to MessIT and
+						everything in between. If you love strategy, people, and execution,
+						you’ll fit right in.
+					</p>
+					<div className="card-img-container">
+						<Image
+							src="/assets/images/glasses.png"
+							alt="Management"
+							fill
+							className="domain-icon management-icon"
+						/>
+					</div>
+				</motion.div>
 			</motion.div>
 		</section>
 	);

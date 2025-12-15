@@ -20,12 +20,12 @@ const projects = [
 	},
 	{
 		id: 2,
-		mainImage: "/projects/VinHack_logo.svg",
+		mainImage: "/projects/redLogoLatch.svg",
 		projectNumber: ".02",
-		heading: "Vinhack",
+		heading: "Latch",
 		about:
-			"Once a year, Gravitas hands us the chaos. VinHack is VinnovateIT's flagship 36-hour inter-college hackathon, where the clock is louder than the doubts.\n\nJoin the chaos, we'll handle the clock",
-		link: "https://vinhack.vinnovateit.com",
+			"Tired of logging in repeatedly? With Latch, you connect once and forget the hassle. The app automatically signs you in to your hostel WiFi - no typing, no remembering, no friction.",
+		link: "https://play.google.com/store/apps/details?id=com.vinnovateit.latch",
 	},
 	{
 		id: 3,
@@ -33,7 +33,7 @@ const projects = [
 		projectNumber: ".03",
 		heading: "BunkBuddies",
 		about:
-			"Because finding the perfect hostel roommate should be easy, not a lucky draw 🎰Before it became a trend, it was BunkBuddies. Built by VinnovateIT, this roommate-finding app helped students find their people before everyone else decided it was a good idea.\n\nBuilt before it was cool.",
+			"Because finding the perfect hostel roommate should be easy, not a lucky draw. Before it became a trend, it was BunkBuddies. Built by VinnovateIT, this roommate-finding app helped students find their people before everyone else decided it was a good idea.\nBuilt before it was cool.",
 		link: "https://bunkbuddies.vinnovateit.com",
 	},
 ];
@@ -176,7 +176,7 @@ export default function LandingProjects() {
 				transition={{ duration: 0.6 }}
 				className="w-full text-center py-6 sm:py-10 about-title font-array text-3xl sm:text-5xl z-20 shrink-0"
 			>
-				Proof of Build
+				Our Projects
 			</motion.h2>
 			<section
 				ref={containerRef}
@@ -191,10 +191,10 @@ export default function LandingProjects() {
 								ref={(el) => {
 									imagesRef.current[i] = el;
 								}}
-								className="absolute left-1/2 top-1/2 w-28 h-28 sm:w-44 sm:h-44 md:w-56 md:h-56 rounded-full border-4 border-black overflow-hidden bg-white shadow-[0_25px_50px_rgba(0,0,0,0.25)] flex items-center justify-center"
+								className="absolute left-1/2 top-1/2 w-28 h-28 sm:w-44 sm:h-44 md:w-56 md:h-56 rounded-full overflow-hidden flex items-center justify-center"
 							>
 								{isSvg(project.mainImage) ? (
-									<div className="w-full h-full bg-white flex items-center justify-center">
+									<div className="w-full h-full flex items-center justify-center">
 										<Image
 											src={project.mainImage}
 											alt={project.heading}

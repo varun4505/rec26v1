@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { useSession } from 'next-auth/react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 import styles from './Dashboard.module.css';
 import DashboardHeader from './components/DashboardHeader';
@@ -14,10 +15,14 @@ import DesignDomainContent from './components/DesignDomainContent';
 import ManagementDomainContent from './components/ManagementDomainContent';
 import { MobileRestriction } from '@/components/MobileRestriction';
 import PhoneNumberModal from './components/PhoneNumberModal';
+import LoadingScreen from '@/components/LoadingScreen';
 
 export default function DashboardPage() {
   // --- State for the active tab ---
   const [activeTab, setActiveTab] = useState('Tech'); // Default to 'Tech'
+  const [direction, setDirection] = useState(0);
+  const tabs = ['Tech', 'Design', 'Management'];
+
   const [showPhoneModal, setShowPhoneModal] = useState(false);
   const [isCheckingPhone, setIsCheckingPhone] = useState(true);
   const [isSubmittingPhone, setIsSubmittingPhone] = useState(false);
@@ -79,6 +84,9 @@ export default function DashboardPage() {
 
   // --- Handler function to change the tab ---
   const handleTabChange = (tabName: string) => {
+    const newIndex = tabs.indexOf(tabName);
+    const oldIndex = tabs.indexOf(activeTab);
+    setDirection(newIndex > oldIndex ? 1 : -1);
     setActiveTab(tabName);
   };
 
@@ -107,6 +115,10 @@ export default function DashboardPage() {
       window.removeEventListener('resize', checkScrollable);
     };
   }, [activeTab]);
+
+  if (status === 'loading' || isCheckingPhone) {
+    return <LoadingScreen />;
+  }
 
   return (
     <>
@@ -144,9 +156,20 @@ export default function DashboardPage() {
 
             {/* --- Conditional rendering based on activeTab state --- */}
             <div className={styles.domainContentWrapper}>
-              {activeTab === 'Tech' && <TechDomainContent />}
-              {activeTab === 'Design' && <DesignDomainContent />}
-              {activeTab === 'Management' && <ManagementDomainContent />}
+              <AnimatePresence mode="wait" custom={direction}>
+                <motion.div
+                  key={activeTab}
+                  custom={direction}
+                  initial={{ x: direction > 0 ? 50 : -50, opacity: 0 }}
+                  animate={{ x: 0, opacity: 1 }}
+                  exit={{ x: direction > 0 ? -50 : 50, opacity: 0 }}
+                  transition={{ duration: 0.3, ease: "easeInOut" }}
+                >
+                  {activeTab === 'Tech' && <TechDomainContent />}
+                  {activeTab === 'Design' && <DesignDomainContent />}
+                  {activeTab === 'Management' && <ManagementDomainContent />}
+                </motion.div>
+              </AnimatePresence>
             </div>
 
           </div>

@@ -36,6 +36,25 @@ export const authOptions: AuthOptions = {
       if (user.email && !user.email.endsWith('@vitstudent.ac.in')) {
         return false;
       }
+
+      // Only allow 2024 and 2025 batch or whitelisted emails
+      const allowedEmails = [
+        'lakshya.gupta2023b@vitstudent.ac.in',
+        'varun.b2023@vitstudent.ac.in',
+        'ayush.kumar2022a@vitstudent.ac.in',
+        'ayush.kumar2022d@vitstudent.ac.in',
+        'ajaythomas.k2023@vitstudent.ac.in'
+      ];
+
+      if (user.email) {
+        const isAllowedBatch = user.email.includes('2024') || user.email.includes('2025');
+        const isWhitelisted = allowedEmails.includes(user.email);
+
+        if (!isAllowedBatch && !isWhitelisted) {
+          return '/access-denied';
+        }
+      }
+
       return true;
     },
     async jwt({ token, user, account }) {

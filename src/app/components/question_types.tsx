@@ -23,7 +23,7 @@ export function SubjectiveQuestion({
 }: SubjectiveQuestionProps) {
 	return (
 		<section className="flex flex-col gap-3 rounded-[28px] bg-[#F7B58D]/40 p-6">
-			<label htmlFor={id} className="text-xl font-semibold flex items-center gap-2">
+			<label htmlFor={id} className="text-xl font-semibold flex items-center gap-2 whitespace-pre-wrap">
 				{prompt}
 				{isOptional && (
 					<span className="text-sm font-normal text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full">
@@ -39,7 +39,7 @@ export function SubjectiveQuestion({
 				placeholder={placeholder ?? "Type your response here..."}
 				className="min-h-[120px] w-full rounded-2xl bg-[#F8680029] px-4 py-3 text-base outline-none focus:border-amber-500"
 			/>
-			{helperText && <p className="text-sm text-neutral-500">{helperText}</p>}
+			{helperText && <p className="text-sm text-neutral-500 whitespace-pre-wrap">{helperText}</p>}
 		</section>
 	);
 }

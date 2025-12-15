@@ -14,16 +14,14 @@ export default function ManagementDomainContent() {
       <div className={styles.domainContentContainer}>
         {/* Use the NEW left-side styles */}
         <div className={styles.domainContentLeft}>
-          <h2 className={styles.managementTitle}>Management</h2>
+          <h2 className={styles.managementTitle}>MANAGEMENT</h2>
           <p className={styles.managementSubtitle}>{subtitleText}</p>
         </div>
         <div className={styles.domainContentRight}>
           <p className={styles.domainDescription}>{descriptionText}</p>
-          <div style={{ marginTop: '2rem' }}>
-            <SubdomainSelector domain="management" />
-          </div>
         </div>
       </div>
+      <SubdomainSelector domain="management" />
     </>
   );
 }

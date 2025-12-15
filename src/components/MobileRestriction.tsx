@@ -2,14 +2,17 @@
 
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
+import { useSession } from "next-auth/react";
 import { HiOutlineDesktopComputer } from "react-icons/hi";
 import { MdOutlinePhoneIphone } from "react-icons/md";
 import { IoArrowForward } from "react-icons/io5";
 
 export const MobileRestriction: React.FC = () => {
   const [currentTime, setCurrentTime] = useState<string>("");
-  const userName = "Aditya";
-  const userInitial = userName.charAt(0).toUpperCase();
+  const { data: session } = useSession();
+  const userLabel = (session?.user?.email || session?.user?.name || "User").trim();
+  const userInitial = (userLabel[0] || "U").toUpperCase();
+  const userImage = session?.user?.image || "";
 
   useEffect(() => {
     const updateTime = () => {
@@ -46,7 +49,19 @@ export const MobileRestriction: React.FC = () => {
             />
 
             <div className="mobile-right-section">
-              <div className="mobile-avatar-monogram">{userInitial}</div>
+              {userImage ? (
+                <div className="mobile-avatar-wrapper" aria-label={userLabel}>
+                  <Image
+                    src={userImage}
+                    alt={userLabel}
+                    fill
+                    sizes="34px"
+                    className="mobile-avatar-image"
+                  />
+                </div>
+              ) : (
+                <div className="mobile-avatar-monogram">{userInitial}</div>
+              )}
               <span className="mobile-timestamp">{currentTime}</span>
             </div>
           </div>
@@ -128,6 +143,19 @@ export const MobileRestriction: React.FC = () => {
             font-size: clamp(0.8rem, 2.2vw, 1rem);
             font-weight: 600;
             color: #fff;
+            box-shadow: 0 4px 12px rgba(248, 104, 0, 0.4);
+          }
+
+          .mobile-avatar-image {
+            object-fit: cover;
+          }
+
+          .mobile-avatar-wrapper {
+            width: clamp(28px, 4.8vw, 34px);
+            height: clamp(28px, 4.8vw, 34px);
+            border-radius: 50%;
+            overflow: hidden;
+            position: relative;
             box-shadow: 0 4px 12px rgba(248, 104, 0, 0.4);
           }
 

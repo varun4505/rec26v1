@@ -4,7 +4,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import styles from '../Dashboard.module.css';
-import { DOMAIN_CONFIG, type DomainType } from '@/data/domainConfig';
+import { DOMAIN_CONFIG, type DomainType, getSubdomainInfo } from '@/data/domainConfig';
 import ConfirmModal from '@/components/ConfirmModal';
 import AlertModal from '@/components/AlertModal';
 
@@ -238,6 +238,11 @@ export default function SubdomainSelector({ domain }: SubdomainSelectorProps) {
           const itemSlug = (item as any).slug;
           const selected = isSelected(itemSlug);
 
+          // Determine rounds for this specific item
+          const subdomainInfo = itemSlug ? getSubdomainInfo(domain, itemSlug) : null;
+          const rounds = subdomainInfo?.rounds || config.rounds;
+          const isSingleRound = rounds.length === 1;
+
           return (
             <div
               key={item.id}
@@ -329,7 +334,7 @@ export default function SubdomainSelector({ domain }: SubdomainSelectorProps) {
                           </button>
                         </div>
                         {/* Check for Single Round (Combined) domains */}
-                        {config.rounds.length === 1 && round1Status === 'Passed' && (
+                        {isSingleRound && round1Status === 'Passed' && (
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
@@ -343,7 +348,7 @@ export default function SubdomainSelector({ domain }: SubdomainSelectorProps) {
                           </button>
                         )}
                         {/* Round 2 Logic for multi-round domains */}
-                        {config.rounds.length > 1 && canAccessRound2 && round2Status && (
+                        {!isSingleRound && canAccessRound2 && round2Status && (
                           <>
                             <div style={{ fontSize: '13px', color: '#555', textAlign: 'left' }}>
                               <strong>Round 2:</strong> {round2Status}

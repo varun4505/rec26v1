@@ -29,12 +29,14 @@ body {
 }
 
 @media (hover: hover) and (pointer: fine) {
+	*,
 	body,
 	a,
 	button,
 	input,
 	textarea,
 	select,
+	[role="button"],
 	.cursor-pointer {
 		cursor: none !important;
 	}
@@ -641,23 +643,51 @@ html {
 
 .card-img-container {
 	width: 100%;
-	height: 160px;
+	height: 200px;
 	display: flex;
 	justify-content: center;
-	align-items: flex-end;
+	align-items: center;
 	margin-top: auto;
-	margin-bottom: -1px;
+	margin-bottom: 0;
+	position: relative;
 }
 
 .domain-icon {
 	object-fit: contain;
-	image-rendering: pixelated;
 	max-height: 100%;
+	max-width: 100%;
 	transition: transform 0.3s ease;
+	object-position: bottom;
 }
 
-.domain-card:hover .domain-icon {
-	transform: scale(1.1) rotate(-5deg);
+/* Tech Icon Specifics */
+.tech-icon {
+	transform-origin: bottom;
+	transform: translateY(20px);
+}
+
+.domain-card:hover .tech-icon {
+	transform: scale(1.1) rotate(-5deg) translateY(20px);
+}
+
+/* Design Icon Specifics */
+.design-icon {
+	transform-origin: bottom;
+	transform: scale(1.5) translateY(50px);
+}
+
+.domain-card:hover .design-icon {
+	transform: scale(1.65) rotate(-5deg) translateY(50px);
+}
+
+/* Management Icon Specifics */
+.management-icon {
+	transform-origin: bottom;
+	transform: scale(1.35) translateY(35px);
+}
+
+.domain-card:hover .management-icon {
+	transform: scale(1.48) rotate(-5deg) translateY(35px);
 }
 
 /* === ABOUT SECTION === */
@@ -808,4 +838,49 @@ html {
 		--responsive-y-factor: 0.48;
 		--responsive-scale-factor: 0.78;
 	}
+}
+
+/* === EXPLORE BUTTON === */
+.explore-btn {
+	position: relative;
+	padding: 1rem 3rem;
+	font-size: 1.5rem;
+	font-weight: 600;
+	color: #f86800;
+	background: transparent;
+	border: 2px solid #f86800;
+	border-radius: 50px;
+	cursor: pointer;
+	overflow: hidden;
+	transition: all 0.4s ease;
+	text-transform: uppercase;
+	letter-spacing: 1px;
+	z-index: 50;
+	text-decoration: none;
+	display: inline-flex;
+	align-items: center;
+	gap: 10px;
+}
+
+.explore-btn::before {
+	content: "";
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 0%;
+	height: 100%;
+	background: #f86800;
+	transition: all 0.4s ease;
+	z-index: -1;
+}
+
+.explore-btn:hover {
+	color: #fff;
+	box-shadow: 0 10px 25px rgba(248, 104, 0, 0.3);
+	transform: translateY(-3px);
+	letter-spacing: 2px;
+}
+
+.explore-btn:hover::before {
+	width: 100%;
 }

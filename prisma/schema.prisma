@@ -110,6 +110,9 @@ model Task {
   round       String   // round1, round2
   title       String
   description String
+  instructions String[]
+  submissionType String?
+  helperText  String?
   link        String?
   deadline    DateTime?
   active      Boolean @default(true)

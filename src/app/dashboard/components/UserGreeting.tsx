@@ -1,4 +1,3 @@
-// src/app/dashboard/components/UserGreeting.tsx
 'use client';
 
 import React from 'react';
@@ -15,7 +14,7 @@ export default function UserGreeting() {
 
   return (
     <div className={styles.userGreetingContainer}>
-      <h1 className={styles.greetingTitle}>Hey {userName}</h1>
+      <h1 className={styles.greetingTitle}>Hey {userName}!</h1>
       <p className={styles.greetingEmail}>{userEmail}</p>
     </div>
   );
