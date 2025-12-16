@@ -137,3 +137,12 @@ model Deadline {
   @@index([round])
 }
 
+model ctfsubmission {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  email       String
+  name        String
+  registrationNumber String
+  content     String
+  submittedAt DateTime @default(now())
+}
+
