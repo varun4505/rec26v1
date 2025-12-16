@@ -5,6 +5,7 @@ import "./globals.css";
 import FooterConditional from "./components/FooterConditional";
 import { SessionProvider } from "./components/SessionProvider";
 import CustomCursor from "../components/CustomCursor";
+import NextTopLoader from "nextjs-toploader";
 
 const arrayFont = localFont({
 	src: [
@@ -40,9 +41,21 @@ export default function RootLayout({
 			<body
 				className={`${arrayFont.variable} ${khandFont.variable} antialiased font-khand flex flex-col min-h-screen`}
 			>
+				<NextTopLoader
+					color="#f86800"
+					initialPosition={0.08}
+					crawlSpeed={200}
+					height={3}
+					crawl={true}
+					showSpinner={false}
+					easing="ease"
+					speed={200}
+					shadow="0 0 10px #f86800,0 0 5px #f86800"
+				/>
+				
 				<CustomCursor />
 				<SessionProvider>
-					<div className="flex-grow">{children}</div>
+					<div className="grow">{children}</div>
 					<FooterConditional />
 				</SessionProvider>
 			</body>
