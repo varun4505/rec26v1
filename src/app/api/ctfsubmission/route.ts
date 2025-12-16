@@ -9,15 +9,20 @@ export async function POST(request: Request) {
     if (!email || !name || !registrationNumber || !content) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
-    const submission = await prisma.ctfsubmission.create({
-      data: {
-        email,
-        name,
-        registrationNumber,
-        content,
-      },
-    });
-    return NextResponse.json({ success: true, submission });
+    // Optionally: sanitize input here
+    try {
+      const submission = await prisma.ctfsubmission.create({
+        data: {
+          email,
+          name,
+          registrationNumber,
+          content,
+        },
+      });
+      return NextResponse.json({ success: true, submission });
+    } catch (dbError) {
+      return NextResponse.json({ error: 'Database error', details: dbError }, { status: 500 });
+    }
   } catch (error) {
     return NextResponse.json({ error: 'Failed to submit', details: error }, { status: 500 });
   }

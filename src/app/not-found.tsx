@@ -5,12 +5,16 @@ import { useRouter } from "next/navigation";
 import { motion, AnimatePresence, useMotionValue, useTransform } from "framer-motion";
 import { Edit2 } from "lucide-react";
 import LoadingScreen from "@/components/LoadingScreen";
+import { useSession } from "next-auth/react";
 
 export default function NotFound() {
   const router = useRouter();
+  const { data: session, status: sessionStatus } = useSession();
   const [status, setStatus] = useState<"idle" | "input" | "checking">("idle");
   const [inputValue, setInputValue] = useState("");
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<boolean>(false);
 
   // Mouse parallax effect
   const x = useMotionValue(0);
@@ -46,11 +50,38 @@ export default function NotFound() {
     y.set((clientY - centerY) / centerY);
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (inputValue.trim()) {
-      setStatus("checking");
+    setError(null);
+    setSuccess(false);
+    if (!inputValue.trim()) return;
+    if (!session || !session.user) {
+      setError("You must be logged in to submit.");
+      return;
     }
+    setStatus("checking");
+    try {
+      const res = await fetch("/api/ctfsubmission", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: session.user.email,
+          name: session.user.name,
+          registrationNumber: session.user.registrationNumber,
+          content: inputValue.trim(),
+        }),
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setSuccess(true);
+        setInputValue("");
+      } else {
+        setError(data.error || "Submission failed.");
+      }
+    } catch (err) {
+      setError("Network error. Please try again.");
+    }
+    setStatus("idle");
   };
 
   if (isLoading) {
@@ -165,6 +196,14 @@ export default function NotFound() {
             )}
           </AnimatePresence>
         </div>
+
+        {/* Error/Success Messages */}
+        {error && (
+          <div className="text-red-500 text-center mt-2 font-khand">{error}</div>
+        )}
+        {success && (
+          <div className="text-green-500 text-center mt-2 font-khand">Submission successful!</div>
+        )}
       </div>
 
       {/* Back Button */}
