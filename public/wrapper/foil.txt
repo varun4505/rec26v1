@@ -1,0 +1,17 @@
+🌟✨ FOIL WRAPPER ✨🌟
+
+Congratulation, cipher master!
+   _____________________
+  /                     \
+ |   Premium Foil Layer   |
+  \_____________________/
+
+🚩 Stage 4 Flag: {vinnovate_commit}
+
+🔍 Decode this base64 to find the next path:
+
+ZmluYWxfcGF0aDovL2ZhY3RvcnkvZnJhbWUudHh0 
+
+💡 Hint: This encoding is quite.. basic. 64% hacker get it instantly.
+
+🚀 The final factory awaits...
