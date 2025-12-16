@@ -89,7 +89,10 @@ export default function CustomCursor() {
 			}}
 			animate={{
 				backgroundColor: isHovering ? "transparent" : "#F86800",
-				border: "3px solid #000000",
+                // Use CSS variable for border color, default to #000000
+				borderColor: "var(--cursor-border, #000000)", 
+                borderWidth: "3px",
+                borderStyle: "solid",
 				scale: isClicking ? 0.8 : isHovering ? 1.2 : 1,
 				opacity: isVisible ? 1 : 0,
 			}}

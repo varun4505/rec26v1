@@ -24,13 +24,9 @@
   flex-shrink: 0;
 }
 
+/* ... existing header styles ... */
 .headerLeft {}
-
-.headerRight {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
+.headerRight { display: flex; align-items: center; gap: 16px; }
 
 .goToHomeButton {
   background-color: #FFFFFF;
@@ -47,10 +43,7 @@
   white-space: nowrap;
   display: inline-block;
 }
-
-.goToHomeButton:hover {
-  background-color: #f0f0f0;
-}
+.goToHomeButton:hover { background-color: #f0f0f0; }
 
 .userInitialCircle {
   width: clamp(28px, 4.8vw, 34px);
@@ -77,6 +70,7 @@
   line-height: 1;
 }
 
+/* ... main content styles ... */
 .mainContentArea {
   width: 100%;
   flex: 1;
@@ -120,11 +114,7 @@
   animation: fadeInIndicator 0.5s ease-in 1s forwards;
   pointer-events: none;
 }
-
-.scrollIndicator.hidden {
-  animation: fadeOutIndicator 0.3s ease-out forwards;
-}
-
+.scrollIndicator.hidden { animation: fadeOutIndicator 0.3s ease-out forwards; }
 .scrollArrow {
   width: 0;
   height: 0;
@@ -144,52 +134,14 @@
   letter-spacing: 0.05em;
   margin-top: 4px;
 }
+@keyframes fadeInIndicator { from { opacity: 0; transform: translateY(-50%) translateX(20px); } to { opacity: 1; transform: translateY(-50%) translateX(0); } }
+@keyframes fadeOutIndicator { from { opacity: 1; transform: translateY(-50%) translateX(0); } to { opacity: 0; transform: translateY(-50%) translateX(20px); } }
+@keyframes bounceDown { 0%, 100% { transform: translateY(0); opacity: 1; } 50% { transform: translateY(8px); opacity: 0.6; } }
 
-@keyframes fadeInIndicator {
-  from {
-    opacity: 0;
-    transform: translateY(-50%) translateX(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(-50%) translateX(0);
-  }
-}
-
-@keyframes fadeOutIndicator {
-  from {
-    opacity: 1;
-    transform: translateY(-50%) translateX(0);
-  }
-  to {
-    opacity: 0;
-    transform: translateY(-50%) translateX(20px);
-  }
-}
-
-@keyframes bounceDown {
-  0%, 100% {
-    transform: translateY(0);
-    opacity: 1;
-  }
-  50% {
-    transform: translateY(8px);
-    opacity: 0.6;
-  }
-}
-
-.domainContentWrapper {
-  flex: 1;
-  min-height: min-content;
-}
-
-.userGreetingContainer {
-  margin-bottom: 40px;
-}
-
+.domainContentWrapper { flex: 1; min-height: min-content; }
+.userGreetingContainer { margin-bottom: 40px; }
 .greetingTitle {
   font-family: var(--font-khand);
-  font-style: normal;
   font-weight: 400;
   font-size: 40px;
   line-height: 1.2;
@@ -200,7 +152,6 @@
 
 .greetingEmail {
   font-family: var(--font-khand);
-  font-style: normal;
   font-weight: 400;
   font-size: 24px;
   line-height: 1.2;
@@ -242,11 +193,7 @@
   position: relative;
   z-index: 1;
 }
-
-.tabButton.activeTab {
-  color: #FFFFFF;
-}
-
+.tabButton.activeTab { color: #FFFFFF; }
 .activeTabIndicator {
   position: absolute;
   inset: 0;
@@ -254,15 +201,7 @@
   border-radius: 32px;
   z-index: -1;
 }
-
-.tabButton span {
-  position: relative;
-  z-index: 1;
-}
-
-.tabButton:not(.activeTab):hover {
-  background-color: rgba(255, 255, 255, 0.1);
-}
+.tabButton:not(.activeTab):hover { background-color: rgba(255, 255, 255, 0.1); }
 
 .domainContentContainer {
   display: flex;
@@ -272,33 +211,23 @@
   margin-bottom: 40px;
   padding: 0 40px;
 }
+.domainContentLeft { flex: 1; display: flex; flex-direction: column; align-items: flex-start; min-width: 0; }
+.domainContentRight { flex-shrink: 0; width: 580px; }
 
-.domainContentLeft {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  min-width: 0;
-}
-
-.domainContentRight {
-  flex-shrink: 0;
-  width: 580px;
-}
-
-.techTitle {
+/* Titles */
+.techTitle, .designTitle, .managementTitle {
   font-family: var(--font-khand);
   font-weight: 400;
-  font-size: 96px;
   line-height: 1;
   letter-spacing: 0.01em;
   color: #000000;
   margin: 0;
-  margin-left: 57px;
   padding-top: 22px;
 }
+.techTitle, .designTitle { font-size: 96px; }
+.managementTitle { font-size: 80px; }
 
-.techSubtitle {
+.techSubtitle, .designSubtitle, .managementSubtitle {
   font-family: var(--font-khand);
   font-weight: 400;
   font-size: 24px;
@@ -306,54 +235,13 @@
   letter-spacing: 0.01em;
   color: rgba(0, 0, 0, 0.25);
   margin: 0;
-  margin-top: -10px;
-  margin-left: 6px;
 }
-
-.designTitle {
-  font-family: var(--font-khand);
-  font-weight: 400;
-  font-size: 96px;
-  line-height: 1;
-  letter-spacing: 0.01em;
-  color: #000000;
-  margin: 0;
-  margin-left: 69px;
-  padding-top: 22px;
-}
-
-.designSubtitle {
-  font-family: var(--font-khand);
-  font-weight: 400;
-  font-size: 24px;
-  line-height: 1.2;
-  letter-spacing: 0.01em;
-  color: rgba(0, 0, 0, 0.25);
-  margin: 0;
-  margin-left: -11px;
-}
-
-.managementTitle {
-  font-family: var(--font-khand);
-  font-weight: 400;
-  font-size: 80px;
-  line-height: 1;
-  letter-spacing: 0.01em;
-  color: #000000;
-  margin: 0;
-  padding-top: 22px;
-}
-
-.managementSubtitle {
-  font-family: var(--font-khand);
-  font-weight: 400;
-  font-size: 24px;
-  line-height: 1.2;
-  letter-spacing: 0.01em;
-  color: rgba(0, 0, 0, 0.25);
-  margin: 0;
-  margin-left: 76px;
-}
+/* Adjust margins for alignment */
+.techTitle { margin-left: 57px; }
+.techSubtitle { margin-top: -10px; margin-left: 6px; }
+.designTitle { margin-left: 69px; }
+.designSubtitle { margin-left: -11px; }
+.managementSubtitle { margin-left: 76px; }
 
 .domainDescription {
   font-family: var(--font-khand);
@@ -399,238 +287,198 @@
   min-width: 230px;
   max-width: 300px;
   min-height: 145px;
-  background-color: rgba(248, 104, 0, 0.31);
-  border-radius: 17px;
+  background: #f868004d; /* Matches DomainCard */
+  border-radius: 18px;
   cursor: pointer;
   transition: all 0.3s ease;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 15px;
-  font-family: var(--font-khand);
-  font-size: 19px;
-  font-weight: 500;
-  color: #000000;
+  padding: 16px;
   box-sizing: border-box;
+  position: relative;
 }
 
 .subdomainBox:hover {
-  background-color: rgba(248, 104, 0, 0.45);
+  transform: translateY(-5px);
+  background: #916d5466;
 }
 
 .subdomainBox.selected {
-  background-color: rgba(255, 179, 122, 0.5);
-  border: 2px solid rgba(255, 143, 107, 0.8);
+  /* Maintain size constraints, just change internal layout */
   min-height: 145px;
-  height: auto;
-  padding: 13px;
-}
-
-.subdomainBox.selected:hover {
-  background-color: rgba(255, 179, 122, 0.6);
+  background: #f868004d;
   cursor: default;
 }
 
+/* Internal Layout for Boxes */
+.boxHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+
+.boxTitle {
+  font-family: var(--font-khand);
+  font-size: 22px;
+  font-weight: 600;
+  color: #000;
+  line-height: 1.1;
+}
+
+.selectionIndicator {
+  font-family: var(--font-khand);
+  font-size: 12px;
+  background: rgba(255, 255, 255, 0.4);
+  padding: 2px 6px;
+  border-radius: 4px;
+  color: #333;
+}
+
+.placeholderContent {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.placeholderContent p {
+  font-family: var(--font-khand);
+  font-size: 14px;
+  opacity: 0.6;
+  margin: 0;
+}
+
+.boxContent {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+}
+
+.statusRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-khand);
+}
+
+.statusLabel {
+  font-size: 14px;
+  font-weight: 600;
+  color: #000;
+}
+
+.statusValue {
+  font-size: 14px;
+  color: #333;
+}
+
+/* Buttons inside boxes */
 .proceedButton {
-  background: linear-gradient(90deg, #FFB37A 0%, #FF8F6B 100%);
-  color: white;
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(4px);
+  color: #000;
   border: none;
-  border-radius: 7px;
-  padding: 7px 12px;
+  border-radius: 10px;
+  padding: 6px 12px;
   font-family: var(--font-khand);
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
   width: 100%;
-  max-width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: auto;
 }
 
 .proceedButton:hover {
+  background: rgba(255, 255, 255, 0.85);
   transform: translateY(-1px);
-  box-shadow: 0 3px 6px rgba(255, 143, 107, 0.4);
 }
 
 .removeButton {
-  background-color: rgba(244, 67, 54, 0.85);
-  color: white;
-  border: none;
+  background-color: transparent;
+  color: #d32f2f;
+  border: 1px solid rgba(211, 47, 47, 0.3);
   border-radius: 8px;
-  padding: 5px 10px;
+  padding: 4px 10px;
   font-family: var(--font-khand);
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
   width: 100%;
-  max-width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 8px;
 }
 
 .removeButton:hover {
-  background-color: rgba(244, 67, 54, 1);
+  background-color: rgba(211, 47, 47, 0.1);
 }
 
-.userMenuWrapper {
-  position: relative;
+.iconButton {
+  background: rgba(255, 255, 255, 0.5); /* Filled glass background */
+  border: none;
+  border-radius: 50%;
+  color: #f86800;
+  cursor: pointer;
+  padding: 6px;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  backdrop-filter: blur(4px);
 }
 
-.userDropdownMenu {
-  position: absolute;
-  top: calc(100% + 14px);
-  right: 0;
-  width: 160px;
-  background: rgba(255, 255, 255, 0.6);
-  border-radius: 17px;
-  padding: 12px 22px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  backdrop-filter: blur(5px);
+.iconButton:hover { 
+  background: rgba(255, 255, 255, 0.8); 
+  transform: scale(1.1);
+}
+
+.rejectedMessage {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  z-index: 100;
-}
-
-.dropdownLink {
+  gap: 4px;
   font-family: var(--font-khand);
-  font-weight: 400;
-  font-size: 20px;
-  line-height: 1.2;
-  letter-spacing: 0.01em;
-  color: #000000;
-  background: none;
-  border: none;
-  padding: 0;
-  text-align: left;
-  text-decoration: none;
-  cursor: pointer;
-  transition: opacity 0.2s ease;
+  font-size: 13px;
+  color: #333;
+  margin-top: auto;
 }
 
-.dropdownLink:hover {
-  opacity: 0.7;
-}
-
-/* Responsive Styles for Smaller Laptops */
+/* Responsive Styles */
 @media (max-width: 1400px) {
-  .dashboardCard {
-    padding: clamp(1rem, 2.5vw, 2rem);
-  }
-
-  .domainContentContainer {
-    padding: 0 24px;
-    gap: 20px;
-  }
-
-  .techTitle,
-  .designTitle {
-    font-size: 80px;
-  }
-
-  .managementTitle {
-    font-size: 68px;
-  }
-
-  .domainContentRight {
-    width: 480px;
-  }
-
-  .subdomainBox {
-    width: 300px;
-    height: 155px;
-    padding: 16px;
-  }
-
-  .subdomainBox.selected {
-    height: 155px;
-  }
+  .dashboardCard { padding: clamp(1rem, 2.5vw, 2rem); }
+  .domainContentContainer { padding: 0 24px; gap: 20px; }
+  .techTitle, .designTitle { font-size: 80px; }
+  .managementTitle { font-size: 68px; }
+  .domainContentRight { width: 480px; }
+  .subdomainBox { width: 300px; padding: 14px; }
 }
 
 @media (max-width: 1200px) {
-  .pageContainer {
-    padding: clamp(0.8rem, 2vw, 1.2rem);
-  }
-
-  .dashboardCard {
-    padding: clamp(0.9rem, 2vw, 1.5rem);
-  }
-
-  .greetingTitle {
-    font-size: 32px;
-  }
-
-  .greetingEmail {
-    font-size: 20px;
-  }
-
-  .domainTabsContainer {
-    width: clamp(340px, 30vw, 380px);
-    height: clamp(44px, 4.5vw, 48px);
-  }
-
-  .tabButton {
-    font-size: clamp(0.85rem, 1.8vw, 0.95rem);
-  }
-
-  .techTitle,
-  .designTitle {
-    font-size: 68px;
-    margin-left: 0;
-  }
-
-  .techSubtitle,
-  .designSubtitle,
-  .managementSubtitle {
-    margin-left: 0;
-  }
-
-  .managementTitle {
-    font-size: 56px;
-  }
-
-  .domainContentContainer {
-    padding: 0 16px;
-    gap: 16px;
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .domainContentLeft,
-  .domainContentRight {
-    width: 100%;
-    max-width: 600px;
-    align-items: center;
-    text-align: center;
-  }
-
-  .domainDescription {
-    text-align: center;
-  }
-
-  .subdomainContainer {
-    padding: 16px 20px;
-    min-height: 190px;
-  }
-
-  .subdomainBoxes {
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 16px;
-  }
-
-  .subdomainBox {
-    width: 280px;
-    height: 145px;
-  }
-
-  .subdomainBox.selected {
-    height: 145px;
-  }
+  .pageContainer { padding: clamp(0.8rem, 2vw, 1.2rem); }
+  .dashboardCard { padding: clamp(0.9rem, 2vw, 1.5rem); }
+  .greetingTitle { font-size: 32px; }
+  .greetingEmail { font-size: 20px; }
+  .domainTabsContainer { width: clamp(340px, 30vw, 380px); height: clamp(44px, 4.5vw, 48px); }
+  .tabButton { font-size: clamp(0.85rem, 1.8vw, 0.95rem); }
+  .techTitle, .designTitle { font-size: 68px; margin-left: 0; }
+  .managementTitle { font-size: 56px; }
+  .techSubtitle, .designSubtitle, .managementSubtitle { margin-left: 0; }
+  .domainContentContainer { padding: 0 16px; gap: 16px; flex-direction: column; align-items: center; }
+  .domainContentLeft, .domainContentRight { width: 100%; max-width: 600px; align-items: center; text-align: center; }
+  .domainDescription { text-align: center; }
+  .subdomainContainer { padding: 16px 20px; min-height: 190px; }
+  .subdomainBoxes { flex-wrap: wrap; justify-content: center; gap: 16px; }
+  .subdomainBox { width: 280px; }
 }
 
-/* Hide desktop view on mobile */
 @media (max-width: 900px) {
-  .pageContainer {
-    display: none;
-  }
+  .pageContainer { display: none; }
 }

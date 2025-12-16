@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useLayoutEffect, useRef } from "react";
+import React, { useLayoutEffect, useRef, useState } from "react";
 import Image from "next/image";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -41,6 +41,16 @@ const projects = [
 const isSvg = (src: string) => src.toLowerCase().endsWith(".svg");
 
 export default function LandingProjects() {
+	const [chocoCount, setChocoCount] = useState(0);
+	const handleChocoClick = () => {
+		if (chocoCount + 1 === 5) {
+			window.location.href = "/cocoa/decoder.html";
+			setChocoCount(0);
+		} else {
+			setChocoCount(chocoCount + 1);
+		}
+	};
+
 	const containerRef = useRef<HTMLDivElement>(null);
 	const imagesRef = useRef<(HTMLDivElement | null)[]>([]);
 	const textsRef = useRef<(HTMLDivElement | null)[]>([]);
@@ -232,7 +242,11 @@ export default function LandingProjects() {
 									{project.heading}
 								</h3>
 								<p className="text-sm sm:text-lg lg:text-[1.4rem] leading-relaxed text-[#444] mb-4 sm:mb-6 font-light font-khand whitespace-pre-line max-w-[800px]">
-									{project.about}
+									{project.id === 1 ? (
+										<>
+											{project.about} <span onClick={handleChocoClick} style={{cursor:'pointer', userSelect:'none'}} title="Click me 5 times!">🍫</span>
+										</>
+									) : project.about}
 								</p>
 								<div className="flex justify-center pb-4">
 									<a

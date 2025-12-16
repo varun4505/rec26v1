@@ -1,20 +1,21 @@
 "use client";
 
-import React, { useState, useEffect } from 'react'; 
+import React, { useEffect } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { signIn, useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-// --- UPDATED ICONS: Using Material Design Rounded for a smoother look ---
-import { MdNote , MdOutlineSearch } from 'react-icons/md';
+import { MdNote, MdOutlineSearch } from 'react-icons/md';
 import { PiWarningCircleFill } from 'react-icons/pi';
+
+import PageLayout from '@/components/PageLayout';
+import LoadingScreen from '@/components/LoadingScreen';
 import styles from './Login.module.css';
 
-const CLUB_LOGO_PATH = '/assets/images/vinnovateit_white.svg';
 const GOOGLE_LOGO_PATH = '/google-logo.svg';
 
 export default function LoginPage() {
-  const [currentTime, setCurrentTime] = useState('');
-  const { data: session, status } = useSession();
+  const { status } = useSession();
   const router = useRouter();
 
   useEffect(() => {
@@ -23,54 +24,32 @@ export default function LoginPage() {
     }
   }, [status, router]);
 
-  useEffect(() => {
-    const updateTime = () => {
-      const now = new Date();
-      const hours = String(now.getHours()).padStart(2, '0');
-      const minutes = String(now.getMinutes()).padStart(2, '0');
-      setCurrentTime(`${hours}:${minutes}`);
-    };
-
-    updateTime();
-    const intervalId = setInterval(updateTime, 1000);
-    return () => clearInterval(intervalId);
-  }, []);
-
   const handleGoogleLogin = () => {
     signIn('google', { callbackUrl: '/dashboard' });
   };
 
   if (status === 'loading') {
-    return (
-      <div className={styles.pageContainer}>
-        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', color: 'white' }}>
-          <p>Loading...</p>
-        </div>
-      </div>
-    );
+    return <LoadingScreen />;
   }
 
   if (status === 'authenticated') {
     return null;
   }
 
+  // Action Button for PageLayout (Home link)
+  const ActionButton = (
+    <Link href="/" passHref>
+      <button className={styles.homeButton}>Home</button>
+    </Link>
+  );
+
   return (
-    <div className={styles.pageContainer}>
-      <header className={styles.header}>
-        <Image 
-          src={CLUB_LOGO_PATH} 
-          alt="Club Logo" 
-          width={150}
-          height={40}
-          className={styles.logo}
-          priority 
-        />
-        <span className={styles.time}>
-          {currentTime || '00:00'}
-        </span>
-      </header>
-      
-      <main className={styles.mainCard}>
+    <PageLayout 
+      actionButton={ActionButton} 
+      showUserProfile={false}
+      cardClassName={styles.loginCardOverride} // Optional: specific override if needed
+    >
+      <div className={styles.contentWrapper}>
         <h1 className={styles.welcomeTitle}>
           Welcome To VinnovateIT Recruitments
         </h1>
@@ -98,13 +77,10 @@ export default function LoginPage() {
           
           {/* HEADER SECTION: Please Note */}
           <div className={styles.noteHeader}>
-            {/* The Label Group (Icon + Title) */}
             <div className={styles.noteLabel}>
-                {/* Icon: Blue Clipboard */}
-                <MdNote className="rounded-icon icon-blue" size={28} /> 
+                <MdNote className="rounded-icon icon-blue" size={28} style={{ color: '#3b82f6' }} /> 
                 <strong>Please Note:</strong> 
             </div>
-            {/* The Text Content */}
             <div className={styles.noteContent}>
                 Read all guidelines carefully before filling out the application form.
             </div>
@@ -125,20 +101,19 @@ export default function LoginPage() {
                     <li>Show us your creativity and passion - perfection isn&apos;t required, enthusiasm is!</li>
                   </ul>
                   <hr className={styles.divider} />
-                  <p style={{ fontStyle: 'italic' }}>
+                  <p style={{ fontStyle: 'italic', marginTop: '1rem', opacity: 0.8 }}>
                     Take the first step into becoming part of the <strong>VinnovateIT family</strong> - where innovation never sleeps!
                   </p>
                 </div>
               </div>
 
-              {/* RIGHT COLUMN: Important & Insider Tip (Now in boxes) */}
-              <div className={styles.column + ' ' + styles.rightColumn + ' ' + styles.centeredColumn}>
+              {/* RIGHT COLUMN: Important & Insider Tip */}
+              <div className={styles.column + ' ' + styles.rightColumn}>
                 
                 {/* Box 1: Important */}
                 <div className={styles.highlightBox + ' ' + styles.warningBox}>
                   <div className={styles.boxHeader}>
-                        {/* Icon: Amber Warning */}
-                        <PiWarningCircleFill className="rounded-icon icon-amber" size={26} />
+                        <PiWarningCircleFill className="rounded-icon icon-amber" size={26} style={{ color: '#f59e0b' }} />
                         <strong>Important</strong>
                   </div>
                   <p>
@@ -149,8 +124,7 @@ export default function LoginPage() {
                 {/* Box 2: Insider Tip */}
                 <div className={styles.highlightBox + ' ' + styles.tipBox}>
                   <div className={styles.boxHeader}>
-                        {/* Icon: Teal Tips/Lightbulb */}
-                        <MdOutlineSearch className="rounded-icon icon-teal" size={26} />
+                        <MdOutlineSearch className="rounded-icon icon-teal" size={26} style={{ color: '#14b8a6' }} />
                         <strong>Insider Tip</strong>
                   </div>
                   <p>
@@ -164,18 +138,7 @@ export default function LoginPage() {
           </div>
           
         </div>
-      </main> 
-      
-      {/* Keeping global styles here for the icon colors as they rely on global scope */}
-      <style jsx global>{`
-        /* --- Icon Styling --- */
-        .rounded-icon {
-            flex-shrink: 0; 
-        }
-        .icon-blue { color: #3b82f6; }
-        .icon-amber { color: #f59e0b; }
-        .icon-teal { color: #14b8a6; }
-      `}</style>
-    </div>
+      </div>
+    </PageLayout>
   );
 }

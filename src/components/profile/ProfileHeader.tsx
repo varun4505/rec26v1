@@ -43,7 +43,6 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
         .greeting {
           font-size: clamp(1.8rem, 4.5vw, 3.15rem);
           margin: 0 0 0.18rem 0;
-          font-weight: 600;
           color: #000;
         }
         .email {
