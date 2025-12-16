@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence, useMotionValue, useTransform } from "framer-motion";
+import { Edit2 } from "lucide-react";
 import LoadingScreen from "@/components/LoadingScreen";
 
 export default function NotFound() {
@@ -11,11 +12,11 @@ export default function NotFound() {
   const [inputValue, setInputValue] = useState("");
   const [isLoading, setIsLoading] = useState(true);
 
-  // Mouse parallax effect - ALL hooks must be defined before any return
+  // Mouse parallax effect
   const x = useMotionValue(0);
   const y = useMotionValue(0);
   
-  // Define transforms at the top level
+  // Define transforms
   const rotateX = useTransform(y, [0, 1], [10, -10]);
   const rotateY = useTransform(x, [0, 1], [-10, 10]);
   const posX = useTransform(x, [-1, 1], [-20, 20]);
@@ -25,7 +26,6 @@ export default function NotFound() {
     // Set light cursor border for this page
     document.documentElement.style.setProperty("--cursor-border", "#ffffff");
 
-    // Optimized loading: reduced delay for faster interaction while keeping the effect
     const timer = setTimeout(() => {
       setIsLoading(false);
     }, 500); 
@@ -71,12 +71,12 @@ export default function NotFound() {
           style={{
             rotateX,
             rotateY,
-            x: posX, // Use the pre-calculated hook value
-            y: posY, // Use the pre-calculated hook value
+            x: posX,
+            y: posY,
           }}
           className="perspective-1000"
         >
-          <h1 className="font-array text-[10rem] md:text-[18rem] leading-none tracking-tight text-white select-none drop-shadow-2xl">
+          <h1 className="font-array text-[#f8680067] text-[10rem] md:text-[18rem] leading-none tracking-tight select-none drop-shadow-2xl">
             404
           </h1>
         </motion.div>
@@ -131,10 +131,9 @@ export default function NotFound() {
                 key="checking-state"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className="flex flex-col items-center gap-3"
+                className="flex flex-col items-center gap-1"
               >
                 <div className="flex items-center gap-2">
-                  {/* Simple subtle pulse dot */}
                   <motion.div
                     animate={{ opacity: [0.4, 1, 0.4] }}
                     transition={{
@@ -148,6 +147,20 @@ export default function NotFound() {
                     Okay, we&apos;ll check it.
                   </span>
                 </div>
+
+                {/* Edit Trigger - Input Hidden */}
+                <motion.button
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.5 }}
+                  onClick={() => setStatus("input")}
+                  className="flex items-center gap-2 group outline-none mt-1 opacity-60 hover:opacity-100 transition-all duration-300"
+                >
+                  <span className="font-khand text-lg text-gray-500 group-hover:text-[#f86800] transition-colors">
+                    changed your mind?
+                  </span>
+                  <Edit2 size={12} className="text-gray-500 group-hover:text-[#f86800] transition-colors" />
+                </motion.button>
               </motion.div>
             )}
           </AnimatePresence>

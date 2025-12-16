@@ -139,7 +139,7 @@ export default function PageLayout({
       >
         <header className={styles.header}>
           <div className={styles.headerLeft}>
-            <a href="404">
+            <a href="/404">
             <Image
               src="/assets/images/vinnovateit_white.svg"
               alt="VinnovateIT Logo"
