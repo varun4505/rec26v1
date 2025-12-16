@@ -299,28 +299,29 @@ export default function SubdomainSelector({ domain }: SubdomainSelectorProps) {
                         <div className={styles.statusRow}>
                           <span className={styles.statusLabel}>Round 1:</span>
                           <span className={styles.statusValue}>{round1Status}</span>
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleProceed(itemSlug);
-                            }}
-                            className={styles.iconButton}
-                            title="Edit Round 1"
-                          >
-                             <Edit2 size={14} />
-                          </button>
+                          {round1Status !== 'Passed' && (
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleProceed(itemSlug);
+                              }}
+                              className={styles.iconButton}
+                              title="Edit Round 1"
+                            >
+                               <Edit2 size={14} />
+                            </button>
+                          )}
                         </div>
                         {/* Check for Single Round (Combined) domains */}
                         {isSingleRound && round1Status === 'Passed' && (
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
-                              // Logic for scheduling interview
-                              alert("Redirecting to interview scheduler...");
+                              window.open('https://discord.gg/5cjAGQdvhB', '_blank');
                             }}
                             className={styles.proceedButton}
                           >
-                            Schedule Interview <ArrowRight size={16} />
+                            Join Discord for Interview <ArrowRight size={16} />
                           </button>
                         )}
                         {/* Round 2 Logic for multi-round domains */}
@@ -347,12 +348,11 @@ export default function SubdomainSelector({ domain }: SubdomainSelectorProps) {
                               <button
                                 onClick={(e) => {
                                   e.stopPropagation();
-                                  // Logic for scheduling interview
-                                  alert("Redirecting to interview scheduler...");
+                                  window.open('https://discord.gg/5cjAGQdvhB', '_blank');
                                 }}
                                 className={styles.proceedButton}
                               >
-                                Schedule Interview <ArrowRight size={16} />
+                                Join Discord for Interview <ArrowRight size={16} />
                               </button>
                             )}
                              {round2Status !== 'Pending' && round2Status !== 'Passed' && (
