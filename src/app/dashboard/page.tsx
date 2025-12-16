@@ -1,19 +1,18 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { motion, AnimatePresence } from 'framer-motion';
+import Link from 'next/link';
 
 import styles from './Dashboard.module.css';
-import DashboardHeader from './components/DashboardHeader';
+import PageLayout from '@/components/PageLayout';
 import UserGreeting from './components/UserGreeting';
 import DomainTabs from './components/DomainTabs';
-import SubdomainSelector from './components/SubdomainSelector';
 
 import TechDomainContent from './components/TechDomainContent';
 import DesignDomainContent from './components/DesignDomainContent';
 import ManagementDomainContent from './components/ManagementDomainContent';
-import { MobileRestriction } from '@/components/MobileRestriction';
 import PhoneNumberModal from './components/PhoneNumberModal';
 import LoadingScreen from '@/components/LoadingScreen';
 
@@ -24,20 +23,13 @@ export default function DashboardPage() {
   const tabs = ['Tech', 'Design', 'Management'];
 
   const [showPhoneModal, setShowPhoneModal] = useState(false);
-  const [isCheckingPhone, setIsCheckingPhone] = useState(true);
   const [isSubmittingPhone, setIsSubmittingPhone] = useState(false);
-  const [showScrollIndicator, setShowScrollIndicator] = useState(false);
-  const dashboardCardRef = useRef<HTMLDivElement>(null);
   const { data: session, status } = useSession();
 
-  // Check if user has provided phone number
   useEffect(() => {
     const checkPhoneNumber = async () => {
       if (status === 'loading') return;
-      if (!session?.user?.email) {
-        setIsCheckingPhone(false);
-        return;
-      }
+      if (!session?.user?.email) return;
 
       try {
         const response = await fetch('/api/update-phone');
@@ -48,8 +40,6 @@ export default function DashboardPage() {
         }
       } catch (error) {
         console.error('Error checking phone number:', error);
-      } finally {
-        setIsCheckingPhone(false);
       }
     };
 
@@ -61,9 +51,7 @@ export default function DashboardPage() {
     try {
       const response = await fetch('/api/update-phone', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ phoneNumber }),
       });
 
@@ -82,7 +70,6 @@ export default function DashboardPage() {
     }
   };
 
-  // --- Handler function to change the tab ---
   const handleTabChange = (tabName: string) => {
     const newIndex = tabs.indexOf(tabName);
     const oldIndex = tabs.indexOf(activeTab);
@@ -90,42 +77,14 @@ export default function DashboardPage() {
     setActiveTab(tabName);
   };
 
-  // Check if content is scrollable and handle scroll indicator
-  useEffect(() => {
-    const checkScrollable = () => {
-      const element = dashboardCardRef.current;
-      if (element) {
-        const isScrollable = element.scrollHeight > element.clientHeight;
-        const isAtBottom = element.scrollHeight - element.scrollTop <= element.clientHeight + 50;
-        setShowScrollIndicator(isScrollable && !isAtBottom);
-      }
-    };
-
-    checkScrollable();
-    const element = dashboardCardRef.current;
-    if (element) {
-      element.addEventListener('scroll', checkScrollable);
-      window.addEventListener('resize', checkScrollable);
-    }
-
-    return () => {
-      if (element) {
-        element.removeEventListener('scroll', checkScrollable);
-      }
-      window.removeEventListener('resize', checkScrollable);
-    };
-  }, [activeTab]);
-
-  if (status === 'loading' || isCheckingPhone) {
-    return <LoadingScreen />;
-  }
+  const ActionButton = (
+    <Link href="/" passHref>
+      <button className={styles.goToHomeButton}>Home</button>
+    </Link>
+  );
 
   return (
     <>
-      {/* Mobile Restriction - Only shows on mobile */}
-      <MobileRestriction />
-
-      {/* Phone Number Modal - Shows when user hasn't provided phone */}
       {showPhoneModal && (
         <PhoneNumberModal
           onSubmit={handlePhoneSubmit}
@@ -133,48 +92,20 @@ export default function DashboardPage() {
         />
       )}
 
-      {/* Desktop View */}
-      <div className={styles.pageContainer}>
-        <DashboardHeader />
+      <PageLayout actionButton={ActionButton}>
+        <UserGreeting />
 
-        <main className={styles.mainContentArea}>
-          {showScrollIndicator && (
-            <div className={`${styles.scrollIndicator} ${!showScrollIndicator ? styles.hidden : ''}`}>
-              <div className={styles.scrollArrow}></div>
-              <div className={styles.scrollText}>SCROLL</div>
-            </div>
-          )}
-          <div className={styles.dashboardCard} ref={dashboardCardRef}>
+        <DomainTabs
+          activeTab={activeTab}
+          onTabChange={handleTabChange}
+        />
 
-            <UserGreeting />
-
-            {/* --- Pass state and handler to DomainTabs --- */}
-            <DomainTabs
-              activeTab={activeTab}
-              onTabChange={handleTabChange}
-            />
-
-            {/* --- Conditional rendering based on activeTab state --- */}
-            <div className={styles.domainContentWrapper}>
-              <AnimatePresence mode="wait" custom={direction}>
-                <motion.div
-                  key={activeTab}
-                  custom={direction}
-                  initial={{ x: direction > 0 ? 50 : -50, opacity: 0 }}
-                  animate={{ x: 0, opacity: 1 }}
-                  exit={{ x: direction > 0 ? -50 : 50, opacity: 0 }}
-                  transition={{ duration: 0.3, ease: "easeInOut" }}
-                >
-                  {activeTab === 'Tech' && <TechDomainContent />}
-                  {activeTab === 'Design' && <DesignDomainContent />}
-                  {activeTab === 'Management' && <ManagementDomainContent />}
-                </motion.div>
-              </AnimatePresence>
-            </div>
-
-          </div>
-        </main>
-      </div>
+        <div className={styles.domainContentWrapper}>
+          {activeTab === 'Tech' && <TechDomainContent />}
+          {activeTab === 'Design' && <DesignDomainContent />}
+          {activeTab === 'Management' && <ManagementDomainContent />}
+        </div>
+      </PageLayout>
     </>
   );
 }

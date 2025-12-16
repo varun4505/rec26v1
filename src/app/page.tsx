@@ -39,6 +39,7 @@ export default function HomePage() {
 						See more things we do
 					</Link>
 				</div>
+				<div style={{display: 'none'}} dangerouslySetInnerHTML={{__html: '<!-- 🚩 Stage 2 Flag {vinnovate_welcome} Clue: Visit /wrapper/gold.html for the next step -->'}} />
 			</section>
 
 			<div className="h-20"></div>

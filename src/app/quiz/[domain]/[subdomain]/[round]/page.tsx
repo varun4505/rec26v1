@@ -687,7 +687,7 @@ export default function QuizPage() {
 							onClick={() => router.push("/dashboard")}
 							className="rounded-full bg-gradient-to-r from-[#FFB37A] to-[#FF8F6B] px-6 py-2 text-white font-semibold hover:shadow-lg transition-all"
 						>
-							Back to Dashboard
+							Dashboard
 						</button>
 					</div>
 				</div>
@@ -733,7 +733,7 @@ export default function QuizPage() {
 								onClick={() => router.push("/dashboard")}
 								className="mt-4 rounded-full bg-gradient-to-r from-[#FFB37A] to-[#FF8F6B] px-6 py-2 text-white font-semibold"
 							>
-								Back to Dashboard
+								Dashboard
 							</button>
 						</div>
 					</div>
@@ -753,7 +753,7 @@ export default function QuizPage() {
 								onClick={() => router.push("/dashboard")}
 								className="mt-4 rounded-full bg-gradient-to-r from-[#FFB37A] to-[#FF8F6B] px-6 py-2 text-white font-semibold"
 							>
-								Back to Dashboard
+								Dashboard
 							</button>
 						</div>
 					</div>
@@ -961,7 +961,7 @@ export default function QuizPage() {
 	return (
 		<FormsShell>
 			<div className="flex flex-col gap-10 p-8">
-				<article className="flex flex-col gap-6 rounded-[32px] border border-white/20 bg-gradient-to-br from-[#FFF4EC] via-[#F7F5FF] to-[#EAF3FF] p-8 shadow-[0_25px_60px_rgba(15,15,15,0.25)]">
+				<article className="-m-8 flex flex-col gap-6 rounded-[32px]">
 					<header className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
 						<div>
 							<h2 className="text-3xl font-semibold sm:text-4xl">
@@ -1180,7 +1180,7 @@ export default function QuizPage() {
 								type="button"
 								onClick={handleSubmit}
 								disabled={isSubmitting}
-								className="rounded-full bg-gradient-to-r from-[#FFB37A] to-[#FF8F6B] px-8 py-3 text-base font-semibold text-white shadow-[0_10px_25px_rgba(255,143,107,0.35)] hover:shadow-[0_15px_35px_rgba(255,143,107,0.45)] transition-all disabled:opacity-50 disabled:cursor-not-started"
+								className="rounded-full bg-linear-to-r from-[#FFB37A] to-[#FF8F6B] px-8 py-3 text-base font-semibold text-white shadow-[0_10px_25px_rgba(255,143,107,0.35)] hover:shadow-[0_15px_35px_rgba(255,143,107,0.45)] transition-all disabled:opacity-50 disabled:cursor-not-started"
 							>
 								{isSubmitting ? 'Submitting...' : 'Submit'}
 							</button>

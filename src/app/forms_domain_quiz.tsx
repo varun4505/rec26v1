@@ -994,7 +994,7 @@ export default function FormsDomainQuiz() {
 	return (
 		<FormsShell>
 			<div className="flex flex-col gap-10 p-8">
-				<article className="flex flex-col gap-6 rounded-[32px] border border-white/20 bg-gradient-to-br from-[#FFF4EC] via-[#F7F5FF] to-[#EAF3FF] p-8 shadow-[0_25px_60px_rgba(15,15,15,0.25)]">
+				<article className="flex flex-col gap-6 rounded-[32px]">
 					<header className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
 						<div>
 							<h2 className="text-3xl font-semibold sm:text-4xl">
