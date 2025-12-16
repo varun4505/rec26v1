@@ -72,7 +72,7 @@ export default function ApplicationStatus() {
                 <div className={styles.scheduleButtonContainer}>
                     <button
                         className={styles.scheduleButton}
-                        onClick={() => alert("Redirecting to interview scheduler...")} // Placeholder action
+                        onClick={() => window.open('https://discord.gg/5cjAGQdvhB', '_blank')}
                     >
                         Schedule Interview
                     </button>
