@@ -286,6 +286,7 @@
     background-color: rgba(255, 255, 255, 0.5); 
     border-radius: 16px;
     padding: 20px;
+    margin-bottom: 20px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.03);
     transition: transform 0.2s ease;
 }
@@ -380,7 +381,6 @@
     .noteHeader {
         flex-direction: column; /* Stack vertically */
         align-items: flex-start; /* Align left */
-        gap: 4px; /* Space between "Please Note" and the sentence */
     }
 
     .stackedCard {

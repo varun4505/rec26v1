@@ -3,6 +3,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { ArrowRight, X, Edit2 } from 'lucide-react';
 import styles from '../Dashboard.module.css';
 import { DOMAIN_CONFIG, type DomainType, getSubdomainInfo } from '@/data/domainConfig';
 import ConfirmModal from '@/components/ConfirmModal';
@@ -216,7 +217,9 @@ export default function SubdomainSelector({ domain }: SubdomainSelectorProps) {
   if (loading) {
     return (
       <div className={styles.subdomainContainer}>
-        <p>Loading...</p>
+        <div className="flex w-full items-center justify-center py-12">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#FF8F6B]"></div>
+        </div>
       </div>
     );
   }
@@ -250,10 +253,17 @@ export default function SubdomainSelector({ domain }: SubdomainSelectorProps) {
               onClick={() => !selected && handleSelect(itemSlug)}
               style={{
                 cursor: (canModify || selected) ? 'pointer' : 'not-allowed',
-                position: 'relative'
               }}
             >
-              <span style={{ marginBottom: selected ? '8px' : '0' }}>{item.name}</span>
+              {/* Header: Name */}
+              <div className={styles.boxHeader}>
+                <span className={styles.boxTitle}>{item.name}</span>
+                {selected && (
+                  <span className={styles.selectionIndicator}>Selected</span>
+                )}
+              </div>
+
+              {/* Body: Status & Actions */}
               {selected ? (() => {
                 const status = getSubmissionStatus(itemSlug);
                 const round1Status = status?.round1Status || 'Pending';
@@ -263,31 +273,15 @@ export default function SubdomainSelector({ domain }: SubdomainSelectorProps) {
 
                 if (isRejected) {
                   return (
-                    <div style={{ marginTop: '6px', display: 'flex', gap: '8px', flexDirection: 'column', width: '100%' }}>
-                      <div style={{
-                        fontSize: '13px',
-                        fontWeight: 700,
-                        color: '#000',
-                        textAlign: 'left',
-                        lineHeight: '1.4'
-                      }}>
-                        Hey, thanks for giving the recruitment your best shot.
-                      </div>
-                      <div style={{
-                        fontSize: '12px',
-                        color: '#333',
-                        textAlign: 'left',
-                        lineHeight: '1.5'
-                      }}>
-                        You didn't make it to the next round this time, but your effort didn't go unnoticed.
-                        Keep learning, keep building — we'd love to see you apply again soon.
-                      </div>
+                    <div className={styles.rejectedMessage}>
+                      <strong>Nice try!</strong>
+                      <p>You didn&apos;t make it this time, but keep building!</p>
                     </div>
                   );
                 }
 
                 return (
-                  <div style={{ marginTop: '6px', display: 'flex', gap: '6px', flexDirection: 'column', width: '100%' }}>
+                  <div className={styles.boxContent}>
                     {round1Status === 'Pending' && (
                       <button
                         onClick={(e) => {
@@ -296,41 +290,24 @@ export default function SubdomainSelector({ domain }: SubdomainSelectorProps) {
                         }}
                         className={styles.proceedButton}
                       >
-                        Start Round 1 →
+                        Start Round 1 <ArrowRight size={16} />
                       </button>
                     )}
+                    
                     {round1Status !== 'Pending' && (
                       <>
-                        <div
-                          style={{
-                            fontSize: '13px',
-                            color: '#555',
-                            textAlign: 'left',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '6px'
-                          }}
-                        >
-                          <strong>Round 1:</strong> {round1Status}
+                        <div className={styles.statusRow}>
+                          <span className={styles.statusLabel}>Round 1:</span>
+                          <span className={styles.statusValue}>{round1Status}</span>
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
                               handleProceed(itemSlug);
                             }}
-                            style={{
-                              background: 'transparent',
-                              border: 'none',
-                              cursor: 'pointer',
-                              padding: '2px',
-                              display: 'flex',
-                              alignItems: 'center',
-                              color: '#f86800'
-                            }}
-                            aria-label="Edit Round 1"
+                            className={styles.iconButton}
+                            title="Edit Round 1"
                           >
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                              <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" />
-                            </svg>
+                             <Edit2 size={14} />
                           </button>
                         </div>
                         {/* Check for Single Round (Combined) domains */}
@@ -342,18 +319,19 @@ export default function SubdomainSelector({ domain }: SubdomainSelectorProps) {
                               alert("Redirecting to interview scheduler...");
                             }}
                             className={styles.proceedButton}
-                            style={{ marginTop: '4px' }}
                           >
-                            Schedule Interview →
+                            Schedule Interview <ArrowRight size={16} />
                           </button>
                         )}
                         {/* Round 2 Logic for multi-round domains */}
                         {!isSingleRound && canAccessRound2 && round2Status && (
                           <>
-                            <div style={{ fontSize: '13px', color: '#555', textAlign: 'left' }}>
-                              <strong>Round 2:</strong> {round2Status}
+                            <div className={styles.statusRow}>
+                              <span className={styles.statusLabel}>Round 2:</span>
+                              <span className={styles.statusValue}>{round2Status}</span>
                             </div>
-                            {round2Status === 'Pending' && (
+                            
+                            {(round2Status === 'Pending') && (
                               <button
                                 onClick={(e) => {
                                   e.stopPropagation();
@@ -361,10 +339,11 @@ export default function SubdomainSelector({ domain }: SubdomainSelectorProps) {
                                 }}
                                 className={styles.proceedButton}
                               >
-                                Start Round 2 →
+                                Start Round 2 <ArrowRight size={16} />
                               </button>
                             )}
-                            {round2Status === 'Passed' && (
+
+                             {round2Status === 'Passed' && (
                               <button
                                 onClick={(e) => {
                                   e.stopPropagation();
@@ -373,10 +352,10 @@ export default function SubdomainSelector({ domain }: SubdomainSelectorProps) {
                                 }}
                                 className={styles.proceedButton}
                               >
-                                Schedule Interview →
+                                Schedule Interview <ArrowRight size={16} />
                               </button>
                             )}
-                            {round2Status !== 'Pending' && round2Status !== 'Passed' && (
+                             {round2Status !== 'Pending' && round2Status !== 'Passed' && (
                               <button
                                 onClick={(e) => {
                                   e.stopPropagation();
@@ -384,7 +363,7 @@ export default function SubdomainSelector({ domain }: SubdomainSelectorProps) {
                                 }}
                                 className={styles.proceedButton}
                               >
-                                Edit Round 2 →
+                                Edit Round 2 <ArrowRight size={16} />
                               </button>
                             )}
                           </>
@@ -399,15 +378,15 @@ export default function SubdomainSelector({ domain }: SubdomainSelectorProps) {
                         }}
                         className={styles.removeButton}
                       >
-                        Remove
+                         <X size={14} style={{ marginRight: '4px' }} /> Remove
                       </button>
                     )}
                   </div>
                 );
               })() : (
-                <p style={{ marginTop: '4px', opacity: 0.6, fontSize: '14px' }}>
-                  Click to select
-                </p>
+                <div className={styles.placeholderContent}>
+                  <p>Click to select</p>
+                </div>
               )}
             </div>
           );
