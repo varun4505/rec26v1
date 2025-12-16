@@ -1,0 +1,223 @@
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(10, 10, 10, 0.7);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  padding: 20px;
+}
+
+.overlayClosing {
+  animation: fadeOut 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  pointer-events: none;
+}
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes fadeOut { from { opacity: 1; } to { opacity: 0; } }
+
+.modal {
+  position: relative;
+  background: #ffffff;
+  border-radius: 28px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35);
+  max-width: 900px;
+  width: 100%;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: scaleUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.modalClosing {
+  animation: scaleDown 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes scaleUp {
+  from { opacity: 0; transform: scale(0.95) translateY(20px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+@keyframes scaleDown {
+  from { opacity: 1; transform: scale(1) translateY(0); }
+  to { opacity: 0; transform: scale(0.95) translateY(20px); }
+}
+
+.closeButton {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: rgba(0, 0, 0, 0.05);
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  color: #333;
+  transition: all 0.2s ease;
+}
+
+.closeButton:hover {
+  background: rgba(0, 0, 0, 0.1);
+  transform: rotate(90deg);
+}
+
+.scrollContent {
+  padding: 40px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* --- Ported Styles --- */
+
+.noteHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid rgba(0,0,0,0.08);
+  flex-wrap: wrap;
+  padding-right: 40px; /* Space for close button */
+}
+
+.noteLabel {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-khand);
+  font-size: 22px;
+  color: #333;
+  white-space: nowrap;
+}
+
+.noteContent {
+  font-family: var(--font-khand);
+  font-size: 20px;
+  color: #555;
+}
+
+.gridContainer {
+  display: flex;
+  margin-top: 40px;
+  gap: 32px;
+}
+
+.instructionSection {
+  flex: 1;
+}
+
+.instructionSection h3 {
+  font-family: var(--font-khand);
+  font-size: 26px;
+  font-weight: 600;
+  margin: 0 0 16px 0;
+  color: #000;
+}
+
+.instructionSection ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.instructionSection li {
+  font-family: var(--font-khand);
+  font-size: 18px;
+  color: #444;
+  position: relative;
+  padding-left: 20px;
+  line-height: 1.5;
+}
+
+.instructionSection li::before {
+  content: "•";
+  color: #f86800;
+  font-weight: bold;
+  position: absolute;
+  left: 0;
+}
+
+.divider {
+  border: 0;
+  border-top: 1px solid rgba(0,0,0,0.1);
+  margin: 24px 0;
+}
+
+.footerNote {
+  font-family: var(--font-khand);
+  font-size: 16px;
+  color: #666;
+  font-style: italic;
+  margin: 0;
+}
+
+.rightColumn {
+  flex: 0 0 320px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.highlightBox {
+  border-radius: 16px;
+  padding: 20px;
+  border: 1px solid transparent;
+}
+
+.warningBox {
+  border-color: rgba(245, 158, 11, 0.3);
+  background: linear-gradient(to right bottom, #fff, #fffbf2);
+}
+
+.tipBox {
+  border-color: rgba(20, 184, 166, 0.3);
+  background: linear-gradient(to right bottom, #fff, #f0fdfa);
+}
+
+.boxHeader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+  font-family: var(--font-khand);
+  font-size: 18px;
+  color: #333;
+}
+
+.highlightBox p {
+  font-family: var(--font-khand);
+  font-size: 16px;
+  color: #555;
+  margin: 0;
+  line-height: 1.4;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .gridContainer {
+    flex-direction: column;
+  }
+  .rightColumn {
+    flex: auto;
+  }
+  .scrollContent {
+    padding: 24px;
+  }
+}

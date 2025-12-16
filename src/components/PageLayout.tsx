@@ -6,8 +6,10 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useSession, signOut } from 'next-auth/react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { HelpCircle } from 'lucide-react'; // Added icon
 import { MobileRestriction } from '@/components/MobileRestriction';
 import LoadingScreen from '@/components/LoadingScreen';
+import InstructionsModal from '@/components/InstructionsModal'; // Added Modal
 import styles from './PageLayout.module.css';
 
 interface PageLayoutProps {
@@ -26,11 +28,12 @@ export default function PageLayout({
   cardStyle
 }: PageLayoutProps) {
   const { data: session } = useSession();
-  const pathname = usePathname(); // Get current route
+  const pathname = usePathname();
   const [currentTime, setCurrentTime] = useState('');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showScrollIndicator, setShowScrollIndicator] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [showInstructions, setShowInstructions] = useState(false); // Modal state
   
   const menuRef = useRef<HTMLDivElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
@@ -121,6 +124,13 @@ export default function PageLayout({
   return (
     <>
       <MobileRestriction />
+      
+      {/* Instructions Modal */}
+      <InstructionsModal 
+        isOpen={showInstructions} 
+        onClose={() => setShowInstructions(false)} 
+      />
+
       <motion.div 
         className={styles.pageContainer}
         initial={{ opacity: 0, y: 15 }}
@@ -138,6 +148,16 @@ export default function PageLayout({
             />
           </div>
           <div className={styles.headerRight}>
+            
+            {/* Help Button */}
+            <button 
+              className={styles.helpButton}
+              onClick={() => setShowInstructions(true)}
+              title="Guidelines & Instructions"
+            >
+              <HelpCircle size={22} />
+            </button>
+
             {actionButton}
 
             {showUserProfile && (
