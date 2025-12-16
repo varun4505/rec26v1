@@ -1,15 +1,9 @@
 import React from 'react';
-import styles from './LoadingScreen.module.css';
 
-interface LoadingScreenProps {
-  message?: string;
-}
-
-const LoadingScreen: React.FC<LoadingScreenProps> = ({ message = 'Loading...' }) => {
+const LoadingScreen: React.FC = () => {
   return (
-    <div className={styles.container}>
-      <div className={styles.spinner}></div>
-      <div className={styles.text}>{message}</div>
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-[#0a0a0a]">
+      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#FF8F6B]"></div>
     </div>
   );
 };

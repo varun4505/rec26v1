@@ -3,8 +3,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { useSession, signOut } from 'next-auth/react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { MobileRestriction } from '@/components/MobileRestriction';
+import LoadingScreen from '@/components/LoadingScreen';
 import styles from './PageLayout.module.css';
 
 interface PageLayoutProps {
@@ -23,9 +26,11 @@ export default function PageLayout({
   cardStyle
 }: PageLayoutProps) {
   const { data: session } = useSession();
+  const pathname = usePathname(); // Get current route
   const [currentTime, setCurrentTime] = useState('');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showScrollIndicator, setShowScrollIndicator] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   
   const menuRef = useRef<HTMLDivElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
@@ -33,6 +38,15 @@ export default function PageLayout({
   const userName = session?.user?.name || 'User';
   const userImage = session?.user?.image;
   const userInitial = userName.charAt(0).toUpperCase();
+
+  // Handle Loading State
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 500); 
+
+    return () => clearTimeout(timer);
+  }, []);
 
   useEffect(() => {
     const updateTime = () => {
@@ -78,7 +92,6 @@ export default function PageLayout({
       window.addEventListener('resize', checkScrollable);
     }
 
-    // A small delay to allow content to render
     const timeout = setTimeout(checkScrollable, 500);
 
     return () => {
@@ -88,16 +101,32 @@ export default function PageLayout({
       window.removeEventListener('resize', checkScrollable);
       clearTimeout(timeout);
     };
-  }, [children]);
+  }, [children, isLoading]);
 
   const handleLogout = () => {
     signOut({ callbackUrl: '/' });
   };
 
+  const isProfilePage = pathname === '/profile';
+
+  if (isLoading) {
+    return (
+      <>
+        <MobileRestriction />
+        <LoadingScreen />
+      </>
+    );
+  }
+
   return (
     <>
       <MobileRestriction />
-      <div className={styles.pageContainer}>
+      <motion.div 
+        className={styles.pageContainer}
+        initial={{ opacity: 0, y: 15 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, ease: "easeOut" }}
+      >
         <header className={styles.header}>
           <div className={styles.headerLeft}>
             <Image
@@ -130,16 +159,26 @@ export default function PageLayout({
                   )}
                 </div>
 
-                {isMenuOpen && (
-                  <div className={styles.userDropdownMenu}>
-                    <Link href="/profile" className={styles.dropdownLink}>
-                      View Profile
-                    </Link>
-                    <button onClick={handleLogout} className={styles.dropdownLink}>
-                      Logout
-                    </button>
-                  </div>
-                )}
+                <AnimatePresence>
+                  {isMenuOpen && (
+                    <motion.div 
+                      className={styles.userDropdownMenu}
+                      initial={{ opacity: 0, scale: 0.95, y: -10 }}
+                      animate={{ opacity: 1, scale: 1, y: 0 }}
+                      exit={{ opacity: 0, scale: 0.95, y: -10 }}
+                      transition={{ duration: 0.2, ease: "easeOut" }}
+                    >
+                      {!isProfilePage && (
+                        <Link href="/profile" className={styles.dropdownItem}>
+                          View Profile
+                        </Link>
+                      )}
+                      <button onClick={handleLogout} className={styles.dropdownItem}>
+                        Logout
+                      </button>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
             )}
 
@@ -164,7 +203,7 @@ export default function PageLayout({
             {children}
           </div>
         </main>
-      </div>
+      </motion.div>
     </>
   );
 }
