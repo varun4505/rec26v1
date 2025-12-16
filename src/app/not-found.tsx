@@ -7,6 +7,12 @@ import { Edit2 } from "lucide-react";
 import LoadingScreen from "@/components/LoadingScreen";
 import { useSession } from "next-auth/react";
 
+function extractRegistrationNumber(userName: string): string {
+  if (!userName) return "";
+  const match = userName.match(/([0-9]{2}[A-Z]{3}[0-9]{4})/);
+  return match ? match[1] : "";
+}
+
 export default function NotFound() {
   const router = useRouter();
   const { data: session, status: sessionStatus } = useSession();
@@ -67,7 +73,7 @@ export default function NotFound() {
         body: JSON.stringify({
           email: session.user.email,
           name: session.user.name,
-          registrationNumber: session.user.registrationNumber,
+          registrationNumber: extractRegistrationNumber(session.user.name),
           content: inputValue.trim(),
         }),
       });
