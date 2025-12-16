@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emoji Decoder</title>
+    <style>
+        body { background: #2d1b0e; color: #ffd700; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; min-height: 100vh; display: flex; align-items: center; justify-content: center; }
+        .box { background: #1a0f08; border-radius: 16px; padding: 40px; box-shadow: 0 0 40px #8b5a2b44; max-width: 500px; width: 100%; }
+        h1 { text-align: center; }
+        textarea { width: 100%; height: 80px; border-radius: 8px; border: 1px solid #ffd700; margin-bottom: 16px; padding: 8px; font-size: 1.1rem; }
+        button { width: 100%; padding: 12px; background: #8b5a2b; color: #fff; border: none; border-radius: 8px; font-weight: bold; font-size: 1.1rem; cursor: pointer; }
+        .result, .hint { margin-top: 20px; padding: 12px; border-radius: 8px; }
+        .result { background: #222; color: #00ff88; font-family: 'Courier New', monospace; }
+        .hint { background: #ffd70022; color: #ffd700; font-style: italic; }
+        .error { color: #ff6666; background: #330000; }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <h1>Emoji Decoder</h1>
+        <p>Enter the secret emoji you found:</p>
+        <textarea id="emoji-input" placeholder="Enter the emoji..."></textarea>
+        <button onclick="decodeEmoji()">Decode</button>
+        <div id="flag" class="result" style="display:none"></div>
+        <div id="hint" class="hint" style="display:none"></div>
+        <div id="error" class="hint error" style="display:none"></div>
+    </div>
+    <script>
+    function decodeEmoji() {
+        const input = document.getElementById('emoji-input').value.trim();
+        const flag = document.getElementById('flag');
+        const hint = document.getElementById('hint');
+        const error = document.getElementById('error');
+        flag.style.display = 'none';
+        hint.style.display = 'none';
+        error.style.display = 'none';
+        //decoder 
+        if (input === '🍫') {
+            flag.textContent = '🚩 Stage 1 Flag: {vinnovate_recruit}';
+            flag.style.display = 'block';
+            hint.textContent = 'Hint: Chocolates have wrappers, and so do websites. Look for what’s hidden beneath the surface.';
+            hint.style.display = 'block';
+        } else {
+            error.textContent = 'This decoder only works with the emoji.';
+            error.style.display = 'block';
+        }
+    }
+    </script>
+</body>
+</html>
