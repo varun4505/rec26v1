@@ -7,13 +7,12 @@ import { useRouter } from 'next/navigation';
 // --- UPDATED ICONS: Using Material Design Rounded for a smoother look ---
 import { MdNote , MdOutlineSearch } from 'react-icons/md';
 import { PiWarningCircleFill } from 'react-icons/pi';
+import PageLayout from '@/components/PageLayout';
 import styles from './Login.module.css';
 
-const CLUB_LOGO_PATH = '/assets/images/vinnovateit_white.svg';
 const GOOGLE_LOGO_PATH = '/google-logo.svg';
 
 export default function LoginPage() {
-  const [currentTime, setCurrentTime] = useState('');
   const { data: session, status } = useSession();
   const router = useRouter();
 
@@ -33,6 +32,7 @@ export default function LoginPage() {
 
     updateTime();
     const intervalId = setInterval(updateTime, 1000);
+
     return () => clearInterval(intervalId);
   }, []);
 
@@ -54,23 +54,19 @@ export default function LoginPage() {
     return null;
   }
 
+  // Override inner card style to match Figma/Login design
+  const cardStyle: React.CSSProperties = {
+    maxWidth: '1440px',
+    minHeight: '650px',
+    backgroundColor: '#e8e8e8',
+    padding: '40px 56px',
+    margin: '0 auto',
+    borderRadius: '40px',
+    color: '#212121'
+  };
+
   return (
-    <div className={styles.pageContainer}>
-      <header className={styles.header}>
-        <Image 
-          src={CLUB_LOGO_PATH} 
-          alt="Club Logo" 
-          width={150}
-          height={40}
-          className={styles.logo}
-          priority 
-        />
-        <span className={styles.time}>
-          {currentTime || '00:00'}
-        </span>
-      </header>
-      
-      <main className={styles.mainCard}>
+    <PageLayout showUserProfile={false} cardStyle={cardStyle}>
         <h1 className={styles.welcomeTitle}>
           Welcome To VinnovateIT Recruitments
         </h1>
@@ -164,18 +160,10 @@ export default function LoginPage() {
           </div>
           
         </div>
-      </main> 
-      
-      {/* Keeping global styles here for the icon colors as they rely on global scope */}
-      <style jsx global>{`
-        /* --- Icon Styling --- */
-        .rounded-icon {
-            flex-shrink: 0; 
-        }
-        .icon-blue { color: #3b82f6; }
-        .icon-amber { color: #f59e0b; }
-        .icon-teal { color: #14b8a6; }
-      `}</style>
-    </div>
+    </PageLayout>
   );
+}
+
+function setCurrentTime(arg0: string) {
+  throw new Error('Function not implemented.');
 }
