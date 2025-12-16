@@ -73,7 +73,7 @@ export default function NotFound() {
         body: JSON.stringify({
           email: session.user.email,
           name: session.user.name,
-          registrationNumber: extractRegistrationNumber(session.user.name),
+          registrationNumber: extractRegistrationNumber(session.user.name ?? ""),
           content: inputValue.trim(),
         }),
       });
