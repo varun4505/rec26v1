@@ -1047,9 +1047,9 @@ export default function QuizPage() {
 														{task.description.split(/(?=\p{Emoji_Presentation}|\p{Extended_Pictographic})/gu).map((part: string, idx: number) => {
 															const trimmedPart = part.trim();
 															if (!trimmedPart) return null;
-															// Check if this part starts with 'Example:' (case-insensitive)
-															const isExample = /^Example:/i.test(trimmedPart);
-															if (isExample) {
+															// Check if this part has any emoji at the start
+															const hasEmoji = /^\p{Emoji_Presentation}|^\p{Extended_Pictographic}/u.test(trimmedPart);
+															if (hasEmoji) {
 																// This is an example section
 																const [emoji, ...rest] = trimmedPart.split(' ');
 																const text = rest.join(' ');
