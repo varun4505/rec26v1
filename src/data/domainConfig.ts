@@ -8,6 +8,7 @@ export interface SubdomainInfo {
   name: string;
   slug: string;
   rounds?: RoundInfo[];
+  discordLink?: string;
 }
 
 export interface RoundInfo {
@@ -24,6 +25,7 @@ export interface DomainConfig {
   hasSubdomains: boolean;
   subdomains: SubdomainInfo[];
   rounds: RoundInfo[];
+  discordLink?: string;
 }
 
 export const DOMAIN_CONFIG: Record<DomainType, DomainConfig> = {
@@ -32,14 +34,16 @@ export const DOMAIN_CONFIG: Record<DomainType, DomainConfig> = {
     name: 'Technical',
     slug: 'tech',
     hasSubdomains: true,
+    discordLink: 'https://chat.whatsapp.com/IaFzkDYyrlOAE5fWChhw2G',
     subdomains: [
-      { id: 'web-dev', name: 'Web Development', slug: 'web-development' },
-      { id: 'app-dev', name: 'App Development', slug: 'app-development' },
-      { id: 'aiml', name: 'AI/ML', slug: 'aiml' },
+      { id: 'web-dev', name: 'Web Development', slug: 'web-development', discordLink: 'https://chat.whatsapp.com/DCf0DGzmZg0532EEXy1ohc' },
+      { id: 'app-dev', name: 'App Development', slug: 'app-development', discordLink: 'https://chat.whatsapp.com/IQDQKcbubKRBXkmXlzeHvV' },
+      { id: 'aiml', name: 'AI/ML', slug: 'aiml', discordLink: 'https://chat.whatsapp.com/CEQN9aHEK7B8TiH9BsdESm' },
       { 
         id: 'cp', 
         name: 'Competitive Coding', 
         slug: 'competitive-coding',
+        discordLink: 'https://chat.whatsapp.com/CXRgu9Q8LctKNB2ojguYUD',
         rounds: [
           {
             id: 'round1',
@@ -53,6 +57,7 @@ export const DOMAIN_CONFIG: Record<DomainType, DomainConfig> = {
         id: 'cyber', 
         name: 'Cyber Security', 
         slug: 'cyber-security',
+        discordLink: 'https://chat.whatsapp.com/Fb18zd7FLQVKaIGQE33G5g',
         rounds: [
           {
             id: 'round1',
@@ -83,6 +88,7 @@ export const DOMAIN_CONFIG: Record<DomainType, DomainConfig> = {
     name: 'Management',
     slug: 'management',
     hasSubdomains: false,
+    discordLink: 'https://chat.whatsapp.com/CI17rpG9PO7L2NAbbQeDQV',
     subdomains: [],
     rounds: [
       {
@@ -98,10 +104,11 @@ export const DOMAIN_CONFIG: Record<DomainType, DomainConfig> = {
     name: 'Design',
     slug: 'design',
     hasSubdomains: true,
+    discordLink: 'https://chat.whatsapp.com/IaFzkDYyrlOAE5fWChhw2G',
     subdomains: [
-      { id: 'uiux', name: 'UI/UX', slug: 'ui-ux' },
-      { id: 'graphics', name: 'Graphic Design', slug: 'graphics-design' },
-      { id: 'video', name: 'Video Editing', slug: 'video-editing' },
+      { id: 'uiux', name: 'UI/UX', slug: 'ui-ux', discordLink: 'https://chat.whatsapp.com/BkPhU2xkZVWFeVRvWMJTbJ' },
+      { id: 'graphics', name: 'Graphic Design', slug: 'graphics-design', discordLink: 'https://chat.whatsapp.com/BkPhU2xkZVWFeVRvWMJTbJ' },
+      { id: 'video', name: 'Video Editing', slug: 'video-editing', discordLink: 'https://chat.whatsapp.com/BhbVgCJFThz08U4ziqgk2O' },
     ],
     rounds: [
       {
@@ -136,6 +143,20 @@ export function getRoundInfo(domain: DomainType, round: RoundType, subdomain?: s
   }
 
   return config.rounds.find(r => r.id === round);
+}
+
+export function getDiscordLink(domain: DomainType, subdomainSlug?: string | null): string | undefined {
+  const config = DOMAIN_CONFIG[domain];
+  if (!config) return undefined;
+
+  if (subdomainSlug && config.hasSubdomains) {
+    const subConfig = config.subdomains.find(s => s.slug === subdomainSlug);
+    if (subConfig?.discordLink) {
+      return subConfig.discordLink;
+    }
+  }
+
+  return config.discordLink;
 }
 
 export function validateDomainSubmission(

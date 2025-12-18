@@ -5,7 +5,7 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { ArrowRight, X, Edit2 } from 'lucide-react';
 import styles from '../Dashboard.module.css';
-import { DOMAIN_CONFIG, type DomainType, getSubdomainInfo } from '@/data/domainConfig';
+import { DOMAIN_CONFIG, type DomainType, getSubdomainInfo, getDiscordLink } from '@/data/domainConfig';
 import ConfirmModal from '@/components/ConfirmModal';
 import AlertModal from '@/components/AlertModal';
 
@@ -317,11 +317,12 @@ export default function SubdomainSelector({ domain }: SubdomainSelectorProps) {
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
-                              window.open('https://discord.gg/5cjAGQdvhB', '_blank');
+                              const discordLink = getDiscordLink(domain, itemSlug);
+                              if (discordLink) window.open(discordLink, '_blank');
                             }}
                             className={styles.proceedButton}
                           >
-                            Join Discord for Interview <ArrowRight size={16} />
+                            Join Whatsapp group for Interview <ArrowRight size={16} />
                           </button>
                         )}
                         {/* Round 2 Logic for multi-round domains */}
@@ -348,11 +349,12 @@ export default function SubdomainSelector({ domain }: SubdomainSelectorProps) {
                               <button
                                 onClick={(e) => {
                                   e.stopPropagation();
-                                  window.open('https://discord.gg/5cjAGQdvhB', '_blank');
+                                  const discordLink = getDiscordLink(domain, itemSlug);
+                                  if (discordLink) window.open(discordLink, '_blank');
                                 }}
                                 className={styles.proceedButton}
                               >
-                                Join Discord for Interview <ArrowRight size={16} />
+                                Join Whatsapp group for Interview <ArrowRight size={16} />
                               </button>
                             )}
                              {round2Status !== 'Pending' && round2Status !== 'Passed' && (

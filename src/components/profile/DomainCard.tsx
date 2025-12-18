@@ -4,7 +4,7 @@
 
 import React from "react";
 import { useRouter } from "next/navigation";
-import { getDomainConfig, getSubdomainInfo } from "@/data/domainConfig";
+import { getDomainConfig, getSubdomainInfo, getDiscordLink } from "@/data/domainConfig";
 
 interface UserApplication {
   domain: string;
@@ -191,7 +191,12 @@ export const ApplicationCard: React.FC<ApplicationCardProps> = ({
                         height: "clamp(30px, 5vw, 36px)",
                       }}
                       aria-label="Schedule Interview"
-                      onClick={() => alert("Redirecting to interview scheduler...")}
+                      onClick={() => {
+                        const discordLink = getDiscordLink(application.domain.toLowerCase() as any, application.subdomain);
+                        if (discordLink) {
+                          window.open(discordLink, '_blank');
+                        }
+                      }}
                     >
                       <svg
                         width="20"
@@ -226,7 +231,10 @@ export const ApplicationCard: React.FC<ApplicationCardProps> = ({
               }}
               onClick={() => {
                 if (application.round2Status === "Passed" || (isSingleRound && application.round1Status === "Passed")) {
-                  alert("Redirecting to interview scheduler...");
+                  const discordLink = getDiscordLink(application.domain.toLowerCase() as any, application.subdomain);
+                  if (discordLink) {
+                    window.open(discordLink, '_blank');
+                  }
                 } else {
                   handleRoundClick(
                     application.round2Status ? "Round 2" : "Round 1"
