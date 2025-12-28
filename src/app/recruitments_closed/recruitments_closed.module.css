@@ -1,0 +1,856 @@
+/* ============== MAIN CONTAINER ============== */
+.container {
+	min-height: 100vh;
+	width: 100%;
+	position: relative;
+	overflow-x: hidden;
+	background: linear-gradient(135deg, #0a0a0f 0%, #0d0d15 50%, #0a0a0f 100%);
+}
+
+/* ============== BACKGROUND ELEMENTS ============== */
+.bgStars {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	z-index: 0;
+	pointer-events: none;
+	background-image: radial-gradient(
+			1px 1px at 20px 30px,
+			rgba(255, 255, 255, 0.5),
+			transparent
+		),
+		radial-gradient(1px 1px at 40px 70px, rgba(255, 255, 255, 0.3), transparent),
+		radial-gradient(
+			1.5px 1.5px at 50px 160px,
+			rgba(255, 255, 255, 0.5),
+			transparent
+		),
+		radial-gradient(1px 1px at 90px 40px, rgba(255, 255, 255, 0.4), transparent),
+		radial-gradient(
+			1.5px 1.5px at 130px 80px,
+			rgba(248, 104, 0, 0.4),
+			transparent
+		),
+		radial-gradient(
+			1px 1px at 160px 120px,
+			rgba(255, 255, 255, 0.3),
+			transparent
+		);
+	background-size: 200px 200px;
+	animation: twinkle 4s ease-in-out infinite alternate;
+}
+
+@keyframes twinkle {
+	0% {
+		opacity: 0.7;
+	}
+	100% {
+		opacity: 1;
+	}
+}
+
+.bgGrid {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-image: linear-gradient(
+			to right,
+			rgba(248, 104, 0, 0.03) 1px,
+			transparent 1px
+		),
+		linear-gradient(to bottom, rgba(248, 104, 0, 0.03) 1px, transparent 1px);
+	background-size: 50px 50px;
+	z-index: 1;
+	pointer-events: none;
+}
+
+.orb {
+	position: fixed;
+	width: 300px;
+	height: 300px;
+	border-radius: 50%;
+	background: radial-gradient(
+		circle,
+		rgba(248, 104, 0, 0.15) 0%,
+		transparent 70%
+	);
+	filter: blur(60px);
+	z-index: 0;
+	pointer-events: none;
+	animation: orbFloat 12s ease-in-out infinite;
+}
+
+@keyframes orbFloat {
+	0%,
+	100% {
+		transform: translate(0, 0) scale(1);
+	}
+	33% {
+		transform: translate(30px, -30px) scale(1.1);
+	}
+	66% {
+		transform: translate(-20px, 20px) scale(0.9);
+	}
+}
+
+/* ============== MAIN CONTENT ============== */
+.main {
+	position: relative;
+	z-index: 10;
+	padding: 0;
+	max-width: 100%;
+	margin: 0;
+}
+
+/* ============== HERO SECTION ============== */
+.heroSection {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	padding: 2rem;
+	text-align: center;
+}
+
+.subtitle {
+	font-size: 1.6rem;
+	color: rgba(255, 255, 255, 0.6);
+	margin-top: 1rem;
+	font-weight: 300;
+}
+
+.messageBox {
+	margin-top: 2rem;
+	padding: 1.5rem 2.5rem;
+	background: linear-gradient(
+		135deg,
+		rgba(248, 104, 0, 0.1) 0%,
+		rgba(255, 255, 255, 0.05) 100%
+	);
+	backdrop-filter: blur(10px);
+	border-radius: 20px;
+	border: 1px solid rgba(248, 104, 0, 0.2);
+	box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+	max-width: 500px;
+}
+
+.messageBox p {
+	font-size: 1.2rem;
+	color: rgba(255, 255, 255, 0.9);
+	margin: 0.5rem 0;
+}
+
+.messageSmall {
+	font-size: 1rem !important;
+	color: rgba(255, 255, 255, 0.5) !important;
+	margin-top: 0.8rem !important;
+}
+
+/* ============== FLOATING LETTERS ============== */
+.floatingSection {
+	position: relative;
+	width: 100vw;
+	height: 60vh;
+	min-height: 350px;
+	padding: 0;
+	margin: 0;
+	margin-left: calc(-50vw + 50%);
+	z-index: 5;
+}
+
+.floatingContainer {
+	position: relative;
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+	background: transparent;
+}
+
+.floatingLetter {
+	position: absolute;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-family: var(--font-array), "Arial Black", sans-serif;
+	font-size: inherit;
+	font-weight: 900;
+	cursor: grab;
+	user-select: none;
+	transition: transform 0.1s ease;
+	z-index: 2;
+}
+
+.floatingLetter:hover {
+	filter: brightness(1.2);
+}
+
+.floatingLetter.hasGravity {
+	filter: drop-shadow(0 0 8px currentColor);
+}
+
+.groundLine {
+	position: absolute;
+	bottom: 40px;
+	left: 0;
+	right: 0;
+	height: 2px;
+	background: linear-gradient(
+		90deg,
+		transparent 0%,
+		rgba(248, 104, 0, 0.3) 10%,
+		rgba(248, 104, 0, 0.6) 30%,
+		rgba(248, 104, 0, 0.8) 50%,
+		rgba(248, 104, 0, 0.6) 70%,
+		rgba(248, 104, 0, 0.3) 90%,
+		transparent 100%
+	);
+	pointer-events: none;
+	box-shadow: 0 0 20px rgba(248, 104, 0, 0.4), 0 0 40px rgba(248, 104, 0, 0.2),
+		0 -10px 30px rgba(248, 104, 0, 0.1);
+}
+
+.groundLine::before {
+	content: "";
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	height: 60px;
+	background: linear-gradient(
+		to top,
+		rgba(248, 104, 0, 0.05) 0%,
+		transparent 100%
+	);
+	pointer-events: none;
+}
+
+.floatingControls {
+	display: flex;
+	gap: 1rem;
+	margin-top: 1rem;
+}
+
+.actionBtn {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	padding: 0.8rem 2rem;
+	font-size: 1rem;
+	font-weight: 600;
+	color: #fff;
+	background: linear-gradient(
+		135deg,
+		rgba(248, 104, 0, 0.2) 0%,
+		rgba(248, 104, 0, 0.08) 100%
+	);
+	border: 1px solid rgba(248, 104, 0, 0.3);
+	border-radius: 12px;
+	cursor: pointer;
+	transition: all 0.25s ease;
+	backdrop-filter: blur(10px);
+}
+
+.actionBtn span {
+	font-size: 1.1rem;
+}
+
+.actionBtn:hover {
+	background: linear-gradient(
+		135deg,
+		rgba(248, 104, 0, 0.35) 0%,
+		rgba(248, 104, 0, 0.15) 100%
+	);
+	border-color: rgba(248, 104, 0, 0.5);
+	transform: translateY(-2px);
+	box-shadow: 0 8px 25px rgba(248, 104, 0, 0.25);
+}
+
+.actionBtn:active {
+	transform: translateY(0);
+}
+
+.floatingHint {
+	margin-top: 1.2rem;
+	font-size: 1rem;
+	color: rgba(255, 255, 255, 0.5);
+	letter-spacing: 0.3px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+	.floatingSection {
+		height: 45vh;
+		min-height: 280px;
+	}
+
+	.floatingLetter {
+		font-size: 28px;
+	}
+
+	.floatingControls {
+		gap: 0.75rem;
+	}
+
+	.actionBtn {
+		padding: 0.7rem 1.5rem;
+		font-size: 0.9rem;
+	}
+
+	.groundLine {
+		bottom: 40px;
+	}
+
+	.groundLine::before {
+		height: 40px;
+	}
+}
+
+@media (max-width: 500px) {
+	.floatingSection {
+		height: 40vh;
+		min-height: 250px;
+	}
+
+	.floatingLetter {
+		font-size: 24px;
+	}
+
+	.groundLine {
+		bottom: 30px;
+	}
+
+	.groundLine::before {
+		height: 40px;
+	}
+}
+
+/* ============== GAME SECTION ============== */
+.gameSection {
+	margin-top: 4rem;
+	padding: 2rem;
+	background: linear-gradient(
+		135deg,
+		rgba(255, 255, 255, 0.03) 0%,
+		rgba(248, 104, 0, 0.05) 100%
+	);
+	backdrop-filter: blur(10px);
+	border-radius: 30px;
+	border: 1px solid rgba(248, 104, 0, 0.15);
+	box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.gameTitle {
+	font-size: 2.5rem;
+	text-align: center;
+	color: #f86800;
+	margin-bottom: 0.5rem;
+}
+
+.gameSubtitle {
+	text-align: center;
+	color: rgba(255, 255, 255, 0.5);
+	margin-bottom: 2rem;
+	font-size: 1rem;
+}
+
+.gameContainer {
+	display: grid;
+	grid-template-columns: 1fr 280px;
+	gap: 2rem;
+	max-width: 1150px;
+	margin: 0 auto;
+}
+
+@media (max-width: 1100px) {
+	.gameContainer {
+		grid-template-columns: 1fr;
+		max-width: 850px;
+	}
+}
+
+.gameWrapper {
+	position: relative;
+	width: 100%;
+}
+
+.gameCanvas {
+	width: 100%;
+	max-width: 800px;
+	height: auto;
+	aspect-ratio: 800 / 550;
+	border-radius: 15px;
+	border: 2px solid rgba(248, 104, 0, 0.3);
+	box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+	display: block;
+}
+
+/* ============== GAME OVERLAY ============== */
+.gameOverlay {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	max-width: 800px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	background: rgba(10, 10, 15, 0.95);
+	backdrop-filter: blur(8px);
+	border-radius: 15px;
+	z-index: 20;
+}
+
+.gameOverlay h3 {
+	font-size: 2.2rem;
+	color: #f86800;
+	margin-bottom: 1rem;
+}
+
+.gameOverlay p {
+	color: rgba(255, 255, 255, 0.7);
+	font-size: 1rem;
+	margin: 0.3rem 0;
+}
+
+.instructions {
+	margin: 1.5rem 0;
+	text-align: center;
+}
+
+.instructions p {
+	margin-bottom: 1rem;
+}
+
+.key {
+	display: inline-block;
+	padding: 0.3rem 0.6rem;
+	margin: 0 0.2rem;
+	background: rgba(248, 104, 0, 0.2);
+	border: 1px solid rgba(248, 104, 0, 0.4);
+	border-radius: 6px;
+	font-family: monospace;
+	font-size: 0.9rem;
+	color: #f86800;
+}
+
+.legend {
+	display: flex;
+	flex-direction: column;
+	gap: 0.8rem;
+	margin-top: 1rem;
+	padding: 1rem;
+	background: rgba(255, 255, 255, 0.03);
+	border-radius: 10px;
+}
+
+.legendItem {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	gap: 1rem;
+}
+
+.legendItem span:first-child {
+	font-size: 1.5rem;
+	letter-spacing: 0.3rem;
+}
+
+.bad {
+	color: #ef4444;
+	font-weight: bold;
+}
+
+.good {
+	color: #22c55e;
+	font-weight: bold;
+}
+
+.startButton {
+	margin-top: 1.5rem;
+	padding: 1rem 2.5rem;
+	font-size: 1.1rem;
+	font-weight: 600;
+	color: #000;
+	background: linear-gradient(90deg, #ff9a5e 0%, #f86800 100%);
+	border: none;
+	border-radius: 50px;
+	cursor: pointer;
+	transition: all 0.3s ease;
+	box-shadow: 0 4px 20px rgba(248, 104, 0, 0.4);
+}
+
+.startButton:hover {
+	transform: scale(1.05) translateY(-2px);
+	box-shadow: 0 8px 30px rgba(248, 104, 0, 0.5);
+}
+
+.startButton:focus {
+	outline: none;
+	box-shadow: 0 0 0 3px rgba(248, 104, 0, 0.5);
+}
+
+.finalScore {
+	font-size: 2rem !important;
+	color: #f86800 !important;
+	font-weight: bold;
+}
+
+/* ============== NAME INPUT ============== */
+.nameInputContainer {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	gap: 0.8rem;
+	margin-top: 1rem;
+}
+
+.nameInput {
+	padding: 0.8rem 1.2rem;
+	font-size: 1rem;
+	background: rgba(255, 255, 255, 0.1);
+	border: 2px solid rgba(248, 104, 0, 0.5);
+	border-radius: 10px;
+	color: #fff;
+	text-align: center;
+	width: 150px;
+	transition: all 0.3s ease;
+}
+
+.nameInput:focus {
+	outline: none;
+	border-color: #f86800;
+	box-shadow: 0 0 20px rgba(248, 104, 0, 0.3);
+}
+
+.nameInput::placeholder {
+	color: rgba(255, 255, 255, 0.4);
+}
+
+.saveButton {
+	padding: 0.8rem 1.5rem;
+	font-size: 1rem;
+	font-weight: 600;
+	color: #000;
+	background: linear-gradient(90deg, #ff9a5e 0%, #f86800 100%);
+	border: none;
+	border-radius: 10px;
+	cursor: pointer;
+	transition: all 0.3s ease;
+}
+
+.saveButton:hover {
+	transform: scale(1.05);
+}
+
+.skipButton {
+	padding: 0.8rem 1.5rem;
+	font-size: 1rem;
+	font-weight: 600;
+	color: rgba(255, 255, 255, 0.6);
+	background: transparent;
+	border: 1px solid rgba(255, 255, 255, 0.2);
+	border-radius: 10px;
+	cursor: pointer;
+	transition: all 0.3s ease;
+}
+
+.skipButton:hover {
+	background: rgba(255, 255, 255, 0.1);
+	color: #fff;
+}
+
+/* ============== LEADERBOARD ============== */
+.leaderboard {
+	background: linear-gradient(
+		135deg,
+		rgba(255, 255, 255, 0.05) 0%,
+		rgba(248, 104, 0, 0.05) 100%
+	);
+	backdrop-filter: blur(10px);
+	border-radius: 20px;
+	padding: 1.5rem;
+	border: 1px solid rgba(248, 104, 0, 0.2);
+	box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+	height: fit-content;
+}
+
+.leaderboardTitle {
+	font-size: 1.4rem;
+	color: #f86800;
+	text-align: center;
+	margin-bottom: 1rem;
+	padding-bottom: 0.5rem;
+	border-bottom: 2px solid rgba(248, 104, 0, 0.2);
+}
+
+.noScores {
+	text-align: center;
+	color: rgba(255, 255, 255, 0.4);
+	font-style: italic;
+	padding: 2rem 0;
+}
+
+.leaderboardList {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+.leaderboardEntry {
+	display: flex;
+	align-items: center;
+	padding: 0.6rem 0.5rem;
+	border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+	transition: background 0.3s ease;
+}
+
+.leaderboardEntry:hover {
+	background: rgba(248, 104, 0, 0.1);
+	border-radius: 8px;
+}
+
+.leaderboardEntry:last-child {
+	border-bottom: none;
+}
+
+.rank {
+	font-size: 1.1rem;
+	width: 2rem;
+	text-align: center;
+}
+
+.entryName {
+	flex: 1;
+	font-weight: 500;
+	color: rgba(255, 255, 255, 0.8);
+	font-size: 0.95rem;
+}
+
+.entryScore {
+	font-weight: bold;
+	color: #f86800;
+	font-size: 1rem;
+	font-family: var(--font-khand), sans-serif;
+}
+
+/* ============== FOOTER ============== */
+.footer {
+	text-align: center;
+	padding: 3rem 0 2rem;
+	color: rgba(255, 255, 255, 0.4);
+	font-size: 1rem;
+}
+
+/* ============== RESPONSIVE ============== */
+@media (max-width: 768px) {
+	.main {
+		padding: 1rem;
+	}
+
+	.heroSection {
+		padding-top: 2rem;
+		min-height: auto;
+	}
+
+	.wordBlocksContainer {
+		height: 300px;
+	}
+
+	.block3d {
+		width: 50px;
+		height: 60px;
+	}
+
+	.blockFront {
+		font-size: 1.8rem;
+	}
+
+	.subtitle {
+		font-size: 1.2rem;
+	}
+
+	.messageBox {
+		padding: 1rem 1.5rem;
+		margin: 1.5rem 1rem 0;
+	}
+
+	.gameSection {
+		margin-top: 2rem;
+		padding: 1rem;
+		border-radius: 20px;
+	}
+
+	.gameTitle {
+		font-size: 1.6rem;
+		margin-bottom: 0.3rem;
+	}
+
+	.gameSubtitle {
+		font-size: 0.85rem;
+		margin-bottom: 1rem;
+	}
+
+	.gameContainer {
+		gap: 1.5rem;
+	}
+
+	.gameCanvas {
+		max-width: 100%;
+		border-radius: 10px;
+	}
+
+	.gameWrapper {
+		overflow: hidden;
+	}
+
+	.gameOverlay {
+		padding: 1rem;
+		border-radius: 10px;
+	}
+
+	.gameOverlay h3 {
+		font-size: 1.4rem;
+		margin-bottom: 0.5rem;
+	}
+
+	.gameOverlay p {
+		font-size: 0.9rem;
+	}
+
+	.instructions {
+		margin: 1rem 0;
+	}
+
+	.instructions p {
+		font-size: 0.85rem;
+		margin-bottom: 0.5rem;
+	}
+
+	.key {
+		padding: 0.2rem 0.4rem;
+		font-size: 0.75rem;
+	}
+
+	.legend {
+		flex-direction: column;
+		gap: 0.5rem;
+		padding: 0.75rem;
+	}
+
+	.legendItem {
+		font-size: 0.85rem;
+	}
+
+	.legendItem span:first-child {
+		font-size: 1rem;
+		letter-spacing: 0.15rem;
+	}
+
+	.startButton {
+		padding: 0.8rem 1.5rem;
+		font-size: 0.95rem;
+		margin-top: 1rem;
+	}
+
+	.leaderboard {
+		padding: 1rem;
+		border-radius: 15px;
+	}
+
+	.leaderboardTitle {
+		font-size: 1.2rem;
+	}
+
+	.leaderboardEntry {
+		padding: 0.5rem 0.3rem;
+	}
+
+	.entryName {
+		font-size: 0.85rem;
+	}
+
+	.entryScore {
+		font-size: 0.9rem;
+	}
+
+	.nameInputContainer {
+		flex-direction: column;
+		gap: 0.5rem;
+	}
+
+	.nameInput {
+		width: 100%;
+		max-width: 200px;
+	}
+
+	.saveButton,
+	.skipButton {
+		padding: 0.6rem 1.2rem;
+		font-size: 0.9rem;
+	}
+}
+
+@media (max-width: 480px) {
+	.block3d {
+		width: 40px;
+		height: 50px;
+	}
+
+	.blockFront {
+		font-size: 1.4rem;
+	}
+
+	.blockTop {
+		height: 10px;
+		top: -8px;
+	}
+
+	.blockRight {
+		width: 10px;
+		right: -7px;
+	}
+
+	.wordBlocksContainer {
+		height: 280px;
+	}
+
+	.controlBtn {
+		padding: 0.5rem 1rem;
+		font-size: 0.9rem;
+	}
+
+	.gameSection {
+		padding: 0.75rem;
+		margin-top: 1.5rem;
+	}
+
+	.gameTitle {
+		font-size: 1.4rem;
+	}
+
+	.gameSubtitle {
+		font-size: 0.75rem;
+	}
+
+	.gameOverlay h3 {
+		font-size: 1.2rem;
+	}
+
+	.legend {
+		padding: 0.5rem;
+	}
+
+	.legendItem span:first-child {
+		font-size: 0.9rem;
+	}
+
+	.finalScore {
+		font-size: 1.5rem !important;
+	}
+}
