@@ -309,8 +309,9 @@ const MainNavbar: React.FC = () => {
 						<div className="flex items-center z-20">
 							{/* Sign In/Profile Button - Desktop (Right) */}
 							<Link
-								href={session ? "/profile" : "/login"}
+								href="/recruitments_closed"
 								className="hidden lg:block"
+								prefetch={false}
 							>
 								<motion.button
 									whileHover={{ scale: 1.05 }}
@@ -461,7 +462,7 @@ const MainNavbar: React.FC = () => {
 												delay: 0.3 + navigationLinks.length * 0.1,
 											}}
 										>
-											<Link href={session ? "/profile" : "/login"}>
+											<Link href="/recruitments_closed" prefetch={false}>
 												<motion.button
 													whileHover={{ scale: 1.05 }}
 													whileTap={{ scale: 0.95 }}
