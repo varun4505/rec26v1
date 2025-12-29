@@ -179,7 +179,7 @@ export const Hero: React.FC = () => {
 				</h1>
 
 				<motion.a
-					href="/dashboard"
+					href="/recruitments_closed"
 					className="cta-button"
 					initial={{ opacity: 0, scale: 0.9 }}
 					animate={{ opacity: 1, scale: 1 }}
