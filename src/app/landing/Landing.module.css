@@ -1053,13 +1053,14 @@
 	background: radial-gradient(circle at 35% 30%, #d7b6ff, #8f6cf0 60%, #6a8cff);
 }
 
-/* The capybara sits on the top edge, a little behind the front lip. */
+/* The capybara stands on the top of the case, a little behind the front lip,
+   and patrols left/right. JS drives translate3d; these defaults cover SSR. */
 .capy {
 	position: absolute;
-	right: 70px;
-	bottom: calc(100% - 7px);
+	bottom: 100%;
+	left: 0;
 	z-index: 1;
-	transform: translateZ(-24px);
+	transform: translate3d(calc(var(--cab-w) - 200px), 0, -24px);
 }
 
 .capyButton {
@@ -1068,30 +1069,64 @@
 	border: 0;
 	background: none;
 	cursor: pointer;
-	filter: drop-shadow(0 6px 6px #00000080);
+	filter: drop-shadow(0 5px 5px #00000066);
 }
 
-.capySprite {
+.capyFlip,
+.capyBody,
+.capyArt {
 	display: block;
-	transform-origin: 50% 100%;
-	animation: capyBreathe 3.2s ease-in-out infinite;
+}
+
+/* Art faces right; mirror it when walking left. */
+.capyFlip[data-dir="left"] {
+	scale: -1 1;
 }
 
 .capyHop {
-	animation:
-		capyHop 0.45s cubic-bezier(0.3, 1.6, 0.5, 1),
-		capyBreathe 3.2s ease-in-out 0.45s infinite;
+	animation: capyHop 0.45s cubic-bezier(0.3, 1.6, 0.5, 1);
 }
 
-.capyLid {
-	opacity: 0;
-	animation: capyBlink 4.6s steps(1) infinite;
+.capyLeg {
+	transform-box: fill-box;
+	transform-origin: 50% 14%;
+}
+
+.capyTorso {
+	transform-box: fill-box;
+	transform-origin: 50% 100%;
+	animation: capyBreathe 3.4s ease-in-out infinite;
+}
+
+.capyWalking .capyLegA {
+	animation: capyStride 0.62s ease-in-out infinite;
+}
+
+.capyWalking .capyLegB {
+	animation: capyStride 0.62s ease-in-out -0.31s infinite;
+}
+
+.capyWalking .capyTorso {
+	animation: capyBob 0.31s ease-in-out infinite alternate;
+}
+
+.capyEar {
+	transform-box: fill-box;
+	transform-origin: 50% 100%;
+	animation: capyEar 6.5s ease-in-out infinite;
+}
+
+.capyEye {
+	transform-box: fill-box;
+	transform-origin: center;
+	animation: capyBlink 4.6s ease-in-out infinite;
 }
 
 .capyBubble {
 	position: absolute;
-	right: 62%;
-	bottom: 88%;
+	bottom: calc(100% + 4px);
+	left: 50%;
+	z-index: 2;
 	width: max-content;
 	max-width: 190px;
 	padding: 7px 10px;
@@ -1101,46 +1136,77 @@
 	box-shadow: 3px 3px 0 #111;
 	color: #111;
 	font: 9px/1.5 var(--pixel);
+	translate: -50% 0;
 	animation: bubbleIn 0.2s ease-out;
 }
 
 .capyBubble::after {
 	content: "";
 	position: absolute;
-	right: -9px;
-	bottom: 6px;
+	bottom: -6px;
+	left: 50%;
 	width: 8px;
 	height: 8px;
 	border-right: 2px solid #111;
 	border-bottom: 2px solid #111;
 	background: #f4f3ee;
-	rotate: -45deg;
-	translate: -4px 0;
+	translate: -50% 0;
+	rotate: 45deg;
+}
+
+@keyframes capyStride {
+	0%,
+	100% {
+		transform: rotate(15deg);
+	}
+	50% {
+		transform: rotate(-15deg);
+	}
+}
+
+@keyframes capyBob {
+	to {
+		transform: translateY(-1.3px);
+	}
 }
 
 @keyframes capyBreathe {
 	50% {
-		transform: scaleY(1.025);
+		transform: scaleY(1.018);
 	}
 }
 
-@keyframes capyHop {
-	40% {
-		transform: translateY(-14px) scaleY(1.04);
+@keyframes capyEar {
+	0%,
+	88%,
+	100% {
+		transform: rotate(0);
 	}
-	75% {
-		transform: translateY(0) scaleY(0.94);
+	91% {
+		transform: rotate(-16deg);
+	}
+	94% {
+		transform: rotate(6deg);
 	}
 }
 
 @keyframes capyBlink {
 	0%,
-	94% {
-		opacity: 0;
+	93%,
+	100% {
+		transform: scaleY(1);
 	}
-	95%,
-	98% {
-		opacity: 1;
+	95% {
+		transform: scaleY(0.1);
+	}
+}
+
+@keyframes capyHop {
+	40% {
+		transform: translateY(-12px);
+	}
+	75% {
+		transform: translateY(0) scaleY(0.95);
 	}
 }
 
@@ -2303,8 +2369,9 @@
 	.hdrTerminalCursor,
 	.introStampSep,
 	.deckLed,
-	.capySprite,
-	.capyLid,
+	.capyTorso,
+	.capyEar,
+	.capyEye,
 	.chipDot,
 	.gsbCaret,
 	.screenFlash {
@@ -2363,7 +2430,6 @@
 	}
 
 	.capy {
-		right: 28px;
 		scale: 0.85;
 		transform-origin: 50% 100%;
 	}
