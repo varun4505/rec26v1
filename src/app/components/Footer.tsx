@@ -15,11 +15,11 @@ const Footer = () => {
         <div className="flex flex-col items-center md:items-start">
           <div className="mb-5">
             <Image
-              src="/whiteLogoViit.svg"
+              src="/assets/images/vinnovateit_white.svg"
               alt="VinnovateIT Logo"
-              width={120}
-              height={40}
-              className="h-9 w-auto opacity-90"
+              width={140}
+              height={45}
+              className="h-11 w-auto opacity-90"
             />
           </div>
           <div className="flex justify-center md:justify-start gap-5">

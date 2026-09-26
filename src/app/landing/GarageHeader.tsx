@@ -29,7 +29,7 @@ export default function GarageHeader() {
 						window.scrollTo({ top: 0, behavior: "smooth" });
 					}}
 				>
-					<Image src="/whiteLogoViit.svg" alt="VinnovateIT" width={92} height={30} priority />
+					<Image src="/assets/images/vinnovateit_white.svg" alt="VinnovateIT" width={112} height={36} priority />
 				</a>
 				<div className={s.hdrRight}>
 					<button type="button" className={s.hdrCmd} onClick={openPalette}>
