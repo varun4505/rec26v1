@@ -529,6 +529,20 @@
 	transform: rotateY(3deg) rotateX(0deg) rotate(0deg);
 }
 
+/* Grabbed: follow the pointer 1:1, no easing. Horizontal touch drags tilt,
+   vertical ones still scroll the page. */
+.cab {
+	touch-action: pan-y;
+	cursor: grab;
+}
+
+.cab[data-tilting] {
+	transition: none;
+	cursor: grabbing;
+	-webkit-user-select: none;
+	user-select: none;
+}
+
 .cabFace {
 	position: relative;
 	padding: 26px 26px 0;

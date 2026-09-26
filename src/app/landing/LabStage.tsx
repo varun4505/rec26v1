@@ -108,6 +108,8 @@ function Draggable({
 		const el = ref.current;
 		if (!el) return;
 		e.preventDefault();
+		// Don't let the case start tilting underneath a note being dragged.
+		e.stopPropagation();
 		el.setPointerCapture(e.pointerId);
 		drag.current = { id: e.pointerId, sx: e.clientX, sy: e.clientY, ox: offset.current.x, oy: offset.current.y };
 		el.style.zIndex = String(++topZ);
@@ -244,6 +246,44 @@ export default function LabStage() {
 		return () => window.removeEventListener(OPEN_TERMINAL_EVENT, onOpen);
 	}, []);
 
+	// Grab the case and drag: the monitor turns the opposite way to the pointer,
+	// then settles back to its resting angle (CSS transition) on release.
+	const cabRef = useRef<HTMLDivElement | null>(null);
+	const tilt = useRef<{ id: number; x: number; y: number; baseY: number } | null>(null);
+
+	const onCabPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+		const cab = cabRef.current;
+		const target = e.target as HTMLElement;
+		if (!cab || e.button !== 0 || target.closest("[data-no-tilt], button, a, input")) return;
+		const baseY = cab.matches(":focus-within")
+			? 3
+			: window.matchMedia("(max-width: 860px)").matches
+				? 12
+				: 22;
+		tilt.current = { id: e.pointerId, x: e.clientX, y: e.clientY, baseY };
+		cab.dataset.tilting = "true";
+		try {
+			cab.setPointerCapture(e.pointerId);
+		} catch {}
+	};
+
+	const onCabPointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+		const t = tilt.current;
+		const cab = cabRef.current;
+		if (!t || !cab || t.id !== e.pointerId) return;
+		const ry = Math.max(-40, Math.min(50, t.baseY - (e.clientX - t.x) * 0.2));
+		const rx = Math.max(-18, Math.min(18, (e.clientY - t.y) * 0.12));
+		cab.style.transform = `rotateY(${ry}deg) rotateX(${rx}deg)`;
+	};
+
+	const onCabPointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
+		const cab = cabRef.current;
+		if (!cab || tilt.current?.id !== e.pointerId) return;
+		tilt.current = null;
+		delete cab.dataset.tilting;
+		cab.style.transform = "";
+	};
+
 	const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
 		const h = history.current;
 		if (e.key === "ArrowUp" && h.length) {
@@ -260,6 +300,7 @@ export default function LabStage() {
 	const screen = (
 		<div
 			className={`${s.screen} ${flash ? s.screenFlash : ""}`}
+			data-no-tilt
 			onClick={(e) => {
 				if ((e.target as HTMLElement).closest("a, button")) return;
 				inputRef.current?.focus({ preventScroll: true });
@@ -355,7 +396,15 @@ export default function LabStage() {
 
 			<div className={s.cabScene}>
 				<div className={s.cabShadow} aria-hidden="true" />
-				<div className={s.cab}>
+				<div
+					ref={cabRef}
+					className={s.cab}
+					title="grab to tilt"
+					onPointerDown={onCabPointerDown}
+					onPointerMove={onCabPointerMove}
+					onPointerUp={onCabPointerUp}
+					onPointerCancel={onCabPointerUp}
+				>
 					{/* Left side of the case, folded back into the page. */}
 					<div className={s.cabSide} aria-hidden="true">
 						<span className={s.sideGrip} />
