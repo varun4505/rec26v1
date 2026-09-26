@@ -1,9 +1,6 @@
 import { MongoClient } from 'mongodb'
 
 const uri = process.env.MONGODB_URI
-if (!uri) {
-  throw new Error('Missing MONGODB_URI in environment')
-}
 
 declare global {
   // global cached Mongo client promise (development only)
@@ -13,7 +10,12 @@ declare global {
 let client: MongoClient
 let clientPromise: Promise<MongoClient>
 
-if (process.env.NODE_ENV === 'development') {
+if (!uri) {
+  // Don't throw at import time: that breaks `next build` when the env var
+  // isn't configured yet. Fail only when something actually uses the DB.
+  clientPromise = Promise.reject(new Error('Missing MONGODB_URI in environment'))
+  clientPromise.catch(() => {})
+} else if (process.env.NODE_ENV === 'development') {
   if (!global._mongoClientPromise) {
     client = new MongoClient(uri)
     global._mongoClientPromise = client.connect()
