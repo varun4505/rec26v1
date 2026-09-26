@@ -271,8 +271,8 @@ export default function LabStage() {
 		const t = tilt.current;
 		const cab = cabRef.current;
 		if (!t || !cab || t.id !== e.pointerId) return;
-		const ry = Math.max(-40, Math.min(50, t.baseY - (e.clientX - t.x) * 0.2));
-		const rx = Math.max(-18, Math.min(18, (e.clientY - t.y) * 0.12));
+		const ry = Math.max(-70, Math.min(70, t.baseY - (e.clientX - t.x) * 0.25));
+		const rx = Math.max(-40, Math.min(40, (e.clientY - t.y) * 0.18));
 		cab.style.transform = `rotateY(${ry}deg) rotateX(${rx}deg)`;
 	};
 
@@ -419,6 +419,17 @@ export default function LabStage() {
 						<span className={s.sidePlate}>
 							VINNOVATEIT VT-25
 							<em>built on campus · unit 00</em>
+						</span>
+					</div>
+
+					<div className={s.cabSideR} aria-hidden="true" />
+					<div className={s.cabTop} aria-hidden="true" />
+					<div className={s.cabBottom} aria-hidden="true" />
+					<div className={s.cabBack} aria-hidden="true">
+						<span className={s.cabBackVents} />
+						<span className={s.cabBackLabel}>
+							VINNOVATEIT VT-25
+							<em>do not open · no user-serviceable parts</em>
 						</span>
 					</div>
 
